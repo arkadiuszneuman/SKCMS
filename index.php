@@ -1,9 +1,5 @@
 <?php
-	//Nowy plik
-    for ($i = 0; $i < 10; ++$i)
-    {
-        echo "Jestem zajebisty";
-    }
+    include('sql.php');
+    $database = new sql();
 
-    echo "Test";
 ?>

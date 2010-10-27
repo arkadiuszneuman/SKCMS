@@ -1,3 +1,3 @@
 <?
-	Nowy plik
+	//Nowy plik
 ?>

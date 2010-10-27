@@ -28,13 +28,14 @@
             $query = "SELECT title, date, note FROM news ORDER BY date DESC";
             $reply = mysql_query($query);
 
-            while ($line = mysql_fetch_row($reply)) //do czegos by bylo trzeba to ciulstwo zapisac i zwrocic w funkcji te dane, tylko chuj wie do czego. tworzyc nowa klase news?
+            for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
             {
-                echo "<h3>$line[0]</h3><h6><br />"; //TODO tylko zapis do czegos, bez wyswietlenia
-                echo "$line[1]</h6><br />";
-                echo "<hr />";
-                echo "<p>".nl2br($line[2])."</p><br>";
+                $array[$i]['title'] = $line[0]; //czy tablica asocjacyjna nie jest zbyt wolna? czy w przypadku sieciowego programowania ma to jakies duze znaczenie?
+                $array[$i]['date'] = $line[1];
+                $array[$i]['note'] = $line[2];
             }
+
+            return $array;
         }
 
         function Close()

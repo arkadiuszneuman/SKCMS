@@ -3,11 +3,11 @@
 
     session_start();
     if (!isset($_SESSION['zalogowany']) || $_SESSION['zalogowany'] == false)
-        echo "<a href=\".\login.php\">Panel administracyjny</a>";
+        echo '<a href="./user.php?task=login">Panel administracyjny</a>';
     else
     {
-        echo "<a href=\".\panel.php\">Panel administracyjny</a>  ";
-        echo "<a href=\".\logoff.php\">Wyloguj</a>";
+        echo '<a href="./panel.php">Panel administracyjny</a> &nbsp; &nbsp;';
+        echo '<a href="./user.php?task=logoff">Wyloguj</a>';
     }
 
     include('sql.php');

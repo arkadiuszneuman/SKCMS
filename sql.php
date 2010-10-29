@@ -17,10 +17,7 @@
             $query = "INSERT INTO `news` (`id`, `title`, `date`, `note`) VALUES
             (NULL, '".trim($title)."', ' ".date("Y-m-d H:i:s")."', '".trim($note)."');";
 
-            if (mysql_query($query))
-                echo "wysłane";
-            else
-                echo "nie wysłane";
+            return (mysql_query($query));
         }
 
         function ReadNews() //odczytanie newsow
@@ -38,7 +35,7 @@
             return $array;
         }
 
-        function AddAdmin($login, $pass, $name, $mail)
+        function AddAdmin($login, $pass, $name, $mail) //dodawanie admina
         {
             $query = "INSERT INTO `admins` (`id`, `login`, `pass`, `name`, `mail`) VALUES
             (NULL, '".trim($login)."', ' ".trim($pass)."', '".trim($name)."', '".trim($mail)."');";
@@ -46,14 +43,14 @@
             return mysql_query($query);
         }
 
-        function CheckAdmin($login, $pass)
+        function CheckAdmin($login, $pass) //sprawdzanie loginu i hasla
         {
             $query = "SELECT login, pass FROM admins";
             $reply = mysql_query($query);
 
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
             {
-                if (trim($line[0]) === $login && trim($line[1]) === trim($pass))
+                if (trim($line[0]) === trim($login) && trim($line[1]) === trim($pass))
                     return true;
             }
 

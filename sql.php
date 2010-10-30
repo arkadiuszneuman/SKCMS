@@ -17,22 +17,48 @@
             $query = "INSERT INTO `news` (`id`, `title`, `date`, `note`) VALUES
             (NULL, '".trim($title)."', ' ".date("Y-m-d H:i:s")."', '".trim($note)."');";
 
-            return (mysql_query($query));
+            return mysql_query($query);
         }
 
-        function ReadNews() //odczytanie newsow
+        function ReadNews($isId) //odczytanie newsow
         { //TODO z podanego zakresu
-            $query = "SELECT title, date, note FROM news ORDER BY date DESC";
-            $reply = mysql_query($query);
+            $query = "SELECT title, date, note";
 
+            if ($isId)
+                $query = $query.", id";
+
+            $query = $query." FROM news ORDER BY date DESC";
+
+            $reply = mysql_query($query);
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
             {
                 $array[$i]['title'] = $line[0];
                 $array[$i]['date'] = $line[1];
                 $array[$i]['note'] = $line[2];
+                if ($isId)
+                    $array[$i]['id'] = $line[3];
             }
 
             return $array;
+        }
+
+        function ReadSelectedNews($id) //odczytanie pojednynczego newsa
+        {
+            $query = "SELECT title, note FROM news WHERE id='".$id."'";
+
+            $reply = mysql_query($query);
+            $line = mysql_fetch_row($reply);
+            $array['title'] = $line[0];
+            $array['note'] = $line[1];
+
+            return $array;
+        }
+
+        function EditNews($id, $title, $note) //zmiana konkretnego newsa
+        {
+            $query = "UPDATE news SET title='".$title."', note='".$note."' WHERE id='".$id."'";
+            
+            return mysql_query($query);
         }
 
         function AddAdmin($login, $pass, $name, $mail) //dodawanie admina

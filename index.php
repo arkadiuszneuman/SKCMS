@@ -14,7 +14,7 @@
 
     $sql = new Sql("127.0.0.1", "root", "", "database");
     //$sql->AddNews("Test", "testestestes\n\n asdasd\n asdasdasdawdaa");
-    $newses = $sql->ReadNews();
+    $newses = $sql->ReadNews(false);
 
     foreach ($newses as $news)
     {

@@ -1,4 +1,4 @@
-function checkPass()
+function checkPass() //funkcja sprawdza czy 2 hasla sa takie same
 {
     var form = document.getElementById("regForm");
     var password1 = form.pass1;

@@ -92,34 +92,53 @@
                     else //... to wyswietli sie lista notek do wybrania
                     {
                         $newses = $sql->ReadNews(true);
-
-                        foreach ($newses as $news) //TODO zrobic zeby tylko wyswietlal tematy
+                        echo "<br />";
+                        foreach ($newses as $news)
                         {
-                            echo "<h3>".$news['title']."</h3>\n";
-                            echo "<a href=\"./panel.php?task=editNote&id=".$news['id']."\">Edytuj</a>\n<h6>";
-                            echo $news['date']."</h6>\n<hr /><p>";
-                            echo nl2br($news['note'])."</p>\n<br /><br />\n\n";
+                            echo "<a href=\"./panel.php?task=editNote&id=".$news['id']."\" title=\"".$news['note']."\">".$news['title']."</a><br />\n";
                         }
                     }
                 }
                 break;
 
-            case "removeNote":
+            case "removeNote": //usuwanie notki
+                @$id = $_GET['id'];
+                if ($id != 0) //jesli wybrana zostala jakas notka wywal
+                {
+                    if ($sql->RemoveNews($id))
+                    {
+                        echo "News usunięty";
+                    }
+                    else
+                    {
+                        echo "News nie został usunięty";
+                    }
+                }
+                else //jesli nie to wyrzuc liste notek do usuniecia
+                {
+                    echo "<script type=\"text/javascript\" src=\"./javascript/quRemoveNote.js\"></script>";
+                    $newses = $sql->ReadNews(true);
+                    echo "<br />";
+                    foreach ($newses as $news)
+                    {
+                        echo "<a href=\"#\" title=\"".$news['note']."\" onclick=\"quRemoveNote('".$news['title']."', '".$news['id']."')\">".$news['title']."</a><br />\n";
+                    }
+                }
                 break;
         }
 
         echo '<br /><br /><a href="./index.php">Powrót do strony głownej</a>';
     }
-    else
+    else //jesli nie zalogowany
     {
-        if(isset($_POST['send']))
+        if(isset($_POST['send'])) //sprawdzenie formularza rejestracji
         {
             $login = $_POST['login'];
             $pass = $_POST['pass1'];
             $name = $_POST['name'];
             $mail = $_POST['mail'];
 
-            if ($sql->AddAdmin($login, md5($pass), $name, $mail))
+            if ($sql->AddAdmin($login, md5($pass), $name, $mail)) //rejestracja i przeniesienie do panelu
             {
                 echo "Dodano admina<br />Zostaniesz przeniesiony do panelu za 3 sekundy...";
                 $page = $_SERVER['PHP_SELF'];
@@ -127,12 +146,12 @@
                 $_SESSION['zalogowany'] = true;
             }
         }
-        else if (isset($_POST['log']))
+        else if (isset($_POST['log'])) //sprawdzenie formularza logowania
         {
             $login = $_POST['login'];
             $pass = $_POST['pass'];
 
-            if ($sql->CheckAdmin($login, md5($pass)))
+            if ($sql->CheckAdmin($login, md5($pass))) //sprawdzenie loginu i przeniesienie do panelu w razie powodzenia
             {
                 echo "Zalogowano<br />Zostaniesz przeniesiony do panelu za 3 sekundy...";
                 $_SESSION['zalogowany'] = true;
@@ -144,7 +163,7 @@
                 echo "Błędny login lub hasło\n";
             }
         }
-        else
+        else //jesli chce sie dostac do panelu to najpierw trzeba sie zalogowac
         {
             echo "Musisz się zalogować<br />Zostaniesz przeniesiony do strony logowania za 3 sekundy...";
             $_SESSION['zalogowany'] = true;

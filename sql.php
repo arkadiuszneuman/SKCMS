@@ -57,6 +57,13 @@
         function EditNews($id, $title, $note) //zmiana konkretnego newsa
         {
             $query = "UPDATE news SET title='".$title."', note='".$note."' WHERE id='".$id."'";
+
+            return mysql_query($query);
+        }
+
+        function RemoveNews($id) //usuwanie newsa
+        {
+            $query = "DELETE FROM news WHERE id='".$id."'";
             
             return mysql_query($query);
         }

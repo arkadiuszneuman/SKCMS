@@ -1,18 +1,20 @@
 <?php
     class Sql
     {
-        function Sql($server, $user, $pass, $database) //polaczenie z wybraniem bazy
+        private $sql_conn = null;
+
+        public function Sql($server, $user, $pass, $database) //polaczenie z wybraniem bazy
         {
             $this->sql_conn = mysql_connect($server, $user, $pass);
             mysql_select_db($database);
         }
 
-        function SelectDatabase($database) //zmiana bazy danych
+        public function SelectDatabase($database) //zmiana bazy danych
         {
             mysql_select_db($database);
         }
         
-        function AddNews($title, $note) //dodanie newsa
+        public function AddNews($title, $note) //dodanie newsa
         {
             $query = "INSERT INTO `news` (`id`, `title`, `date`, `note`) VALUES
             (NULL, '".trim($title)."', ' ".date("Y-m-d H:i:s")."', '".trim($note)."');";
@@ -20,15 +22,21 @@
             return mysql_query($query);
         }
 
-        function ReadNews($isId) //odczytanie newsow
-        { //TODO z podanego zakresu
+        public function NumberOfNewses()
+        {
+            $row = mysql_fetch_array(mysql_query("SELECT COUNT(*) as howmany FROM news"));
+            return $row["howmany"];
+        }
+
+        public function ReadNews($isId, $from, $howMany) //odczytanie newsow, isId - czy zwracac tez id; from - od ktorej danej zwracac, to - ile notek
+        {
             $query = "SELECT title, date, note";
 
             if ($isId)
                 $query = $query.", id";
 
-            $query = $query." FROM news ORDER BY date DESC";
-
+            $query = $query." FROM news ORDER BY date DESC LIMIT ".$from.", ".$howMany;
+            
             $reply = mysql_query($query);
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
             {
@@ -42,7 +50,7 @@
             return $array;
         }
 
-        function ReadSelectedNews($id) //odczytanie pojednynczego newsa
+        public function ReadSelectedNews($id) //odczytanie pojednynczego newsa
         {
             $query = "SELECT title, note FROM news WHERE id='".$id."'";
 
@@ -54,21 +62,21 @@
             return $array;
         }
 
-        function EditNews($id, $title, $note) //zmiana konkretnego newsa
+        public function EditNews($id, $title, $note) //zmiana konkretnego newsa
         {
             $query = "UPDATE news SET title='".$title."', note='".$note."' WHERE id='".$id."'";
 
             return mysql_query($query);
         }
 
-        function RemoveNews($id) //usuwanie newsa
+        public function RemoveNews($id) //usuwanie newsa
         {
             $query = "DELETE FROM news WHERE id='".$id."'";
             
             return mysql_query($query);
         }
 
-        function AddAdmin($login, $pass, $name, $mail) //dodawanie admina
+        public function AddAdmin($login, $pass, $name, $mail) //dodawanie admina
         {
             $query = "INSERT INTO `admins` (`id`, `login`, `pass`, `name`, `mail`) VALUES
             (NULL, '".trim($login)."', ' ".trim($pass)."', '".trim($name)."', '".trim($mail)."');";
@@ -76,7 +84,7 @@
             return mysql_query($query);
         }
 
-        function CheckAdmin($login, $pass) //sprawdzanie loginu i hasla
+        public function CheckAdmin($login, $pass) //sprawdzanie loginu i hasla
         {
             $query = "SELECT login, pass FROM admins";
             $reply = mysql_query($query);
@@ -90,7 +98,7 @@
             return false;
         }
 
-        function Close()
+        public function Close()
         {
             mysql_close($this->sql_conn);
         }

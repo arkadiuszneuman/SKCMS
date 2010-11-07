@@ -1,3 +1,5 @@
+<script type="text/javascript" src="./javascript/ajax.js"></script>
+
 <?php
     include('structure/up.html');
 
@@ -10,20 +12,10 @@
         echo '<a href="./user.php?task=logoff">Wyloguj</a>';
     }
 
-    include('sql.php');
-
-    $sql = new Sql("127.0.0.1", "root", "", "database");
-    //$sql->AddNews("Test", "testestestes\n\n asdasd\n asdasdasdawdaa");
-    $newses = $sql->ReadNews(false);
-
-    foreach ($newses as $news)
-    {
-        echo "<h3>".$news['title']."</h3>\n<h6>";
-        echo $news['date']."</h6>\n<hr /><p>";
-        echo nl2br($news['note'])."</p>\n<br /><br />\n\n";
-    }
-
-    $sql->Close();
-
+    echo "<div id=\"newses\">";
+    echo "tutaj beda newsy<br /><br />";
+    echo "</div>";
+    echo "<a href=\"#\" onclick=\"sendGet('ajaxnewses.php?page=', 'news')\">Następna strona</a>";
+    
     include('structure/down.html');
 ?>

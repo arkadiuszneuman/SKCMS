@@ -91,7 +91,7 @@
                     }
                     else //... to wyswietli sie lista notek do wybrania
                     {
-                        $newses = $sql->ReadNews(true);
+                        $newses = $sql->ReadNews(true, 0, 100);
                         echo "<br />";
                         foreach ($newses as $news)
                         {
@@ -117,7 +117,7 @@
                 else //jesli nie to wyrzuc liste notek do usuniecia
                 {
                     echo "<script type=\"text/javascript\" src=\"./javascript/quRemoveNote.js\"></script>";
-                    $newses = $sql->ReadNews(true);
+                    $newses = $sql->ReadNews(true, 0, 100);
                     echo "<br />";
                     foreach ($newses as $news)
                     {

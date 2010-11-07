@@ -31,7 +31,7 @@
             break;
 
         case "registration":
-        //default: //domyslnie jest rejestracja
+        default: //domyslnie jest rejestracja
             ?>
             <script type="text/javascript" src="./javascript/registerfrm.js"></script>
             

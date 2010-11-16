@@ -3,7 +3,7 @@
     include('structure/up.html');
     include('sql.php');
 
-    $sql = new Sql("127.0.0.1", "root", "", "database");
+    $sql = new Sql();
 
     session_start();
 

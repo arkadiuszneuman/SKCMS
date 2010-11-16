@@ -1,10 +1,26 @@
 <?php
+    include('database.php');
+
     class Sql
     {
         private $sql_conn = null;
 
-        public function Sql($server, $user, $pass, $database) //polaczenie z wybraniem bazy
+        public function Sql($server = null, $user = null, $pass = null, $database = null) //polaczenie z wybraniem bazy
         {
+            global $SQLserver; //zlapanie zmiennych globalnych z pliku database.php
+            global $SQLdatabase;
+            global $SQLlogin;
+            global $SQLpass;
+            
+            if ($server == null) //jesli nie podano jakiegos parametru to jest on brany z database.php
+                $server = $SQLserver;
+            if ($user == null)
+                $user = $SQLlogin;
+            if ($database == null)
+                $database = $SQLdatabase;
+            if ($pass == null)
+                $pass = $SQLpass;
+
             $this->sql_conn = mysql_connect($server, $user, $pass);
             mysql_select_db($database);
         }

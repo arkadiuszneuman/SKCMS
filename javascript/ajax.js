@@ -1,3 +1,14 @@
+sendGet("news", 0); //zaladowanie pierwszej strony na poczatku
+
+function include(filename) //do includowania w javascripcie
+{
+    document.write('<' + 'script');
+    document.write(' language="javascript"');
+    document.write(' type="text/javascript"');
+    document.write(' src="' + filename + '">');
+    document.write('</' + 'script' + '>');
+}
+
 function getXMLHttpRequest() //przygotowanie ajaxa do roznych przegladarek
 {
   var request = false;
@@ -27,15 +38,14 @@ function getXMLHttpRequest() //przygotowanie ajaxa do roznych przegladarek
   return request;
 }
 
-var i = 0;
-function sendGet(site, what) //site - gdzie przekierowac, what - funkcja, ktora wywola ajax po podaniu danych
+function sendGet(what, page) //site - gdzie przekierowac, what - funkcja, ktora wywola ajax po podaniu danych
 {
-    var r = getXMLHttpRequest();
-    r.open('GET', site+i, true);
-    ++i;
+    var r = getXMLHttpRequest();  
 
     if (what == "news")
     {
+        r.open('GET', './ajaxPHP/ajaxnewses.php?page='+page, true);
+
         r.onreadystatechange = function()
         {
             if (r.readyState == (1 || 0))

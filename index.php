@@ -12,10 +12,9 @@
         echo '<a href="./user.php?task=logoff">Wyloguj</a>';
     }
 
-    echo "<div id=\"newses\">";
-    echo "tutaj beda newsy<br /><br />";
-    echo "</div>";
-    echo "<a href=\"#\" onclick=\"sendGet('ajaxnewses.php?page=', 'news')\">Następna strona</a>";
+    ?>
+    <div id="newses">Ładowanie</div>
+    <?php
     
     include('structure/down.html');
 ?>

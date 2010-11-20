@@ -1,0 +1,50 @@
+#tabPanel
+{
+    font-family: Tahoma, Verdana, Arial;
+    font-size: 10px;
+}
+
+tr > td:first-child /* ustawienie center dla pierwszej kolumny (LP) */
+{
+    text-align: center;
+    font-weight: bold;
+    width: 10px;
+}
+
+tr > td.topic
+{
+    width: 300px;
+}
+
+
+tr.even > td, tr.odd > td /*tylko dla td w tr.even i w tr.odd*/
+{
+    padding: 5px 8px 5px 8px;
+}
+
+tr.even:hover, tr.odd:hover /* kolor wiersza jak myszka jest nad tym wierszem */
+{
+    background-color: #faffcf;
+}
+
+tr.even /* kolor wiersza dla parzystych elementow */
+{
+    background-color: #cbfbff;
+}
+
+tr.odd /* kolor wiersza dla nieparzystych elementow */
+{
+    background-color: #bae2ff;
+}
+
+td > a:link, td > a:visited
+{
+    color: #001482;
+    text-decoration: none;
+}
+
+td > a:hover
+{
+    color: #00b4bd;
+    text-decoration: underline;
+}

@@ -1,7 +1,37 @@
+<script type="text/javascript" src="./javascript/panel.js"></script>
+<link rel="stylesheet" type="text/css" href="./css/panel.css" />
 <?php
 
     include('structure/up.html');
     include('sql.php');
+
+    function CreateTable($newses)
+    {
+        echo "<br /> <table id=\"tabPanel\">";
+        $parzysty = true;
+        $i = 1;
+        foreach ($newses as $news)
+        {
+            if ($parzysty)
+            {
+                echo "<tr class=\"even\">";
+                echo "<td>".$i."</td>";
+                echo "<td class=\"topic\"><a href=\"./panel.php?task=editNote&id=".$news['id']."\" title=\"".$news['note']."\" class=\"tableEven\">".$news['title']."</a></td>\n";
+                echo "</tr>";
+            }
+            else
+            {
+                echo "<tr class=\"odd\">";
+                echo "<td>".$i."</td>";
+                echo "<td class=\"topic\"><a href=\"./panel.php?task=editNote&id=".$news['id']."\" title=\"".$news['note']."\" class=\"tableOdd\">".$news['title']."</a></td>\n";
+                echo "</tr>";
+            }
+
+            ++$i;
+            $parzysty = !$parzysty;
+        }
+        echo "</table>";
+    }
 
     $sql = new Sql();
 
@@ -92,11 +122,7 @@
                     else //... to wyswietli sie lista notek do wybrania
                     {
                         $newses = $sql->ReadNews(true, 0, 100);
-                        echo "<br />";
-                        foreach ($newses as $news)
-                        {
-                            echo "<a href=\"./panel.php?task=editNote&id=".$news['id']."\" title=\"".$news['note']."\">".$news['title']."</a><br />\n";
-                        }
+                        CreateTable($newses);
                     }
                 }
                 break;
@@ -116,7 +142,6 @@
                 }
                 else //jesli nie to wyrzuc liste notek do usuniecia
                 {
-                    echo "<script type=\"text/javascript\" src=\"./javascript/quRemoveNote.js\"></script>";
                     $newses = $sql->ReadNews(true, 0, 100);
                     echo "<br />";
                     foreach ($newses as $news)

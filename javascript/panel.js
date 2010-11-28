@@ -6,9 +6,34 @@ function quRemoveNote(note, id) //funkcja upewnia sie, ze chcemy usunac newsa i 
     }
 }
 
-/*window.onload = function()
+function BinBtnEvent()
 {
-    //obsluga zaznaczania sie na zolto tabeli
+    document.getElementById("binBtn").onclick = function()
+    {
+        var checkboxes = document.getElementsByName("check[]");
+        var isOneChecked = false;
+        for (var i = 0; i < checkboxes.length; ++i)
+        {
+            if (checkboxes[i].checked)
+            {
+                isOneChecked = true;
+                break;
+            }
+        }
+        if (!isOneChecked)
+            alert("Aby przenieść newsa do kosza musisz jakiegoś zaznaczyć.");
+        else
+            document.removeFrm.submit();
+        return false;
+    }
+}
+
+
+window.onload = function()
+{
+    BinBtnEvent();
+
+    /*/obsluga zaznaczania sie na zolto tabeli
     var tab = document.getElementById("tabPanel"); //zlapanie tabeli
     var tr = tab.getElementsByTagName("tr"); //zlapanie tr'ow w tabeli
     var rememberColor; //zapamietanie koloru, ktory oryginalnie ma tabela
@@ -24,5 +49,5 @@ function quRemoveNote(note, id) //funkcja upewnia sie, ze chcemy usunac newsa i 
         {
             this.style.backgroundColor = rememberColor;
         }
-    }
-}*/
+    }*/
+}

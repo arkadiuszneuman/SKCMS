@@ -23,8 +23,8 @@
                     echo $i." ";
             }
         }
-
-        if (($page+1)*$howMany < $count) //wyswietlenie nastepna strona
+//TODO cos zle wyswietla ostatnia strone (za duzo ich)
+        if (($page+1)*$howMany < $count) //wyswietlenie nastepna strona i ostatnia strona
         {
             echo "<a href=\"#\" onclick=\"sendGet('news', '".($page+1)."')\">Następna strona</a>   ";
             echo "<a href=\"#\" onclick=\"sendGet('news', '".(($count-1)/$howMany)."')\">Ostatnia</a>";
@@ -38,7 +38,7 @@
 
     include('..\sql.php');
     $sql = new Sql();
-    $count = $sql->NumberOfNewses();
+    $count = $sql->NumberOfNews();
 
     $howMany = 3; //ilosc newsow na strone
     @$page = $_GET['page'];

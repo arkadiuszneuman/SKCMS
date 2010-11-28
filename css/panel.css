@@ -1,19 +1,19 @@
 #tabPanel
 {
-    font-family: Tahoma, Verdana, Arial;
-    font-size: 10px;
+    font-family: Tahoma, Verdana, Arial; /*czcionka w tabeli*/
+    font-size: 11px;
 }
 
-tr > td:first-child /* ustawienie center dla pierwszej kolumny (LP) */
+tr.even > td:first-child, tr.odd > td:first-child /* ustawienie center dla pierwszej kolumny (LP) */
 {
     text-align: center;
     font-weight: bold;
     width: 10px;
 }
 
-tr > td.topic
+tr.even > td.topic, tr.odd > td.topic
 {
-    width: 300px;
+    width: 300px; /*dlugosc kolumny z tematem*/
 }
 
 
@@ -37,7 +37,7 @@ tr.odd /* kolor wiersza dla nieparzystych elementow */
     background-color: #bae2ff;
 }
 
-td > a:link, td > a:visited
+td > a:link, td > a:visited /* linki w tabeli*/
 {
     color: #001482;
     text-decoration: none;
@@ -47,4 +47,15 @@ td > a:hover
 {
     color: #00b4bd;
     text-decoration: underline;
+}
+
+#info /*tekst z informacjami np o usunieciu, zaktualizowaniu newsa*/
+{
+    background-color: #ccffcc;
+    border-style: solid;
+    border-width: 5px;
+    border-color: #009900;
+    margin: 10px;
+    padding: 10px;
+    color: #006600;
 }

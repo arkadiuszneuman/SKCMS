@@ -1,5 +1,6 @@
 <script type="text/javascript" src="./javascript/panel.js"></script>
 <link rel="stylesheet" type="text/css" href="./css/panel.css" />
+
 <?php
 
     include('structure/up.html');
@@ -7,6 +8,7 @@
 
     function CreateTable($newses)
     {
+        echo "<form name=\"removeFrm\" method=\"POST\" action=\"panel.php?task=removeNote\">";
         echo "<br /> <table id=\"tabPanel\">";
         $parzysty = true;
         $i = 1;
@@ -15,27 +17,44 @@
             if ($parzysty)
             {
                 echo "<tr class=\"even\">";
-                echo "<td>".$i."</td>";
-                echo "<td class=\"topic\"><a href=\"./panel.php?task=editNote&id=".$news['id']."\" title=\"".$news['note']."\" class=\"tableEven\">".$news['title']."</a></td>\n";
-                echo "</tr>";
             }
             else
             {
                 echo "<tr class=\"odd\">";
-                echo "<td>".$i."</td>";
-                echo "<td class=\"topic\"><a href=\"./panel.php?task=editNote&id=".$news['id']."\" title=\"".$news['note']."\" class=\"tableOdd\">".$news['title']."</a></td>\n";
-                echo "</tr>";
             }
+
+            echo "<td>".$i."</td>";
+            echo "<td><input type=\"checkbox\" name=\"check[]\" value=\"".$news['id']."\" /></td>";
+            echo "<td class=\"topic\"><a href=\"./panel.php?task=editNote&id=".$news['id']."\" title=\"".$news['note']."\">".$news['title']."</a></td>\n";
+            echo "</tr>";
 
             ++$i;
             $parzysty = !$parzysty;
         }
         echo "</table>";
+
+        echo "</form>";
     }
+
+    
 
     $sql = new Sql();
 
     session_start();
+
+    function SendInfo($info)
+    {
+        $_SESSION['info'] = $info;
+    }
+
+    function DrawInfo()
+    {
+        //wlaczenie zielonej info u gory
+        if (isset($_SESSION['info']) && !empty($_SESSION['info']))
+        {
+            ?><div id="info"><?php echo $_SESSION['info'] ?></div><?php
+        }
+    }
 
     if (isset($_SESSION['zalogowany']) && $_SESSION['zalogowany'] == true)
     {
@@ -43,9 +62,11 @@
 
         <a href="./panel.php?task=addNote">Dodaj notkę</a>&nbsp;&nbsp;
         <a href="./panel.php?task=editNote">Edytuj notkę</a>&nbsp;&nbsp;
-        <a href="./panel.php?task=removeNote">Usuń notkę</a><br />
-
-        <?php
+        <a href="http://Kosz" id="binBtn">Do kosza</a><br /> <!-- javascript lapie remove i anuluje link oraz wysyla formularz -->
+        
+        <?php 
+            
+        $_SESSION['info'] = "";
 
         @$task = $_GET['task'];
         switch ($task)
@@ -66,9 +87,11 @@
                     else
                     {
                         if ($sql->AddNews($title, $note))
-                            echo "News został wysłany";
+                            SendInfo("News został wysłany");
                         else
-                            echo "News nie został wysłany";
+                            SendInfo("News nie został wysłany");
+
+                        DrawInfo();
                     }
 
                     echo "<br />";
@@ -82,6 +105,15 @@
                 <?php
                 break;
 
+            case "removeNote": //usuwanie notki
+                @$checkboxes = $_POST['check']; //zlapanie z formularza checknietych checkboxow
+                if ($sql->RemoveNewsToBin($checkboxes)) //
+                    SendInfo("News/Newsy zostały usunięte");
+                else
+                    SendInfo("Nie można usunąć newsów");
+
+                //nie dajemy break'a, zeby przeszedl do edit note i wyswietlil tabelke
+
             case "editNote": //troche syf jest tutaj
                 if(isset($_POST['edit'])) //po kliknieciu wyslij przy edycji notki
                 {
@@ -94,14 +126,16 @@
 
                     if (empty($title) || empty($note))
                     {
-                        echo "Notka nie dodana z powodu braku tytułu lub treści";
+                        SendInfo("Notka nie dodana z powodu braku tytułu lub treści");
                     }
                     else
                     {
                         if ($sql->EditNews($id, $title, $note))
-                            echo "News został zaktualizowany";
+                            SendInfo("News został zaktualizowany");
                         else
-                            echo "News nie został zaktualizowany";
+                            SendInfo("News nie został zaktualizowany");
+
+                        $id = 0; //zeby przeszedl do malowania tabelki
                     }
 
                     echo "<br />";
@@ -109,45 +143,23 @@
                 else
                 {
                     @$id = $_GET['id'];
-                    if ($id != 0) //jesli wybrana zostala jakas notka to dawaj formularz, a jesli nie...
-                    {
-                        $news = $sql->ReadSelectedNews($id);
-                        
-                        echo "<form method=\"POST\" action=\"panel.php?task=editNote&id=".$id."\">";
-                            echo "<b>Tytuł:</b> <input type=\"text\" size=\"65\" name=\"title\" value=\"".$news['title']."\" /><br />";
-                            echo "<b>Treść:</b> <textarea name=\"note\" rows=\"10\" cols=\"50\">".$news['note']."</textarea><br />";
-                            echo "<input type=\"submit\" value=\"Wyślij\" name=\"edit\" />";
-                        echo "</form>";
-                    }
-                    else //... to wyswietli sie lista notek do wybrania
-                    {
-                        $newses = $sql->ReadNews(true, 0, 100);
-                        CreateTable($newses);
-                    }
                 }
-                break;
+                
+                if ($id != 0) //jesli wybrana zostala jakas notka to dawaj formularz, a jesli nie...
+                {
+                    $news = $sql->ReadSelectedNews($id);
 
-            case "removeNote": //usuwanie notki
-                @$id = $_GET['id'];
-                if ($id != 0) //jesli wybrana zostala jakas notka wywal
-                {
-                    if ($sql->RemoveNews($id))
-                    {
-                        echo "News usunięty";
-                    }
-                    else
-                    {
-                        echo "News nie został usunięty";
-                    }
+                    echo "<form method=\"POST\" action=\"panel.php?task=editNote&id=".$id."\">";
+                        echo "<b>Tytuł:</b> <input type=\"text\" size=\"65\" name=\"title\" value=\"".$news['title']."\" /><br />";
+                        echo "<b>Treść:</b> <textarea name=\"note\" rows=\"10\" cols=\"50\">".$news['note']."</textarea><br />";
+                        echo "<input type=\"submit\" value=\"Wyślij\" name=\"edit\" />";
+                    echo "</form>";
                 }
-                else //jesli nie to wyrzuc liste notek do usuniecia
+                else //... to wyswietli sie lista notek do wybrania
                 {
-                    $newses = $sql->ReadNews(true, 0, 100);
-                    echo "<br />";
-                    foreach ($newses as $news)
-                    {
-                        echo "<a href=\"#\" title=\"".$news['note']."\" onclick=\"quRemoveNote('".$news['title']."', '".$news['id']."')\">".$news['title']."</a><br />\n";
-                    }
+                    DrawInfo();
+                    $news = $sql->ReadNews(true, 0, 100);
+                    CreateTable($news);
                 }
                 break;
         }

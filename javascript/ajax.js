@@ -15,7 +15,7 @@ function getXMLHttpRequest() //przygotowanie ajaxa do roznych przegladarek
 
   try
   {
-    request = new XMLHttpRequest();
+    request = new XMLHttpRequest(); //ff opera chrome
   }
   catch(err1)
   {

@@ -38,8 +38,8 @@
 
             <form id="regForm" method="POST" action="panel.php">
                 <b>Nazwa użytkownika:</b> <input type="text" name="login"><br>
-                <b>Hasło:</b> <input type="password" onKeyUp="checkPass()" name="pass1"><br>
-                <b>Powtórz hasło:</b> <input type="password"onKeyUp="checkPass()" name="pass2"><br>
+                <b>Hasło:</b> <input type="password" name="pass"id="pass1"><br>
+                <b>Powtórz hasło:</b> <input type="password" name="pass" id="pass2"><br>
                 <b>Nazwa wyświetlana:</b> <input type="text" name="name"><br>
                 <b>Adres e-mail:</b> <input type="text" name="mail"><br>
                 <input type="submit" value="Wyślij" name="send">

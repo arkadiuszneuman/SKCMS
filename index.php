@@ -1,9 +1,12 @@
+<?php
+	session_start();
+?>
+
 <script type="text/javascript" src="./javascript/ajax.js"></script>
 
 <?php
     include('structure/up.html');
 
-    session_start();
     if (!isset($_SESSION['zalogowany']) || $_SESSION['zalogowany'] == false)
         echo '<a href="./user.php?task=login">Panel administracyjny</a>';
     else

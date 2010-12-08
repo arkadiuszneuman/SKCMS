@@ -1,3 +1,34 @@
+/*rozmieszecznie divow*/
+
+#header
+{
+    margin: 20px;
+    text-align: center;
+    font-family: Tahoma, Verdana, Arial; /*czcionka w tabeli*/
+    font-size: 30px;
+}
+
+#menu
+{
+    width: 150px;
+	float: left;
+	position: relative;
+    overflow: hidden;
+}
+
+#srodek
+{
+    margin-left: 150px;
+}
+
+
+
+
+.submenu
+{
+    margin-left: 30px;
+}
+
 #tabPanel
 {
     font-family: Tahoma, Verdana, Arial; /*czcionka w tabeli*/
@@ -47,6 +78,18 @@ td > a:hover
 {
     color: #00b4bd;
     text-decoration: underline;
+}
+
+/*gorna belka tabeli*/
+tr#upper
+{
+    color: white;
+    font-family: Tahoma, Verdana, Arial; /*czcionka w tabeli*/
+    font-size: 13px;
+    background-color: #003399;
+    text-align: center;
+    font-weight: bold;
+    width: 10px;
 }
 
 #info /*tekst z informacjami np o usunieciu, zaktualizowaniu newsa*/

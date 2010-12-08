@@ -98,6 +98,34 @@
                     $array[$i]['id'] = $line[3];
             }
 
+            if (@$array == null)
+                return null;
+            return $array;
+        }
+
+        public function ReadNewsFromBin($isId, $from, $howMany) //odczytanie newsow, isId - czy zwracac tez id; from - od ktorej danej zwracac, to - ile notek
+        {
+            $from = $this->ProtectInt($from);
+            $howMany = $this->ProtectInt($howMany);
+
+            $query = "SELECT title, date, note";
+
+            if ($isId)
+                $query = $query.", id";
+
+            $query = $query." FROM news WHERE proporties='1' ORDER BY date DESC LIMIT $from, $howMany"; //proporties=1 - kosz - wyswietlenie newsow nie znajdujacych sie w koszu
+
+            $reply = mysql_query($query);
+            for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
+            {
+                $array[$i]['title'] = $line[0];
+                $array[$i]['date'] = $line[1];
+                $array[$i]['note'] = $line[2];
+                if ($isId)
+                    $array[$i]['id'] = $line[3];
+            }
+            if (@$array == null)
+                return null;
             return $array;
         }
 
@@ -128,7 +156,8 @@
             return mysql_query($query);
         }
 
-        public function RemoveNews($id) //usuwanie newsa/newsow jesli przekazujemy tablice
+        //funkcja zabezpiecza id i tworzy z tablicy id odpowiednie zapytanie (potrzebne przy usuwaniu newsow)
+        private function doIdQuery($id)
         {
             $id = $this->ProtectInt($id);
             $idiesString = "";
@@ -141,24 +170,24 @@
                     $idiesString = $idiesString."id='$id[$i]' OR ";
             }
 
-            $query = "DELETE FROM news WHERE $idiesString";
+            return $idiesString;
+        }
+
+        public function RemoveNews($id) //usuwanie newsa/newsow jesli przekazujemy tablice
+        {
+            $query = "DELETE FROM news WHERE ".$this->doIdQuery($id);
             return mysql_query($query);
         }
 
         public function RemoveNewsToBin($id) //usuwanie newsa/newsow jesli przekazujemy tablice
         {
-            $id = $this->ProtectInt($id);
-            $idiesString = "";
+            $query = "UPDATE news SET proporties='1' WHERE ".$this->doIdQuery($id);
+            return mysql_query($query);
+        }
 
-            for ($i = 0; $i < count($id); ++$i)
-            {
-                if ($i == count($id)-1) //jesli ostatni element w tablicy
-                    $idiesString = $idiesString."id='$id[$i]'";
-                else
-                    $idiesString = $idiesString."id='$id[$i]' OR ";
-            }
-
-            $query = "UPDATE news SET proporties='1' WHERE $idiesString";
+        public function RecoverNewsFromBin($id) //usuwanie newsa/newsow jesli przekazujemy tablice
+        {
+            $query = "UPDATE news SET proporties='0' WHERE ".$this->doIdQuery($id);
             return mysql_query($query);
         }
 

@@ -6,10 +6,8 @@ function quRemoveNote(note, id) //funkcja upewnia sie, ze chcemy usunac newsa i 
     }
 }
 
-function BinBtnEvent()
+function Event(action)
 {
-    document.getElementById("binBtn").onclick = function()
-    {
         var checkboxes = document.getElementsByName("check[]");
         var isOneChecked = false;
         for (var i = 0; i < checkboxes.length; ++i)
@@ -23,15 +21,36 @@ function BinBtnEvent()
         if (!isOneChecked)
             alert("Aby przenieść newsa do kosza musisz jakiegoś zaznaczyć.");
         else
-            document.removeFrm.submit();
+        {
+            document.binFrm.action = action;
+            document.binFrm.submit();
+        }
+
         return false;
-    }
+}
+
+function ButtonsEvents() //eventy (klikniecia) na przyciski do kosza, przywroc z kosza i usun permamentnie
+{
+    var btn = document.getElementById("toBinBtn");
+    if (btn != null)
+        btn.onclick = function() { return Event("panel.php?task=moveToBin"); }
+
+    btn = document.getElementById("binToNews");
+    if (btn != null)
+        btn.onclick = function() { return Event("panel.php?task=binToNews"); }
+    
+    btn = document.getElementById("binRemove");
+    if (btn != null)
+        btn.onclick = function() { return Event("panel.php?task=binRemove"); }
 }
 
 
 window.onload = function()
 {
-    BinBtnEvent();
+
+    ButtonsEvents();
+
+    
 
     /*/obsluga zaznaczania sie na zolto tabeli
     var tab = document.getElementById("tabPanel"); //zlapanie tabeli

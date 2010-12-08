@@ -36,7 +36,7 @@
         }
     }
 
-    include('..\sql.php');
+    include('../sql.php');
     $sql = new Sql();
     $count = $sql->NumberOfNews();
 

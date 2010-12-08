@@ -87,7 +87,7 @@
                 $query = $query.", id";
 
             $query = $query." FROM news WHERE NOT proporties='1' ORDER BY date DESC LIMIT $from, $howMany"; //proporties=1 - kosz - wyswietlenie newsow nie znajdujacych sie w koszu
-            
+
             $reply = mysql_query($query);
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
             {

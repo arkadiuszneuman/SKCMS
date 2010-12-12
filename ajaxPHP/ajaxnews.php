@@ -23,11 +23,14 @@
                     echo $i." ";
             }
         }
-//TODO cos zle wyswietla ostatnia strone (za duzo ich)
+
         if (($page+1)*$howMany < $count) //wyswietlenie nastepna strona i ostatnia strona
         {
             echo "<a href=\"#\" onclick=\"sendGet('news', '".($page+1)."')\">Następna strona</a>   ";
-            echo "<a href=\"#\" onclick=\"sendGet('news', '".(($count-1)/$howMany)."')\">Ostatnia</a>";
+            if ($count%$howMany != 0) //jesli ilosc newsow przez ilosc newsow na strone jest nierowna
+                echo "<a href=\"#\" onclick=\"sendGet('news', '".((int)($count/$howMany))."')\">Ostatnia</a>";
+            else
+                echo "<a href=\"#\" onclick=\"sendGet('news', '".(($count/$howMany) - 1)."')\">Ostatnia</a>";
         }
         else
         {

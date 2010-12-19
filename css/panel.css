@@ -1,24 +1,51 @@
+body, html
+{
+    margin: 0px;
+    padding: 0px;
+    background-color: #e8fcff;
+}
+
 /*rozmieszecznie divow*/
 
 #header
 {
-    margin: 20px;
+    height: 100px;
     text-align: center;
     font-family: Tahoma, Verdana, Arial; /*czcionka w tabeli*/
     font-size: 30px;
 }
 
+#header #left
+{
+    background-image: url("../graphics/panelUpLeft.png");
+    background-repeat: no-repeat;
+    height: inherit;
+    float: left;
+    width: 200px;
+}
+
+#header #center
+{
+    background-image: url("../graphics/panelUp.png");
+    background-repeat: repeat-x;
+    height: inherit;
+}
+
+
 #menu
 {
-    width: 150px;
+    width: 193px;
 	float: left;
 	position: relative;
     overflow: hidden;
+    background-color: #3896ff;
+    height: 100%;
 }
 
 #srodek
 {
-    margin-left: 150px;
+    margin-left: 200px;
+    padding: 20px;
 }
 
 

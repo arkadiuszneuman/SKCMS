@@ -44,7 +44,7 @@ function sendGet(what, page) //site - gdzie przekierowac, what - funkcja, ktora 
 
     if (what == "news")
     {
-        r.open('GET', './ajaxPHP/ajaxnewses.php?page='+page, true);
+        r.open('GET', './ajaxPHP/ajaxnews.php?page='+page, true);
 
         r.onreadystatechange = function()
         {

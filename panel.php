@@ -75,7 +75,8 @@ session_start();
         ?>
 
             <div id="header">
-                PANEL ADMINISTRACYJNY
+                <div id="left"></div>
+                <div id="center">PANEL ADMINISTRACYJNY</div>
             </div>
 
         <?php

@@ -1,5 +1,6 @@
 <?php
 	session_start();
+
 ?>
 
 <script type="text/javascript" src="./javascript/ajax.js"></script>

@@ -81,7 +81,7 @@
             $from = $this->ProtectInt($from);
             $howMany = $this->ProtectInt($howMany);
 
-            $query = "SELECT title, date, note";
+            $query = "SELECT title, date, note, id_link";
 
             if ($isId)
                 $query = $query.", id";
@@ -94,8 +94,9 @@
                 $array[$i]['title'] = $line[0];
                 $array[$i]['date'] = $line[1];
                 $array[$i]['note'] = $line[2];
+                $array[$i]['idLink'] = $line[3];
                 if ($isId)
-                    $array[$i]['id'] = $line[3];
+                    $array[$i]['id'] = $line[4];
             }
 
             if (@$array == null)
@@ -188,6 +189,46 @@
         public function RecoverNewsFromBin($id) //usuwanie newsa/newsow jesli przekazujemy tablice
         {
             $query = "UPDATE news SET proporties='0' WHERE ".$this->doIdQuery($id);
+            return mysql_query($query);
+        }
+
+        public function ReadLinks($id = null)
+        {
+            $query = "SELECT id, link FROM links";
+
+            if ($id != null)
+            {
+                $this->ProtectInt($id);
+                $query = $query." WHERE id='$id'";
+            }
+
+            $reply = mysql_query($query);
+            for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
+            {
+                $array[$i]['id'] = $line[0];
+                $array[$i]['link'] = $line[1];
+            }
+
+            if (@$array == null)
+                return null;
+            return $array;
+        }
+
+        public function AddLink($link) //dodanie newsa
+        {
+            $link = $this->ProtectString($link);
+
+            $query = "INSERT INTO links (link) VALUES ('$link')";
+
+            return mysql_query($query);
+        }
+
+        public function EditLink($id, $link) //dodanie newsa
+        {
+            $link = $this->ProtectString($link);
+            $id = $this->ProtectInt($id);
+            $query = "UPDATE links SET link='$link' WHERE id='$id'";
+
             return mysql_query($query);
         }
 

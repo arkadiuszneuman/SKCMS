@@ -10,9 +10,9 @@ session_start();
     include('structure/up.html');
     include('sql.php');
 
-    function CreateTable($newses)
+    function CreateTable($news)
     {
-        if ($newses == null)
+        if ($news == null)
             return;
 
         //akcja formy ustawiana w javascripcie
@@ -27,7 +27,7 @@ session_start();
         <?php
         $parzysty = true;
         $i = 1;
-        foreach ($newses as $news)
+        foreach ($news as $n)
         {
             if ($parzysty)
             {
@@ -39,9 +39,9 @@ session_start();
             }
 
             ?><td><?php echo $i ?></td>
-            <td><input type="checkbox" name="check[]" value="<?php echo $news['id'] ?>" /></td>
+            <td><input type="checkbox" name="check[]" value="<?php echo $n['id'] ?>" /></td> //stworzenie checkboxow
             <td class="topic">
-                <a href="./panel.php?task=editNote&id=<?php echo $news['id'] ?>"  title="<?php echo $news['note'] ?>"><?php echo $news['title'] ?></a></td>
+                <a href="./panel.php?task=editNote&id=<?php echo $n['id'] ?>"  title="<?php echo $n['note'] ?>"><?php echo $n['title'] ?></a></td>
             </tr><?php
 
             ++$i;

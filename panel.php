@@ -43,7 +43,7 @@ session_start();
             <td><input type="checkbox" name="check[]" value="<?php echo $n['id'] ?>" /></td>
             <td class="topic"><a href="./panel.php?task=editNote&id=<?php echo $n['id'] ?>" title="Kliknij, aby edytować"><?php echo $n['title'] ?></a></td>
             <td>
-                <select name="visibleIn">
+                <select name="visibleIn[<?php echo $n['id'] ?>]">
                     <option>Brak</option>
                     <?php //wyswieltenie dropdownow, gdzie bedzie wyswietlany przy kazdym artykule
                         foreach ($links as $link)
@@ -52,12 +52,9 @@ session_start();
                                 <?php
                                     if (@$n['idLink'] == $link['id']) //ustawienie odpowiedniego linku, jesli artukul jest do niego przypisany
                                     {
-                                            ?> SELECTED><?php
+                                            ?> SELECTED<?php
                                     }
-                                    else
-                                    {
-                                        ?>><?php
-                                    }
+                                    ?>><?php
                                     echo $link['link'];
                                     
                                 ?></option><?php
@@ -144,20 +141,20 @@ session_start();
         ?>
             <div id="menu">
                 <div id="links">
-                    <a href="./panel.php?task=addNote">Dodaj notkę</a>
-                    <a href="./panel.php?task=editNote">Edytuj notkę</a>
+                    <a href="./panel.php?task=addNote" class="button">Dodaj notkę</a>
+                    <a href="./panel.php?task=editNote" class="button">Edytuj notkę</a>
                     <?php
                         @$task = $_GET['task'];
-                        if ($task === "editNote" || empty($task) || $task === "moveToBin") //sprawdzenie czy jest w edycji notki (lub czy nie zostalo wykonane move to bin) i jesli wyswietla sie tabelka to dodanie przycisku do kosza
+                        /*if ($task === "editNote" || empty($task) || $task === "moveToBin") //sprawdzenie czy jest w edycji notki (lub czy nie zostalo wykonane move to bin) i jesli wyswietla sie tabelka to dodanie przycisku do kosza
                         {
                             @$id = $_GET['id'];
                             if ($id == 0)
                             {
                                 ?><a href="http://Kosz" id="toBinBtn" class="submenu">Do kosza</a> <!-- javascript lapie remove i anuluje link oraz wysyla formularz --><?php
                             }
-                        }
+                        }*/
                     ?>
-                        <a href="./panel.php?task=showBin">Kosz</a><br />
+                    <a href="./panel.php?task=showBin" class="button">Kosz</a><br />
                     <?php
                             if ($task === "showBin" || $task === "binToNews" || $task === "binRemove")
                             {
@@ -165,7 +162,7 @@ session_start();
                                 ?><a href="http://Usun" id="binRemove" class="submenu">Usuń bezpowrotnie</a> <!-- javascript lapie remove i anuluje link oraz wysyla formularz --><?php
                             }
                     ?>
-                    <a href="./panel.php?task=editLinks">Menu</a>
+                    <a href="./panel.php?task=editLinks" class="button">Menu</a>
 
                 </div>
                 <div id="shadowRight"></div>
@@ -210,11 +207,23 @@ session_start();
 
     function MoveToBin($sql)
     {
+        echo "razdwa";
         @$checkboxes = $_POST['check']; //zlapanie z formularza checknietych checkboxow
         if ($sql->RemoveNewsToBin($checkboxes)) 
             SendInfo("Artykuł/Artykuły zostały przeniesione do kosza");
         else
             SendInfo("Nie można przenieść artykułu/artykułów do kosza");
+
+        $x = 1;
+        for ($i = 0; $i < count($_POST['visibleIn']); ++$i)
+        {
+            
+            if (isset($_POST['visibleIn'][$i]))
+            {
+                echo $x.'. '.$i." ".$_POST['visibleIn'][$i]."<br>";
+                ++$x;
+            }
+        }
     }
 
     function EditNote($sql)
@@ -265,8 +274,37 @@ session_start();
         else //... to wyswietli sie lista notek do wybrania
         {
             DrawInfo();
-            $news = $sql->ReadNews(true, 0, 100);
+            //wyswietlenie knefla Zapisz zmiany
+            @$id = $_GET['id'];
+            if ($id == 0)
+            {
+                ?><a href="http://Kosz" id="saveButton"  class="button">Zapisz zmiany</a> <!-- javascript lapie remove i anuluje link oraz wysyla formularz --><?php
+            }
+
+            @$page = $_GET['page'];
+
+            $news = $sql->ReadNews(true, $page*20, 20);
+            $count = $sql->NumberOfNews();
             CreateTable($news, $sql->ReadLinks());
+
+            if ($page > 0)
+            {
+                ?><a href="./panel.php?task=editNote&page=<?php echo ($page-1) ?>">Poprzednia strona</a> <?php
+            }
+            else
+            {
+                ?>Poprzednia strona <?php
+            }
+
+            if (($page+1)*20 < $count) //wyswietlenie nastepna strona i ostatnia strona
+            {
+                ?><a href="./panel.php?task=editNote&page=<?php echo ($page+1) ?>">Następna strona</a><?php
+            }
+            else
+            {
+                ?>Następna strona <?php
+            }
+            
         }
     }
 
@@ -374,7 +412,7 @@ session_start();
         switch ($task)
         {
             case "addNote":
-                addNote($sql);
+                AddNote($sql);
                 break;
 
             case "moveToBin": //usuwanie notki

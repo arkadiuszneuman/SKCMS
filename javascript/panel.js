@@ -18,9 +18,9 @@ function Event(action)
                 break;
             }
         }
-        if (!isOneChecked)
-            alert("Aby przenieść newsa do kosza musisz jakiegoś zaznaczyć.");
-        else
+        //if (!isOneChecked)
+        //    alert("Aby przenieść newsa do kosza musisz jakiegoś zaznaczyć.");
+       // else
         {
             document.binFrm.action = action;
             document.binFrm.submit();
@@ -31,7 +31,7 @@ function Event(action)
 
 function ButtonsEvents() //eventy (klikniecia) na przyciski do kosza, przywroc z kosza i usun permamentnie
 {
-    var btn = document.getElementById("toBinBtn");
+    var btn = document.getElementById("saveButton");
     if (btn != null)
         btn.onclick = function() { return Event("panel.php?task=moveToBin"); }
 

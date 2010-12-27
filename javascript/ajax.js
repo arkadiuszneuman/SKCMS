@@ -50,15 +50,15 @@ function sendGet(what, page) //site - gdzie przekierowac, what - funkcja, ktora 
         {
             if (r.readyState == (1 || 0))
             {
-                document.getElementById('newses').innerHTML = "Ładowanie...";
+                document.getElementById('news').innerHTML = "Ładowanie...";
             }
             else if (r.readyState == 4)
             {
-                document.getElementById('newses').innerHTML = r.responseText;
+                document.getElementById('news').innerHTML = r.responseText;
             }
             else
             {
-                document.getElementById('newses').innerHTML = "Błąd";
+                document.getElementById('news').innerHTML = "Błąd";
             }
         }
     }

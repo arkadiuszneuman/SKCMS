@@ -10,14 +10,36 @@ session_start();
     include('structure/up.html');
     include('sql.php');
 
-    function CreateTable($news, $links)
+    function CreateTable($news, $links, $task)
     {
         if ($news == null)
             return;
 
-        //akcja formy ustawiana w javascripcie
+        @$page = $_GET['page'];
+        if ($page == null)
+            $page = 0;
+
+        if ($task === "edit")
+        {
+            ?>
+                <form name="binFrm" method="POST" action="./panel.php?task=moveToBin&page=<?php echo $page ?>">
+                <div id="options">
+                    Zaznaczone: <br /><input type="submit" class="buttonInput" value="Zapisz zmiany">
+                </div>
+            <?php
+        }
+        else if ($task === "bin")
+        {
+            ?>
+                <form name="binFrm" method="POST" action="./panel.php?task=restoreRemove&page=<?php echo $page ?>">
+                <div id="options">
+                    Zaznaczone: <br />
+                   <input type="submit" class="buttonInput" value="Przywróć" name="restore">
+                   <input type="submit" class="buttonInput" value="Usuń" name="remove">
+                </div>
+            <?php
+        }
         ?>
-            <form name="binFrm" method="POST" action="">
                 <table id="tabPanel">
                     <tr id="upper">
                         <td>Lp</td>
@@ -44,11 +66,11 @@ session_start();
             <td class="topic"><a href="./panel.php?task=editNote&id=<?php echo $n['id'] ?>" title="Kliknij, aby edytować"><?php echo $n['title'] ?></a></td>
             <td>
                 <select name="visibleIn[<?php echo $n['id'] ?>]">
-                    <option>Brak</option>
+                    <option value="0">Brak</option>
                     <?php //wyswieltenie dropdownow, gdzie bedzie wyswietlany przy kazdym artykule
                         foreach ($links as $link)
                         {
-                            ?><option
+                            ?><option value=<?php echo $link['id']?> 
                                 <?php
                                     if (@$n['idLink'] == $link['id']) //ustawienie odpowiedniego linku, jesli artukul jest do niego przypisany
                                     {
@@ -110,7 +132,12 @@ session_start();
 
     function SendInfo($info)
     {
-        $_SESSION['info'] = $info;
+        if (!isset($_SESSION['info']))
+            $_SESSION['info'] = "";
+
+        if ($_SESSION['info'] != "")
+            $_SESSION['info'] = $_SESSION['info']."<br />";
+        $_SESSION['info'] = $_SESSION['info'].$info;
     }
 
     function DrawInfo()
@@ -126,13 +153,10 @@ session_start();
     function DrawHeader()
     {
         ?>
-
             <div id="header">
-                
                 <div id="left"><div id="logo"></div></div>
                 <div id="center">PANEL ADMINISTRACYJNY</div>
             </div>
-
         <?php
     }
 
@@ -142,28 +166,9 @@ session_start();
             <div id="menu">
                 <div id="links">
                     <a href="./panel.php?task=addNote" class="button">Dodaj notkę</a>
-                    <a href="./panel.php?task=editNote" class="button">Edytuj notkę</a>
-                    <?php
-                        @$task = $_GET['task'];
-                        /*if ($task === "editNote" || empty($task) || $task === "moveToBin") //sprawdzenie czy jest w edycji notki (lub czy nie zostalo wykonane move to bin) i jesli wyswietla sie tabelka to dodanie przycisku do kosza
-                        {
-                            @$id = $_GET['id'];
-                            if ($id == 0)
-                            {
-                                ?><a href="http://Kosz" id="toBinBtn" class="submenu">Do kosza</a> <!-- javascript lapie remove i anuluje link oraz wysyla formularz --><?php
-                            }
-                        }*/
-                    ?>
+                    <a href="./panel.php?task=editNote&page=0" class="button">Edytuj notkę</a>
                     <a href="./panel.php?task=showBin" class="button">Kosz</a><br />
-                    <?php
-                            if ($task === "showBin" || $task === "binToNews" || $task === "binRemove")
-                            {
-                                ?><a href="http://Przywroc" id="binToNews" class="submenu">Przywróć</a> <!-- javascript lapie remove i anuluje link oraz wysyla formularz --><?php
-                                ?><a href="http://Usun" id="binRemove" class="submenu">Usuń bezpowrotnie</a> <!-- javascript lapie remove i anuluje link oraz wysyla formularz --><?php
-                            }
-                    ?>
                     <a href="./panel.php?task=editLinks" class="button">Menu</a>
-
                 </div>
                 <div id="shadowRight"></div>
             </div>
@@ -207,22 +212,27 @@ session_start();
 
     function MoveToBin($sql)
     {
-        echo "razdwa";
-        @$checkboxes = $_POST['check']; //zlapanie z formularza checknietych checkboxow
-        if ($sql->RemoveNewsToBin($checkboxes)) 
-            SendInfo("Artykuł/Artykuły zostały przeniesione do kosza");
-        else
-            SendInfo("Nie można przenieść artykułu/artykułów do kosza");
+        $page = $_GET['page'];
+        if ($page == null)
+            $page = 0;
 
-        $x = 1;
-        for ($i = 0; $i < count($_POST['visibleIn']); ++$i)
+        $isChanged = false; //czy jakis zostal zmodyfikowany
+        if ($sql->UpdateArticleLink($_POST['visibleIn'], $page, Sql::NOTHING, $isChanged))
         {
-            
-            if (isset($_POST['visibleIn'][$i]))
-            {
-                echo $x.'. '.$i." ".$_POST['visibleIn'][$i]."<br>";
-                ++$x;
-            }
+            if ($isChanged)
+                SendInfo("Link/Linki do newsów zostały zaktualizowane");
+        }
+        else
+            SendInfo("Link/Linki do newsów nie zostały zaktualizowane");
+
+        @$checkboxes = $_POST['check']; //zlapanie z formularza checknietych checkboxow
+
+        if (count($checkboxes) > 0)
+        {
+            if ($sql->RemoveNewsToBin($checkboxes))
+                SendInfo("Artykuł/Artykuły zostały przeniesione do kosza");
+            else
+                SendInfo("Nie można przenieść artykułu/artykułów do kosza");
         }
     }
 
@@ -264,8 +274,8 @@ session_start();
 
             ?>
             <form method="POST" action="panel.php?task=editNote&id=<?php echo $id ?>">
-                    <b>Tytuł:</b> <input type="text" size="65" name="title" value=" <?php echo $news['title'] ?>" /><br />
-                    <b>Treść:</b> <textarea name="note" rows="10" cols="50">"<?php echo $news['note']?> </textarea><br />
+                    <b>Tytuł:</b> <input type="text" size="65" name="title" value="<?php echo $news['title'] ?>" /><br />
+                    <b>Treść:</b> <textarea name="note" rows="10" cols="50"><?php echo $news['note']?></textarea><br />
                     <input type="submit" value="Wyślij" name="edit" />
             </form>
 
@@ -276,16 +286,11 @@ session_start();
             DrawInfo();
             //wyswietlenie knefla Zapisz zmiany
             @$id = $_GET['id'];
-            if ($id == 0)
-            {
-                ?><a href="http://Kosz" id="saveButton"  class="button">Zapisz zmiany</a> <!-- javascript lapie remove i anuluje link oraz wysyla formularz --><?php
-            }
-
             @$page = $_GET['page'];
 
             $news = $sql->ReadNews(true, $page*20, 20);
             $count = $sql->NumberOfNews();
-            CreateTable($news, $sql->ReadLinks());
+            CreateTable($news, $sql->ReadLinks(), "edit");
 
             if ($page > 0)
             {
@@ -311,26 +316,41 @@ session_start();
     function BinToNews($sql)
     {
         @$checkboxes = $_POST['check']; //zlapanie z formularza checknietych checkboxow
-        if ($sql->RecoverNewsFromBin($checkboxes)) 
-            SendInfo("News/Newsy zostały przywrócone");
-        else
-            SendInfo("Nie można przywrócić newsów");
+        
     }
 
-    function BinRemove($sql)
+    function RestoreRemove($sql)
     {
         @$checkboxes = $_POST['check']; //zlapanie z formularza checknietych checkboxow
-        if ($sql->RemoveNews($checkboxes))
-            SendInfo("News/Newsy zostały usunięte");
+
+        if (count($checkboxes) > 0)
+        {
+            if (isset($_POST['restore']))
+            {
+                if ($sql->RecoverNewsFromBin($checkboxes))
+                    SendInfo("Artykuł/Artykuły zostały przywrócone");
+                else
+                    SendInfo("Nie można przywrócić artykułu/artykułów");
+            }
+            else if (isset($_POST['remove']))
+            {
+                if ($sql->RemoveNews($checkboxes))
+                    SendInfo("Artykuł/Artykuły zostały usunięte");
+                else
+                    SendInfo("Nie można usunąć artykułu/artykułów");
+            }
+        }
         else
-            SendInfo("Nie można usunąć newsów");
+        {
+             SendInfo("Nie zaznaczono żadnego arykułu");
+        }
     }
 
     function ShowBin($sql)
     {
         DrawInfo();
         $news = $sql->ReadNewsFromBin(true, 0, 100);
-        CreateTable($news, $sql->ReadLinks());
+        CreateTable($news, $sql->ReadLinks(), "bin");
     }
 
     function EditLinks($sql)
@@ -423,13 +443,13 @@ session_start();
                 EditNote($sql);
                 break;
 
-            case "binToNews":
-                BinToNews($sql);
-                ShowBin($sql);
-                break;
+//            case "binToNews":
+//                BinToNews($sql);
+//                ShowBin($sql);
+//                break;
 
-            case "binRemove":
-                BinRemove($sql);
+            case "restoreRemove":
+                RestoreRemove($sql);
                 ShowBin($sql);
                 break;
 

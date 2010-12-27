@@ -5,6 +5,10 @@
     {
         private $sql_conn = null;
 
+        //zmienne okreslajace proporties w zapytaniach
+        const NOTHING = 0;
+        const BIN = 1;
+
         public function Sql($server = null, $user = null, $pass = null, $database = null) //polaczenie z wybraniem bazy
         {
             global $SQLserver; //zlapanie zmiennych globalnych z pliku database.php
@@ -70,13 +74,19 @@
             return mysql_query($query);
         }
 
-        public function NumberOfNews()
+        public function NumberOfNews($idLink = null)
         {
-            $row = mysql_fetch_array(mysql_query("SELECT COUNT(*) as howmany FROM news"));
+            $query = "SELECT COUNT(*) as howmany FROM news";
+
+            if ($idLink != null)
+                $query = $query." WHERE id_link='$idLink'";
+
+            $row = mysql_fetch_array(mysql_query($query));
+
             return $row["howmany"];
         }
 
-        public function ReadNews($isId, $from, $howMany) //odczytanie newsow, isId - czy zwracac tez id; from - od ktorej danej zwracac, to - ile notek
+        public function ReadNews($isId, $from, $howMany, $idLink = null) //odczytanie newsow, isId - czy zwracac tez id; from - od ktorej danej zwracac, to - ile notek //idlink - id liknku, ktory zwracac
         {
             $from = $this->ProtectInt($from);
             $howMany = $this->ProtectInt($howMany);
@@ -86,7 +96,12 @@
             if ($isId)
                 $query = $query.", id";
 
-            $query = $query." FROM news WHERE NOT proporties='1' ORDER BY date DESC LIMIT $from, $howMany"; //proporties=1 - kosz - wyswietlenie newsow nie znajdujacych sie w koszu
+            $query = $query." FROM news WHERE NOT proporties='1'";
+            
+            if ($idLink != null)
+                $query = $query." AND id_link='$idLink'";
+
+            $query = $query."ORDER BY date DESC LIMIT $from, $howMany"; //proporties=1 - kosz - wyswietlenie newsow nie znajdujacych sie w koszu
 
             $reply = mysql_query($query);
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
@@ -157,6 +172,36 @@
             return mysql_query($query);
         }
 
+        public function UpdateArticleLink($visibleIn, $page, $proporties, &$isChanged) //przypisanie artukulu do konkretnego linku w menu, ischanged - czy jakis zostal zmieniony
+        {
+            $query = "SELECT id, id_link, note FROM news WHERE proporties='".$proporties."' ORDER BY date DESC LIMIT ".($page*20).", 20"; //musi zwracac note, inaczej zle zwraca idki, durny ten sql
+
+            $reply = mysql_query($query);
+            for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
+            {
+                $array[$i]['id'] = $line[0];
+                $array[$i]['idLink'] = $line[1];
+            }
+
+
+            foreach ($array as $n)
+            {
+                if ($n['idLink'] == null)
+                    $n['idLink'] = 0;
+
+                if (@$visibleIn[$n['id']] != $n['idLink']) //zmiana tylko zmienionych linkow
+                {
+                    $query = "UPDATE news SET id_link='".@$visibleIn[$n['id']]."' WHERE id='".$n['id']."'";
+                    if (!mysql_query($query))
+                        return false;
+                    else
+                        $isChanged = true;
+                }
+            }
+
+            return true;
+        }
+
         //funkcja zabezpiecza id i tworzy z tablicy id odpowiednie zapytanie (potrzebne przy usuwaniu newsow)
         private function doIdQuery($id)
         {
@@ -192,15 +237,24 @@
             return mysql_query($query);
         }
 
-        public function ReadLinks($id = null)
+        public function ReadLinks($whichOne = null) //whichOne  - id lub nazwa konkretnego linku
         {
             $query = "SELECT id, link FROM links";
 
-            if ($id != null)
+            if ($whichOne != null)
             {
-                $this->ProtectInt($id);
-                $query = $query." WHERE id='$id'";
+                if (is_int($whichOne))
+                {
+                    $this->ProtectInt($whichOne);
+                    $query = $query." WHERE id='$whichOne'";
+                }
+                else if (is_string($whichOne))
+                {
+                    $this->ProtectString($whichOne);
+                    $query = $query." WHERE link='$whichOne'";
+                }
             }
+
 
             $reply = mysql_query($query);
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)

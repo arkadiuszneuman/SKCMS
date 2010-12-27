@@ -6,9 +6,9 @@ function quRemoveNote(note, id) //funkcja upewnia sie, ze chcemy usunac newsa i 
     }
 }
 
-function Event(action)
+function Event()
 {
-        var checkboxes = document.getElementsByName("check[]");
+        /*var checkboxes = document.getElementsByName("check[]");
         var isOneChecked = false;
         for (var i = 0; i < checkboxes.length; ++i)
         {
@@ -22,19 +22,15 @@ function Event(action)
         //    alert("Aby przenieść newsa do kosza musisz jakiegoś zaznaczyć.");
        // else
         {
-            document.binFrm.action = action;
-            document.binFrm.submit();
+            //document.binFrm.action = action;
+           // document.binFrm.submit();
         }
 
-        return false;
+        //return false;*/
 }
 
 function ButtonsEvents() //eventy (klikniecia) na przyciski do kosza, przywroc z kosza i usun permamentnie
 {
-    var btn = document.getElementById("saveButton");
-    if (btn != null)
-        btn.onclick = function() { return Event("panel.php?task=moveToBin"); }
-
     btn = document.getElementById("binToNews");
     if (btn != null)
         btn.onclick = function() { return Event("panel.php?task=binToNews"); }
@@ -48,7 +44,7 @@ function ButtonsEvents() //eventy (klikniecia) na przyciski do kosza, przywroc z
 window.onload = function()
 {
 
-    ButtonsEvents();
+    //ButtonsEvents();
 
     
 

@@ -4,6 +4,7 @@
 ?>
 
 <script type="text/javascript" src="./javascript/ajax.js"></script>
+<link rel="stylesheet" type="text/css" href="./css/windowLogin.css" />
 
 <?php
     function showPaging($page, $howMany, $count)
@@ -57,18 +58,30 @@
     include('structure/up.html');
     include('sql.php');
 
-    ?>
-    <div id="all">
-    <?php
+    ?><div id="all"><?php
     if (!isset($_SESSION['zalogowany']) || $_SESSION['zalogowany'] == false)
-        echo '<a href="./user.php?task=login">Panel administracyjny</a>';
+    {
+        ?>
+<!--        <a href="./user.php?task=login">Panel administracyjny</a>-->
+        <a href="#" onclick="Login('login');">Zaloguj</a>
+        <?php
+    }
     else
     {
-        echo '<a href="./panel.php">Panel administracyjny</a> &nbsp; &nbsp;';
-        echo '<a href="./user.php?task=logoff">Wyloguj</a>';
+        ?>
+<!--        <a href="./user.php?task=login">Panel administracyjny</a>-->
+        <a href="./panel/panel.php">Panel administracyjny</a> &nbsp; &nbsp;
+        <a href="#" onclick="Login('logoff')">Wyloguj</a>
+        <?php
+        //echo '<a href="./panel/panel.php">Panel administracyjny</a> &nbsp; &nbsp;';
+        //echo '<a href="./user.php?task=logoff">Wyloguj</a>';
     }
-
-    ?><br /><?php
+    
+    //okienko z logowaniem
+    ?>
+        <div id="windowLogin"></div>
+        <br />
+    <?php
 
     //wyswietlenie linkow
     $sql = new Sql();
@@ -76,8 +89,8 @@
 
     foreach ($links as $link)
     {
-        $txt = $link['id'];
-        //$txt =  str_replace(' ','',$txt);
+        $txt = $link['link'];
+        $txt =  str_replace(' ','_',$txt);
         ?>
             <a href="./index.php?link=<?php echo $txt ?>" class="link"><?php echo $link['link'] ?></a>
         <?php
@@ -90,9 +103,9 @@
     foreach ($links as $link)
     {
         if (@$_GET['link'] == null)
-            $_GET['link'] = $link['id'];
-        
-        if ($link['id'] == $_GET['link'])
+            $_GET['link'] = str_replace(' ','_',$link['link']);
+
+        if (str_replace(' ','_',$link['link']) == $_GET['link'])
         {
             $news = $sql->ReadNews(false, $page*$howMany, $howMany, $link['id']);
 

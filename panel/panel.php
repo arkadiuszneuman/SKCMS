@@ -7,8 +7,8 @@ session_start();
 
 <?php
 
-    include('structure/up.html');
-    include('sql.php');
+    include('../structure/up.html');
+    include('../sql.php');
 
     function CreateTable($news, $links, $task)
     {
@@ -313,12 +313,6 @@ session_start();
         }
     }
 
-    function BinToNews($sql)
-    {
-        @$checkboxes = $_POST['check']; //zlapanie z formularza checknietych checkboxow
-        
-    }
-
     function RestoreRemove($sql)
     {
         @$checkboxes = $_POST['check']; //zlapanie z formularza checknietych checkboxow
@@ -438,15 +432,11 @@ session_start();
             case "moveToBin": //usuwanie notki
                 MoveToBin($sql);
                 EditNote($sql); //po wywaleniu newsa do kosza wyswietlamy tez tabelke z newsami
+                break;
 
             case "editNote":
                 EditNote($sql);
                 break;
-
-//            case "binToNews":
-//                BinToNews($sql);
-//                ShowBin($sql);
-//                break;
 
             case "restoreRemove":
                 RestoreRemove($sql);
@@ -462,7 +452,7 @@ session_start();
                 break;
         }
 
-        echo '<br /><br /><a href="./index.php">Powrót do strony głownej</a>';
+        echo '<br /><br /><a href="../index.php">Powrót do strony głownej</a>';
     }
     else //jesli nie zalogowany
     {
@@ -481,7 +471,7 @@ session_start();
                 $_SESSION['zalogowany'] = true;
             }
         }
-        else if (isset($_POST['log'])) //sprawdzenie formularza logowania
+        /*else if (isset($_POST['log'])) //sprawdzenie formularza logowania
         {
             $login = $_POST['login'];
             $pass = $_POST['pass'];
@@ -504,7 +494,7 @@ session_start();
             $_SESSION['zalogowany'] = true;
             $page = "./user.php?task=login";
             header("Refresh: 3; url=$page");
-        }
+        }*/
     }
 
     $sql->Close();
@@ -514,5 +504,5 @@ session_start();
             </div> 
     <?php
 
-    include('structure/down.html');
+    include('../structure/down.html');
 ?>

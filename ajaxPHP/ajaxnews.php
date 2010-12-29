@@ -41,7 +41,7 @@
 
     include('../sql.php');
     $sql = new Sql();
-    $count = $sql->NumberOfNews();
+    $count = $sql->NumberOfNews(Sql::NOTHING);
 
     $howMany = 3; //ilosc newsow na strone
     @$page = $_GET['page'];

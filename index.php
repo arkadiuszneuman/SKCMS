@@ -117,7 +117,7 @@
                     echo nl2br($n['note'])."</p>\n<br /><br />\n\n";
                 }
 
-                $count = $sql->NumberOfNews($link['id']);
+                $count = $sql->NumberOfNews(Sql::NOTHING, $link['id']);
                 if ($count > $howMany) //wyswietlenie pagingu tylko w przypadku wiekszej ilosci newsow niz strona
                     showPaging($page, $howMany, $count);
             }

@@ -74,12 +74,12 @@
             return mysql_query($query);
         }
 
-        public function NumberOfNews($idLink = null)
+        public function NumberOfNews($proporties, $idLink = null) //proporties - czy w koszu czy nie
         {
-            $query = "SELECT COUNT(*) as howmany FROM news";
+            $query = "SELECT COUNT(*) as howmany FROM news WHERE proporties='$proporties'";
 
             if ($idLink != null)
-                $query = $query." WHERE id_link='$idLink'";
+                $query = $query." AND id_link='$idLink'";
 
             $row = mysql_fetch_array(mysql_query($query));
 
@@ -255,7 +255,6 @@
                 }
             }
 
-
             $reply = mysql_query($query);
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
             {
@@ -283,6 +282,12 @@
             $id = $this->ProtectInt($id);
             $query = "UPDATE links SET link='$link' WHERE id='$id'";
 
+            return mysql_query($query);
+        }
+
+        public function RemoveLink($id) //usuwanie newsa/newsow jesli przekazujemy tablice
+        {
+            $query = "DELETE FROM links WHERE ".$this->doIdQuery($id);
             return mysql_query($query);
         }
 

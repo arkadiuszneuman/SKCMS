@@ -61,9 +61,27 @@
                 <b>Powtórz hasło:</b> <input type="password" name="pass" id="pass2"><br>
                 <b>Nazwa wyświetlana:</b> <input type="text" name="name"><br>
                 <b>Adres e-mail:</b> <input type="text" name="mail"><br>
-                <input type="submit" value="Wyślij" name="send">
+                <input type="submit" value="Wyślij" name="send" onclick="Login('register'); return false;">
             </form>
             <?php
+            break;
+
+        case "register":
+            include('sql.php');
+
+            $login = $_GET['login'];
+            $pass = $_GET['pass'];
+            $name = $_GET['name'];
+            $mail = $_GET['mail'];
+
+            $sql = new Sql();
+
+            if ($sql->AddAdmin($login, md5($pass), $name, $mail)) //rejestracja i przeniesienie do panelu
+            {
+                ?>Dodano admina<?php
+                $_SESSION['zalogowany'] = true;
+            }
+
             break;
     }
 

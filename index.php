@@ -2,7 +2,7 @@
 	session_start();
 
 ?>
-
+<div id="all">
 <script type="text/javascript" src="./javascript/ajax.js"></script>
 <link rel="stylesheet" type="text/css" href="./css/windowLogin.css" />
 
@@ -58,7 +58,6 @@
     include('structure/up.html');
     include('sql.php');
 
-    ?><div id="all"><?php
     if (!isset($_SESSION['zalogowany']) || $_SESSION['zalogowany'] == false)
     {
         ?>

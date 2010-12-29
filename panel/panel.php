@@ -175,9 +175,32 @@ session_start();
         <?php
     }
 
+    function DrawTextAreas($action, $title = null, $article = null) //uzywane przy dodawaniu i edycji artykulu
+    {
+        ?>
+        <form method="POST" action="panel.php?task=<?php echo $action ?>">
+            <b>Tytuł:</b> <input type="text" size="65" name="title" value="<?php echo $title ?>" /><br />
+            <b>Treść:</b> <textarea name="note" rows="20" cols="100"><?php echo $article ?></textarea><br />
+            <input type="submit" value="Wyślij" name="submit" />
+        </form>
+
+        <script language="javascript" type="text/javascript" src="./javascript/tiny_mce/tiny_mce.js"></script>
+        <script language="javascript" type="text/javascript">
+          tinyMCE.init({	// General options
+              mode : "textareas",
+              theme : "advanced",
+              theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
+              theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
+              theme_advanced_buttons3 : "hr,removeformat,visualaid,|,sub,sup,|,charmap",
+              theme_advanced_toolbar_location : "top",	theme_advanced_toolbar_align : "left",	theme_advanced_statusbar_location : "bottom",	theme_advanced_resizing : true,	skin : "o2k7",	skin_variant : "silver"
+          });
+        </script>
+        <?php
+    }
+
     function AddNote($sql)
     {
-        if(isset($_POST['newnote']))
+        if(isset($_POST['submit']))
         {
             $title = $_POST['title'];
             $note = $_POST['note'];
@@ -201,13 +224,8 @@ session_start();
 
             echo "<br />";
         }
-        ?>
-        <form method="POST" action="panel.php?task=addNote">
-            <b>Tytuł:</b> <input type="text" size="65" name="title" /><br />
-            <b>Treść:</b> <textarea name="note" rows="10" cols="50"></textarea><br />
-            <input type="submit" value="Wyślij" name="newnote" />
-        </form>
-        <?php
+
+        DrawTextAreas("addNote");
     }
 
     function MoveToBin($sql)
@@ -238,7 +256,7 @@ session_start();
 
     function EditNote($sql)
     {
-        if(isset($_POST['edit'])) //po kliknieciu wyslij przy edycji notki
+        if(isset($_POST['submit'])) //po kliknieciu wyslij przy edycji notki
         {
             $title = $_POST['title'];
             $note = $_POST['note'];
@@ -271,13 +289,8 @@ session_start();
         if ($id != 0) //jesli wybrana zostala jakas notka to dawaj formularz, a jesli nie...
         {
             $news = $sql->ReadSelectedNews($id);
-
+            DrawTextAreas("editNote&id=$id", $news['title'], $news['note'])
             ?>
-            <form method="POST" action="panel.php?task=editNote&id=<?php echo $id ?>">
-                    <b>Tytuł:</b> <input type="text" size="65" name="title" value="<?php echo $news['title'] ?>" /><br />
-                    <b>Treść:</b> <textarea name="note" rows="10" cols="50"><?php echo $news['note']?></textarea><br />
-                    <input type="submit" value="Wyślij" name="edit" />
-            </form>
 
             <?php
         }

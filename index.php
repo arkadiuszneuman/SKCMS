@@ -75,7 +75,7 @@
         ?>
 <!--        <a href="./user.php?task=login">Panel administracyjny</a>-->
 	<?php
-		$data = array(title=>"Użytkownik", content=>"<a href=\"./panel/panel.php\">Panel administracyjny</a> &nbsp; &nbsp;
+		$data = array("title"=>"Użytkownik", "content"=>"<a href=\"./panel/panel.php\">Panel administracyjny</a> &nbsp; &nbsp;
         <a href=\"#\" onclick=\"Login('logoff')\">Wyloguj</a>");
 		$sidebarContent = $sidebarContent."".$template->Render("sidebar_item", $data);
         //echo '<a href="./panel/panel.php">Panel administracyjny</a> &nbsp; &nbsp;';
@@ -98,7 +98,7 @@
         $txt =  str_replace(' ','_',$txt);
 		$menu = $menu."<li><a href=\"./index.php?link=".$txt."\" class=\"link\">".$link['link']."</a></li>";
     }
-	$data = array(menu=>$menu);
+	$data = array("menu"=>$menu);
 	echo $template->Render("menu", $data);
 
     @$page = $_GET['page'];
@@ -117,8 +117,8 @@
             {
                 foreach($news as $n)
                 {
-					$data = array(title=>$n['title'], author=>"Kermit", date=>$n['date'], comments=>"0",
-					content=>nl2br($n['note']));
+					$data = array("title"=>$n['title'], "author"=>"Kermit", "date"=>$n['date'], "comments"=>"0",
+					"content"=>nl2br($n['note']));
 					$newsBlock = $newsBlock.$template->Render("news_item", $data);
                 }
 
@@ -132,11 +132,11 @@
             break;
         }
     }
-	$data = array(content=>$newsBlock);
+	$data = array("content"=>$newsBlock);
 	$mainContent = $mainContent."".$template->Render("news", $data);
-	$data = array(content=>$sidebarContent);
+	$data = array("content"=>$sidebarContent);
 	$mainContent = $mainContent."".$template->Render("sidebar", $data);
-	$data = array(cont=>$mainContent);
+	$data = array("cont"=>$mainContent);
 	echo $template->Render("content", $data);
     ?>
 <!--    <div id="news">Ładowanie</div></div>--> 

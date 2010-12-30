@@ -43,8 +43,9 @@ class CPanel
                 <div id="links">
                     <a href="./panel.php?task=addNote" class="button">Dodaj notkę</a>
                     <a href="./panel.php?task=editArticles&page=0" class="button">Edytuj notkę</a>
-                    <a href="./panel.php?task=bin" class="button">Kosz</a><br />
+                    <a href="./panel.php?task=bin" class="button">Kosz</a>
                     <a href="./panel.php?task=editLinks" class="button">Menu</a>
+                    <a href="./panel.php?task=preferences" class="button">Ustawienia</a>
                 </div>
                 <div id="shadowRight"></div>
             </div>
@@ -75,12 +76,21 @@ class CPanel
     //uzywane przy dodawaniu i edycji artykulu
     private function DrawTextAreas($action, $title = null, $article = null)
     {
+        include("..\CForm.php");
+        $form = new CForm(CForm::POST, "panel.php?task=$action");
+        $text = new CTextBox("Tytuł: ", "title");
+        $text->SetValue($title);
+        $text->SetAddionalAttribs('size="65"');
+        $form->AddItem($text);
+        $text = new CTextArea("Treść: ", "note");
+        $text->SetValue($article);
+        $text->SetAddionalAttribs('rows="20" cols="100"');
+        $form->AddItem($text);
+        $form->AddItem(new CButton("Wyślij", "submit"));
+
+        $form->Draw();
+
         ?>
-        <form method="POST" action="panel.php?task=<?php echo $action ?>">
-            <b>Tytuł:</b> <input type="text" size="65" name="title" value="<?php echo $title ?>" /><br />
-            <b>Treść:</b> <textarea name="note" rows="20" cols="100"><?php echo $article ?></textarea><br />
-            <input type="submit" value="Wyślij" name="submit" />
-        </form>
 
         <script language="javascript" type="text/javascript" src="./javascript/tiny_mce/tiny_mce.js"></script>
         <script language="javascript" type="text/javascript">
@@ -165,12 +175,17 @@ class CPanel
         if ($page == null)
             $page = 0;
 
+        include("..\CForm.php");
         if ($task == CPanel::EDIT)
         {
             ?>
                 <form name="binFrm" method="POST" action="./panel.php?task=editArticles&page=<?php echo $page ?>">
                 <div id="options">
-                    Zaznaczone: <br /><input type="submit" class="buttonInput" value="Zapisz zmiany" name="moveToBin">
+                    Zaznaczone: <br /><?php
+                    $item = new CButton("Zapisz zmiany", "moveToBin");
+                    $item->SetClass("buttonInput");
+                    $item->Draw();
+                    ?>
                 </div>
             <?php
         }
@@ -180,8 +195,14 @@ class CPanel
                 <form name="binFrm" method="POST" action="./panel.php?task=bin&page=<?php echo $page ?>">
                 <div id="options">
                     Zaznaczone: <br />
-                   <input type="submit" class="buttonInput" value="Przywróć" name="restore">
-                   <input type="submit" class="buttonInput" value="Usuń" name="remove">
+                    <?php
+                    $item = new CButton("Przywróć", "restore");
+                    $item->SetClass("buttonInput");
+                    $item->Draw();
+                    $item = new CButton("Usuń", "remove");
+                    $item->SetClass("buttonInput");
+                    $item->Draw();
+                    ?>
                 </div>
             <?php
         }
@@ -190,7 +211,12 @@ class CPanel
             ?>
                 <form name="binFrm" method="POST" action="./panel.php?task=editLinks&page=<?php echo $page ?>">
                 <div id="options">
-                    Zaznaczone: <br /><input type="submit" class="buttonInput" value="Usuń" name="remove">
+                    Zaznaczone: <br />
+                     <?php
+                    $item = new CButton("Usuń", "remove");
+                    $item->SetClass("buttonInput");
+                    $item->Draw();
+                    ?>
                 </div>
             <?php
         }
@@ -244,7 +270,7 @@ class CPanel
                 <?php
                 if ($task == CPanel::EDIT || $task == CPanel::BIN)
                 {
-                    ?><a href="./panel.php?task=editNote&id=<?php echo $n['id'] ?>" title="Kliknij, aby edytować"><?php echo $n['title'] ?></a><?php
+                    ?><a href="./panel.php?task=editArticles&id=<?php echo $n['id'] ?>" title="Kliknij, aby edytować"><?php echo $n['title'] ?></a><?php
                 }
                 else if ($task == CPanel::LINKS)
                 {
@@ -293,7 +319,6 @@ class CPanel
 
     public function CPanel()
     {
-        session_start();
         $this->Header(); //header pliku
         $this->DrawUp(); //gorna belka
         $this->DrawLeft(); //lewa belka z menu
@@ -532,6 +557,11 @@ class CPanel
 
         $links = $this->sql->ReadLinks();
         $this->DrawTable($links, CPanel::LINKS);
+    }
+
+    public function Preferences()
+    {
+        
     }
 }
 

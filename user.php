@@ -1,17 +1,17 @@
 <?php
     session_start();
+    include("CForm.php");
     @$task = $_GET['task'];
 
     switch($task)
     {
         case "login":
+            $form = new CForm(CForm::POST, "./panel/panel.php");
+            $form->AddItem(new CTextBox("Nazwa użytkownika: ", "login"));
+            $form->AddItem(new CPassword("Hasło: ", "pass"));
+            $form->AddItem(new CButton("Wyślij", "log", null, "Login('check'); return false;"));
+            $form->Draw();
             ?>
-            <form method="POST" action="./panel/panel.php">
-                <b>Nazwa użytkownika:</b> <input type="text" name="login"><br>
-                <b>Hasło:</b> <input type="password" name="pass"><br>
-                <input type="submit" value="Wyślij" name="log" onclick="Login('check'); return false;">
-            </form>
-
             <br />
             <a href="#" onclick="Login('registration');">Rejestruj</a>
             <?php
@@ -53,17 +53,18 @@
         default: //domyslnie jest rejestracja
             ?>
             <script type="text/javascript" src="./javascript/registerfrm.js"></script>
-            
-
-            <form id="regForm" method="POST" action="panel.php">
-                <b>Nazwa użytkownika:</b> <input type="text" name="login"><br>
-                <b>Hasło:</b> <input type="password" name="pass"id="pass1"><br>
-                <b>Powtórz hasło:</b> <input type="password" name="pass" id="pass2"><br>
-                <b>Nazwa wyświetlana:</b> <input type="text" name="name"><br>
-                <b>Adres e-mail:</b> <input type="text" name="mail"><br>
-                <input type="submit" value="Wyślij" name="send" onclick="Login('register'); return false;">
-            </form>
             <?php
+
+            $form = new CForm(CForm::POST, "panel.php");
+            $form->SetId("regForm");
+            $form->AddItem(new CTextBox("Nazwa użytkownika: ", "login"));
+            $form->AddItem(new CPassword("Hasło: ", "pass", "pass1"));
+            $form->AddItem(new CPassword("Powtórz hasło: ", "pass", "pass2"));
+            $form->AddItem(new CTextBox("Nazwa wyświetlana: ", "name"));
+            $form->AddItem(new CTextBox("Adres e-mail: ", "mail"));
+            $form->AddItem(new CButton("Wyślij", "send", null, "Login('register'); return false;"));
+            $form->Draw();
+
             break;
 
         case "register":

@@ -388,7 +388,7 @@ class CPanel
 
             if (count($checkboxes) > 0)
             {
-                if ($this->sql->RemoveNewsToBin($checkboxes))
+                if ($this->sql->ArticlesToBin($checkboxes))
                     $this->SendInfo("Artykuł/Artykuły zostały przeniesione do kosza");
                 else
                     $this->SendInfo("Nie można przenieść artykułu/artykułów do kosza");
@@ -453,7 +453,7 @@ class CPanel
             {
                 if (isset($_POST['restore']))
                 {
-                    if ($this->sql->RecoverNewsFromBin($checkboxes))
+                    if ($this->sql->BinToArticles($checkboxes))
                         $this->SendInfo("Artykuł/Artykuły zostały przywrócone");
                     else
                         $this->SendInfo("Nie można przywrócić artykułu/artykułów");

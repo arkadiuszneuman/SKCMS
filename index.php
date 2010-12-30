@@ -84,7 +84,7 @@
     
     //okienko z logowaniem
     ?>
-<!-- <div id="windowLogin"></div><br /> --> 
+ <div id="windowLogin"></div>
     <?php
 
     //wyswietlenie linkow

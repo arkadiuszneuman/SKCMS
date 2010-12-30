@@ -194,13 +194,15 @@
             return mysql_query($query);
         }
 
-        public function RemoveNewsToBin($id) //usuwanie newsa/newsow jesli przekazujemy tablice
+        //przeniesienie do kosza
+        public function ArticlesToBin($id) 
         {
             $query = "UPDATE news SET proporties='1' WHERE ".$this->doIdQuery($id);
             return mysql_query($query);
         }
 
-        public function RecoverNewsFromBin($id) //usuwanie newsa/newsow jesli przekazujemy tablice
+        //przeniesienie spowrotem do artykulow
+        public function BinToArticles($id) //usuwanie newsa/newsow jesli przekazujemy tablice
         {
             $query = "UPDATE news SET proporties='0' WHERE ".$this->doIdQuery($id);
             return mysql_query($query);

@@ -1,6 +1,10 @@
 <?php
 	session_start();
-	include ('layout.php');
+	include ('includes/layout.php');
+
+	$newsBlock = "";
+	$mainContent = "";
+	$sidebarContent = "";
 	$template = new Layout();
 ?>
 
@@ -10,16 +14,16 @@
 <?php
     function showPaging($page, $howMany, $count)
     {
+		$toReturn = "";
         $link = $_GET['link'];
         if ($page > 0) //wyswietlenie poprzednia strona
         {
-            ?><a href="./index.php?link=<?php echo $link ?>&page=0">Pierwsza</a>   <?php
-            ?><a href="./index.php?link=<?php echo $link ?>&page=<?php echo ($page-1) ?>">Poprzednia strona</a>   <?php
+            $toReturn = $toReturn."<a href=\"./index.php?link=".$link."&page=0\">Pierwsza</a>
+				<a href=\"./index.php?link=".$link."&page=".($page-1)."\">Poprzednia strona</a>";
         }
         else
         {
-            echo "Pierwsza  ";
-            echo "Poprzednia strona    ";
+            $toReturn = $toReturn."Pierwsza  Poprzednia strona    ";
         }
 
         for ($i = $page-2; $i < $page+5; ++$i) //wyswietlenie numerow stron
@@ -28,79 +32,78 @@
             {
                 if ($i != $page + 1) //link nie moze byc aktualna strona
                 {
-                    ?><a href="./index.php?link=<?php echo $link ?>&page=<?php echo ($i-1) ?>"><?php echo $i ?></a>   <?php
+                    $toReturn = $toReturn."<a href=\"./index.php?link=".$link."&page=".($i-1)."\">".$i."</a>";
                 }
                 else
                 {
-                    echo $i." ";
+                    $toReturn = $toReturn."".$i." ";
                 }
             }
         }
 
         if (($page+1)*$howMany < $count) //wyswietlenie nastepna strona i ostatnia strona
         {
-            ?><a href="./index.php?link=<?php echo $link ?>&page=<?php echo ($page+1) ?>">Następna strona</a>   <?php
+            $toReturn = $toReturn."<a href=\"./index.php?link=".$link."&page=".($page+1)."\">Następna strona</a>";
             if ($count%$howMany != 0) //jesli ilosc newsow przez ilosc newsow na strone jest nierowna
             {
-                ?><a href="./index.php?link=<?php echo $link ?>&page=<?php echo ((int)($count/$howMany)) ?>">Ostatnia</a>   <?php
+                $toReturn = $toReturn."<a href=\"./index.php?link=".$link."&page=".((int)($count/$howMany))."\">Ostatnia</a>";
             }
             else
             {
-                ?><a href="./index.php?link=<?php echo $link ?>&page=<?php echo (($count/$howMany) - 1) ?>">Ostatnia</a>   <?php
+                $toReturn = $toReturn."<a href=\"./index.php?link=".$link."&page=".(($count/$howMany) - 1)."\">Ostatnia</a>";
             }
         }
         else
         {
-            echo "Następna strona   ";
-            echo "Ostatnia";
+            $toReturn = $toReturn."Następna strona   Ostatnia";
         }
+
+		return $toReturn;
     }
 
     include('sql.php');
 	echo $template->RenderHeader("Kermitek");
-	echo $template->Render("menu", NULL);
 	if (!isset($_SESSION['zalogowany']) || $_SESSION['zalogowany'] == false)
     {
         ?>
 <!--        <a href="./user.php?task=login">Panel administracyjny</a>-->
         <?php
-		$data = array(cont=>"<a href=\"#\" onclick=\"Login('login');\">Zaloguj</a>");
-        echo $template->Render("content", $data);
+		$mainContent = $mainContent."<a href=\"#\" onclick=\"Login('login');\">Zaloguj</a>";
     }
     else
     {
         ?>
 <!--        <a href="./user.php?task=login">Panel administracyjny</a>-->
-        <a href="./panel/panel.php">Panel administracyjny</a> &nbsp; &nbsp;
-        <a href="#" onclick="Login('logoff')">Wyloguj</a>
-        <?php
+	<?php
+		$data = array(title=>"Użytkownik", content=>"<a href=\"./panel/panel.php\">Panel administracyjny</a> &nbsp; &nbsp;
+        <a href=\"#\" onclick=\"Login('logoff')\">Wyloguj</a>");
+		$sidebarContent = $sidebarContent."".$template->Render("sidebar_item", $data);
         //echo '<a href="./panel/panel.php">Panel administracyjny</a> &nbsp; &nbsp;';
         //echo '<a href="./user.php?task=logoff">Wyloguj</a>';
     }
     
     //okienko z logowaniem
     ?>
-        <div id="windowLogin"></div>
-        <br />
+<!-- <div id="windowLogin"></div><br /> --> 
     <?php
 
     //wyswietlenie linkow
     $sql = new Sql();
     $links = $sql->ReadLinks();
+	$menu = "";
 
     foreach ($links as $link)
     {
         $txt = $link['link'];
         $txt =  str_replace(' ','_',$txt);
-        ?>
-            <a href="./index.php?link=<?php echo $txt ?>" class="link"><?php echo $link['link'] ?></a>
-        <?php
+		$menu = $menu."<li><a href=\"./index.php?link=".$txt."\" class=\"link\">".$link['link']."</a></li>";
     }
+	$data = array(menu=>$menu);
+	echo $template->Render("menu", $data);
 
     @$page = $_GET['page'];
     $howMany = 3;
    
-
     foreach ($links as $link)
     {
         if (@$_GET['link'] == null)
@@ -114,14 +117,14 @@
             {
                 foreach($news as $n)
                 {
-                    echo "<h3>".$n['title']."</h3>\n<h6>";
-                    echo $n['date']."</h6>\n<hr /><p>";
-                    echo nl2br($n['note'])."</p>\n<br /><br />\n\n";
+					$data = array(title=>$n['title'], author=>"Kermit", date=>$n['date'], comments=>"0",
+					content=>nl2br($n['note']));
+					$newsBlock = $newsBlock.$template->Render("news_item", $data);
                 }
 
                 $count = $sql->NumberOfArticles(Sql::NOTHING, $link['id']);
                 if ($count > $howMany) //wyswietlenie pagingu tylko w przypadku wiekszej ilosci newsow niz strona
-                    showPaging($page, $howMany, $count);
+                    $newsBlock = $newsBlock."".showPaging($page, $howMany, $count);
             }
             else
                 echo "Brak arytkułów w podanym linku";
@@ -129,11 +132,15 @@
             break;
         }
     }
-
+	$data = array(content=>$newsBlock);
+	$mainContent = $mainContent."".$template->Render("news", $data);
+	$data = array(content=>$sidebarContent);
+	$mainContent = $mainContent."".$template->Render("sidebar", $data);
+	$data = array(cont=>$mainContent);
+	echo $template->Render("content", $data);
     ?>
 <!--    <div id="news">Ładowanie</div></div>--> 
     <?php
-	echo $template->Render("sidebar", NULL);
 	echo $template->RenderFooter("Copyright SKCMS TEAM :D");
     $sql->Close();
 ?>

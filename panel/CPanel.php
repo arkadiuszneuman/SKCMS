@@ -116,7 +116,7 @@ class CPanel
         @$page = $_GET['page'];
 
         if ($task == null)
-            $task = "editNote";
+            $task = "editArticles";
         if ($page == null)
             $page = 0;
 
@@ -352,7 +352,7 @@ class CPanel
             }
             else
             {
-                if ($this->sql->AddNews($title, $note))
+                if ($this->sql->AddArticle($title, $note))
                     $this->SendInfo("News został wysłany");
                 else
                     $this->SendInfo("News nie został wysłany");
@@ -411,7 +411,7 @@ class CPanel
                 $this->SendInfo("News nie zaktualizowany z powodu złego id");
             else
             {
-                if ($this->sql->EditNews($id, $title, $note))
+                if ($this->sql->EditArticle($id, $title, $note))
                     $this->SendInfo("News został zaktualizowany");
                 else
                     $this->SendInfo("News nie został zaktualizowany");
@@ -428,7 +428,7 @@ class CPanel
 
         if ($id != 0) //jesli wybrana zostala jakas notka to dawaj formularz, a jesli nie...
         {
-            $news = $this->sql->ReadSelectedNews($id);
+            $news = $this->sql->ReadArticle($id);
             $this->DrawTextAreas("editNote&id=$id", $news['title'], $news['note']);
         }
         else //... to wyswietli sie lista notek do wybrania
@@ -437,8 +437,8 @@ class CPanel
 
             @$page = $_GET['page'];
 
-            $news = $this->sql->ReadNews(true, $page*$this->howMany, $this->howMany);
-            $count = $this->sql->NumberOfNews(Sql::NOTHING);
+            $news = $this->sql->ReadArticles(Sql::NOTHING, $page*$this->howMany, $this->howMany);
+            $count = $this->sql->NumberOfArticles(Sql::NOTHING);
             $this->DrawTable($news, CPanel::EDIT, $this->sql->ReadLinks());
             $this->DrawPaging($this->howMany, $count);
         }
@@ -460,7 +460,7 @@ class CPanel
                 }
                 else if (isset($_POST['remove']))
                 {
-                    if ($this->sql->RemoveNews($checkboxes))
+                    if ($this->sql->RemoveArticle($checkboxes))
                         $this->SendInfo("Artykuł/Artykuły zostały usunięte");
                     else
                         $this->SendInfo("Nie można usunąć artykułu/artykułów");
@@ -474,8 +474,8 @@ class CPanel
         @$page = $_GET['page'];
         if ($page == null)
             $page = 0;
-        $news = $this->sql->ReadNewsFromBin(true, $page*$this->howMany, $this->howMany);
-        $count = $this->sql->NumberOfNews(Sql::BIN);
+        $news = $this->sql->ReadArticles(Sql::BIN, $page*$this->howMany, $this->howMany);
+        $count = $this->sql->NumberOfArticles(Sql::BIN);
         $this->DrawTable($news, CPanel::BIN, $this->sql->ReadLinks());
         $this->DrawPaging($this->howMany, $count);
     }

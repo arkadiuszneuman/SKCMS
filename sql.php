@@ -63,7 +63,7 @@
             mysql_select_db($database);
         }
         
-        public function AddNews($title, $note) //dodanie newsa
+        public function AddArticle($title, $note) //dodanie newsa
         {
             $title = $this->ProtectString($title);
             $note = $this->ProtectString($note);
@@ -74,7 +74,7 @@
             return mysql_query($query);
         }
 
-        public function NumberOfNews($proporties, $idLink = null) //proporties - czy w koszu czy nie
+        public function NumberOfArticles($proporties, $idLink = null) //proporties - czy w koszu czy nie
         {
             $query = "SELECT COUNT(*) as howmany FROM news WHERE proporties='$proporties'";
 
@@ -86,17 +86,13 @@
             return $row["howmany"];
         }
 
-        public function ReadNews($isId, $from, $howMany, $idLink = null) //odczytanie newsow, isId - czy zwracac tez id; from - od ktorej danej zwracac, to - ile notek //idlink - id liknku, ktory zwracac
+        //odczytanie newsow, isId - czy zwracac tez id; from - od ktorej danej zwracac, to - ile notek, idlink - id liknku, z ktorego zwracac artykuly
+        public function ReadArticles($proporties, $from, $howMany, $idLink = null)
         {
             $from = $this->ProtectInt($from);
             $howMany = $this->ProtectInt($howMany);
 
-            $query = "SELECT title, date, note, id_link";
-
-            if ($isId)
-                $query = $query.", id";
-
-            $query = $query." FROM news WHERE NOT proporties='1'";
+            $query = "SELECT title, date, note, id_link, id FROM news WHERE proporties='$proporties'";
             
             if ($idLink != null)
                 $query = $query." AND id_link='$idLink'";
@@ -110,8 +106,7 @@
                 $array[$i]['date'] = $line[1];
                 $array[$i]['note'] = $line[2];
                 $array[$i]['idLink'] = $line[3];
-                if ($isId)
-                    $array[$i]['id'] = $line[4];
+                $array[$i]['id'] = $line[4];
             }
 
             if (@$array == null)
@@ -119,33 +114,7 @@
             return $array;
         }
 
-        public function ReadNewsFromBin($isId, $from, $howMany) //odczytanie newsow, isId - czy zwracac tez id; from - od ktorej danej zwracac, to - ile notek
-        {
-            $from = $this->ProtectInt($from);
-            $howMany = $this->ProtectInt($howMany);
-
-            $query = "SELECT title, date, note";
-
-            if ($isId)
-                $query = $query.", id";
-
-            $query = $query." FROM news WHERE proporties='1' ORDER BY date DESC LIMIT $from, $howMany"; //proporties=1 - kosz - wyswietlenie newsow nie znajdujacych sie w koszu
-
-            $reply = mysql_query($query);
-            for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
-            {
-                $array[$i]['title'] = $line[0];
-                $array[$i]['date'] = $line[1];
-                $array[$i]['note'] = $line[2];
-                if ($isId)
-                    $array[$i]['id'] = $line[3];
-            }
-            if (@$array == null)
-                return null;
-            return $array;
-        }
-
-        public function ReadSelectedNews($id) //odczytanie pojednynczego newsa
+        public function ReadArticle($id) //odczytanie pojednynczego newsa
         {
             $id = $this->ProtectInt($id);
 
@@ -160,7 +129,7 @@
             return $array;
         }
 
-        public function EditNews($id, $title, $note) //zmiana konkretnego newsa
+        public function EditArticle($id, $title, $note) //zmiana konkretnego newsa
         {
             $id = $this->ProtectInt($id);
 
@@ -219,7 +188,7 @@
             return $idiesString;
         }
 
-        public function RemoveNews($id) //usuwanie newsa/newsow jesli przekazujemy tablice
+        public function RemoveArticle($id) //usuwanie newsa/newsow jesli przekazujemy tablice
         {
             $query = "DELETE FROM news WHERE ".$this->doIdQuery($id);
             return mysql_query($query);

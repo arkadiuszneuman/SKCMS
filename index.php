@@ -108,7 +108,7 @@
 
         if (str_replace(' ','_',$link['link']) == $_GET['link'])
         {
-            $news = $sql->ReadNews(false, $page*$howMany, $howMany, $link['id']);
+            $news = $sql->ReadArticles(Sql::NOTHING, $page*$howMany, $howMany, $link['id']);
 
             if ($news != null)
             {
@@ -119,7 +119,7 @@
                     echo nl2br($n['note'])."</p>\n<br /><br />\n\n";
                 }
 
-                $count = $sql->NumberOfNews(Sql::NOTHING, $link['id']);
+                $count = $sql->NumberOfArticles(Sql::NOTHING, $link['id']);
                 if ($count > $howMany) //wyswietlenie pagingu tylko w przypadku wiekszej ilosci newsow niz strona
                     showPaging($page, $howMany, $count);
             }

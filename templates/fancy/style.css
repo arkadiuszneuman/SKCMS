@@ -1,0 +1,176 @@
+@import url("reset.css");
+
+html, body 
+{
+	font-size: 11pt;
+	line-height: 1.5;
+	font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+	background-color: rgb(143, 225, 242);
+	background-image: url(img/logo_bkg.png);
+	background-repeat: repeat-x;
+	margin: 0;
+}
+
+.clear 
+{
+	clear: both;
+}
+
+#main 
+{
+	background-color: rgb(143, 225, 242);
+	width: 1024px;
+	margin: auto;
+}
+
+#logo 
+{
+	background-color: rgb(32, 74, 135);
+	background-image: url(img/logo.png);
+	background-position: center;
+	height: 140px;
+	display: block;
+	text-decoration: none;
+}
+
+#menubar
+{
+	background-color: rgb(40, 199, 60);
+	background-image: url(img/grass.png);
+	background-position: bottom;
+	background-repeat: no-repeat;
+	height: 34px;
+
+}
+
+#menu
+{
+	overflow: hidden;
+	margin: 0;
+}
+
+ul#menu li
+{
+	list-style-type: none;
+	float: left;	
+}
+
+ul#menu li a
+{	
+	text-decoration: none;	
+	width: 140px;
+	display: block;
+	font-size: 9pt;	
+	color: rgb(238, 238, 236);
+	color: rgba(238, 238, 236, 0.86);
+	text-shadow: 1px 1px 2px rgb(46, 52, 54);
+	text-align: center;
+}
+
+ul#menu li li a
+{
+	width: 140px;  
+	padding: 0;
+}
+
+ul#menu li li:hover
+{
+	color: rgba(238, 238, 236, 1);
+	font-style: italic;
+}
+
+ul#menu li ul
+{
+	overflow: hidden;
+	display: none;
+}
+
+ul#menu li:hover ul
+{
+	position: absolute;
+	background-color: rgb(40, 199, 60);
+	padding: 1px;
+	display: block;
+	width: 140px;
+}
+
+#footer, #content 
+{
+	background-color: rgb(253, 255, 233);
+}
+
+#content 
+{
+	background-image: url(img/content_bkg.png);
+	background-repeat: repeat-y;
+	width: 1024px;
+	margin: auto;	
+}
+
+#news
+{
+	margin: 5px 0px 5px 0px;
+	width: 74%;
+	float: left;
+}
+
+#sidebar
+{
+	margin: 5px 0px 5px 0px;
+	width: 25%;
+	float: left;
+	border-left: 1px solid #999;
+}
+
+#content h3 
+{
+	color: rgb(56, 143, 250);
+	font-size: 19px;
+	font-style: bold;
+	padding: 0px 0px 0px 20px;
+	margin: 0;
+}
+
+#content hr
+{
+	width: 95%;
+	float: left;
+	color: rgb(218, 215, 206);
+	margin: 0px 0px 0px 20px;
+}
+
+#content p.newsInfo
+{
+	font-size: 11px;
+	padding: 0px 0px 0px 20px;
+	margin: 0;
+}
+
+#news p
+{
+	padding: 0px 20px 0px 20px;
+	text-align: justify;
+	margin: 0;
+}
+
+#sidebar p
+{
+	padding: 0px 20px 0px 10px;
+	text-align: justify;
+}
+
+#footer 
+{
+	padding: 1em 6%;
+	background-color: rgb(143, 225, 242);
+	background-image: url(img/b_main.png);
+	background-repeat: no-repeat;
+	text-align: center;
+}
+
+#footer p
+{
+	margin: 0;
+	padding: 0;
+	font-size: 12px;
+}

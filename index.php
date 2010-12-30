@@ -1,8 +1,9 @@
 <?php
 	session_start();
-
+	include ('layout.php');
+	$template = new Layout();
 ?>
-<div id="all">
+
 <script type="text/javascript" src="./javascript/ajax.js"></script>
 <link rel="stylesheet" type="text/css" href="./css/windowLogin.css" />
 
@@ -55,15 +56,16 @@
         }
     }
 
-    include('structure/up.html');
     include('sql.php');
-
-    if (!isset($_SESSION['zalogowany']) || $_SESSION['zalogowany'] == false)
+	echo $template->RenderHeader("Kermitek");
+	echo $template->Render("menu", NULL);
+	if (!isset($_SESSION['zalogowany']) || $_SESSION['zalogowany'] == false)
     {
         ?>
 <!--        <a href="./user.php?task=login">Panel administracyjny</a>-->
-        <a href="#" onclick="Login('login');">Zaloguj</a>
         <?php
+		$data = array(cont=>"<a href=\"#\" onclick=\"Login('login');\">Zaloguj</a>");
+        echo $template->Render("content", $data);
     }
     else
     {
@@ -129,9 +131,9 @@
     }
 
     ?>
-<!--    <div id="news">Ładowanie</div></div>--> </div>
+<!--    <div id="news">Ładowanie</div></div>--> 
     <?php
-
+	echo $template->Render("sidebar", NULL);
+	echo $template->RenderFooter("Copyright SKCMS TEAM :D");
     $sql->Close();
-    include('structure/down.html');
 ?>

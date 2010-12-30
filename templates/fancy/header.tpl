@@ -5,7 +5,7 @@
 
 <title>{title}</title>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
-<link rel="stylesheet" href="style.css" title="Style">
+<link rel="stylesheet" href="templates/fancy/style.css" title="Style">
 
 </head>
 <body>

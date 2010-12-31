@@ -1,5 +1,6 @@
 <?php
 include('../sql.php');
+include("..\CForm.php");
 
 class CPanel
 {
@@ -42,7 +43,7 @@ class CPanel
             <div id="menu">
                 <div id="links">
                     <a href="./panel.php?task=addNote" class="button">Dodaj notkę</a>
-                    <a href="./panel.php?task=editArticles&page=0" class="button">Edytuj notkę</a>
+                    <a href="./panel.php?task=editArticles&page=0" class="button">Artykuły</a>
                     <a href="./panel.php?task=bin" class="button">Kosz</a>
                     <a href="./panel.php?task=editLinks" class="button">Menu</a>
                     <a href="./panel.php?task=preferences" class="button">Ustawienia</a>
@@ -76,7 +77,7 @@ class CPanel
     //uzywane przy dodawaniu i edycji artykulu
     private function DrawTextAreas($action, $title = null, $article = null)
     {
-        include("..\CForm.php");
+        
         $form = new CForm(CForm::POST, "panel.php?task=$action");
         $text = new CTextBox("Tytuł: ", "title");
         $text->SetValue($title);
@@ -175,7 +176,7 @@ class CPanel
         if ($page == null)
             $page = 0;
 
-        include("..\CForm.php");
+
         if ($task == CPanel::EDIT)
         {
             ?>
@@ -429,7 +430,7 @@ class CPanel
         if ($id != 0) //jesli wybrana zostala jakas notka to dawaj formularz, a jesli nie...
         {
             $news = $this->sql->ReadArticle($id);
-            $this->DrawTextAreas("editNote&id=$id", $news['title'], $news['note']);
+            $this->DrawTextAreas("editArticles&id=$id", $news['title'], $news['note']);
         }
         else //... to wyswietli sie lista notek do wybrania
         {

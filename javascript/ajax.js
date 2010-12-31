@@ -1,4 +1,4 @@
-sendGet("news", 0); //zaladowanie pierwszej strony na poczatku
+//sendGet("news", 0); //zaladowanie pierwszej strony na poczatku
 
 function include(filename) //do includowania w javascripcie
 {
@@ -38,9 +38,76 @@ function getXMLHttpRequest() //przygotowanie ajaxa do roznych przegladarek
   return request;
 }
 
+function Close()
+{
+    document.getElementById('windowLogin').style.display = 'none';
+}
+
+function RefreshSite()
+{
+    var r = getXMLHttpRequest();
+    r.open('GET', './index.php', true);
+
+    r.onreadystatechange = function()
+    {
+        if (r.readyState == 4)
+        {
+            document.getElementById('all').innerHTML = r.responseText;
+        }
+    }
+
+    r.send(null);
+}
+
+function Login(task)
+{
+    var r = getXMLHttpRequest();
+    if (task == "check") //pobranie danych z formularza
+    {
+        task += "&login="
+        task += document.getElementsByName("login")[0].value;
+        task += "&pass="
+        task += document.getElementsByName("pass")[0].value;
+    }
+    else if (task == "register") //rejestracja po wpisaniu danych
+    {
+        task += "&login="
+        task += document.getElementsByName("login")[0].value;
+        task += "&pass="
+        task += document.getElementsByName("pass")[0].value;
+        task += "&name="
+        task += document.getElementsByName("name")[0].value;
+        task += "&mail="
+        task += document.getElementsByName("mail")[0].value;
+
+        alert(task);
+    }
+    r.open('GET', './user.php?task='+task, true);
+
+    r.onreadystatechange = function()
+    {
+        if (r.readyState == (1 || 0))
+        {
+            document.getElementById('windowLogin').innerHTML = "Ładowanie...";
+            document.getElementById('windowLogin').style.display = 'block';
+        }
+        else if (r.readyState == 4)
+        {
+            document.getElementById('windowLogin').innerHTML = r.responseText;
+            document.getElementById('windowLogin').style.display = 'block';
+        }
+        else
+        {
+            document.getElementById('windowLogin').innerHTML = "Błąd";
+        }
+    }
+
+    r.send(null);
+}
+
 function sendGet(what, page) //site - gdzie przekierowac, what - funkcja, ktora wywola ajax po podaniu danych
 {
-    var r = getXMLHttpRequest();  
+    var r = getXMLHttpRequest();
 
     if (what == "news")
     {
@@ -50,15 +117,15 @@ function sendGet(what, page) //site - gdzie przekierowac, what - funkcja, ktora 
         {
             if (r.readyState == (1 || 0))
             {
-                document.getElementById('newses').innerHTML = "Ładowanie...";
+                document.getElementById('news').innerHTML = "Ładowanie...";
             }
             else if (r.readyState == 4)
             {
-                document.getElementById('newses').innerHTML = r.responseText;
+                document.getElementById('news').innerHTML = r.responseText;
             }
             else
             {
-                document.getElementById('newses').innerHTML = "Błąd";
+                document.getElementById('news').innerHTML = "Błąd";
             }
         }
     }

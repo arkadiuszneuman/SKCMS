@@ -41,12 +41,12 @@
 
     include('../sql.php');
     $sql = new Sql();
-    $count = $sql->NumberOfNews();
+    $count = $sql->NumberOfArticles(Sql::NOTHING);
 
     $howMany = 3; //ilosc newsow na strone
     @$page = $_GET['page'];
 
-    $newses = $sql->ReadNews(false, $page*$howMany,  $howMany); //3 newsy na strone
+    $newses = $sql->ReadArticles(Sql::NOTHING, $page*$howMany,  $howMany); //3 newsy na strone
     $sql->Close();
 
     
@@ -58,5 +58,7 @@
     }
 
     showPaging($page, $howMany, $count);
+
+    
 
 ?>

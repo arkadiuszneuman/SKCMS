@@ -1,0 +1,212 @@
+body, html
+{
+    margin: 0px;
+    padding: 0px;
+    background-color: #e8fcff;
+    font-family: Tahoma, Verdana, Arial; /*czcionka w tabeli*/
+}
+
+/*rozmieszecznie divow*/
+#header
+{
+    height: 100px;
+    text-align: left;
+    font-family: Pericles, Tahoma, Verdana, Arial;
+    font-size: 30px;
+    line-height: 80px;
+}
+
+#header #logo
+{
+    background-image: url("../graphics/logo.png");
+    width: 200px;
+    height: 100px;
+    position: absolute;
+}
+
+#header #left /*lewa strona naglowka*/
+{
+    background-image: url("../graphics/panelUpLeft.png");
+    background-repeat: no-repeat;
+    height: 100px;
+    float: left;
+    width: 200px;
+}
+
+#header #center /*srodek i prawa strona naglowka*/
+{
+    background-image: url("../graphics/panelUp.png");
+    background-repeat: repeat-x;
+    height: 100px;
+}
+
+/*url("../graphics/shadowRightDown.png")
+no-repeat,
+right bottom,*/
+
+/* całe menu z lewej*/
+#menu
+{
+    width: 201px;
+    height: 100%;
+    float: left;
+}
+
+#menu #links /*lewa czesc*/
+{
+    background-image: url("../graphics/shadowDown.png");
+    background-repeat: repeat-x;
+    background-position: bottom;
+    float: left;
+    position: relative;
+    overflow: hidden;
+    background-color: #3896ff;
+    width: 193px;
+    height: 100%;
+}
+
+#menu #shadowRight /*prawa czesc*/
+{
+    background-image: url("../graphics/shadowRight.png");
+    background-repeat: repeat-y;
+    width: 8px;
+    position: relative;
+    float: right;
+    height: 100%;
+}
+
+#srodek
+{
+    margin-left: 200px;
+    padding: 20px;
+}
+
+/*linki w menu*/
+
+.button
+{
+    background-image: url("../graphics/button.png");
+    float:left;
+    width: 155px;
+    height: 43px;
+    padding: 7px 0px 0px 15px;
+    color: white;
+    text-decoration: none;
+    font-family: Verdana, Arial;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.button:hover
+{
+    background-image: url("../graphics/buttonPushed.png");
+    background-position: 0px 5px;
+    width: 155px;
+    height: 38px;
+    padding: 12px 0px 0px 15px;
+}
+
+/* przyciski nad tabelkami z opcjami (usun przywroc) */
+#options
+{
+    height: 70px;
+}
+
+/* Tylko dla przyciskow submit */
+.buttonInput /*bylo input[type="submit"] ale ie nie lapie jak zwykle*/
+{
+    background-image: url("../graphics/button.png");
+    background-color: transparent;
+    float:left;
+    width: 160px;
+    height: 43px;
+    color: white;
+    text-decoration: none;
+    font-family: Verdana, Arial;
+    font-size: 12px;
+    font-weight: bold;
+    border: 0px solid #FFFFFF; /*dla ie, zeby obrazek wyswietlil */
+}
+
+.buttonInput:hover 
+{
+    background-image: url("../graphics/buttonPushed.png");
+    background-color: transparent;
+    background-position: 0px 5px;
+    width: 160px;
+    height: 50px;
+    border: 0px solid #FFFFFF; /*dla ie, zeby obrazek wyswietlil */
+}
+
+#tabPanel
+{
+    font-size: 11px;
+}
+
+tr.even td:first-child, tr.odd  td:first-child /* ustawienie center dla pierwszej kolumny (LP) */
+{
+    text-align: center;
+    font-weight: bold;
+    width: 10px;
+}
+
+tr.even td.topic, tr.odd td.topic
+{
+    width: 300px; /*dlugosc kolumny z tematem*/
+}
+
+
+tr.even td, tr.odd td /*tylko dla td w tr.even i w tr.odd*/
+{
+    padding: 5px 8px 5px 8px;
+}
+
+tr.even:hover, tr.odd:hover /* kolor wiersza jak myszka jest nad tym wierszem */
+{
+    background-color: #faffcf;
+}
+
+tr.even /* kolor wiersza dla parzystych elementow */
+{
+    background-color: #cbfbff;
+}
+
+tr.odd /* kolor wiersza dla nieparzystych elementow */
+{
+    background-color: #bae2ff;
+}
+
+td a:link, td a:visited /* linki w tabeli*/
+{
+    color: #001482;
+    text-decoration: none;
+}
+
+td a:hover
+{
+    color: #00b4bd;
+    text-decoration: underline;
+}
+
+/*gorna belka tabeli*/
+tr#upper
+{
+    color: white;
+    font-family: Tahoma, Verdana, Arial; /*czcionka w tabeli*/
+    font-size: 13px;
+    background-color: #003399;
+    text-align: center;
+    font-weight: bold;
+    width: 10px;
+}
+
+#info /*tekst z informacjami np o usunieciu, zaktualizowaniu newsa*/
+{
+    background-color: #ccffcc;
+    border-style: solid;
+    border-width: 5px;
+    border-color: #009900;
+    margin: 10px;
+    padding: 10px;
+    color: #006600;
+}

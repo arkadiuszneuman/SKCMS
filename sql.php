@@ -5,6 +5,10 @@
     {
         private $sql_conn = null;
 
+        //zmienne okreslajace proporties w zapytaniach
+        const NOTHING = 0;
+        const BIN = 1;
+
         public function Sql($server = null, $user = null, $pass = null, $database = null) //polaczenie z wybraniem bazy
         {
             global $SQLserver; //zlapanie zmiennych globalnych z pliku database.php
@@ -59,7 +63,7 @@
             mysql_select_db($database);
         }
         
-        public function AddNews($title, $note) //dodanie newsa
+        public function AddArticle($title, $note) //dodanie newsa
         {
             $title = $this->ProtectString($title);
             $note = $this->ProtectString($note);
@@ -70,23 +74,30 @@
             return mysql_query($query);
         }
 
-        public function NumberOfNews()
+        public function NumberOfArticles($proporties, $idLink = null) //proporties - czy w koszu czy nie
         {
-            $row = mysql_fetch_array(mysql_query("SELECT COUNT(*) as howmany FROM news"));
+            $query = "SELECT COUNT(*) as howmany FROM news WHERE proporties='$proporties'";
+
+            if ($idLink != null)
+                $query = $query." AND id_link='$idLink'";
+
+            $row = mysql_fetch_array(mysql_query($query));
+
             return $row["howmany"];
         }
 
-        public function ReadNews($isId, $from, $howMany) //odczytanie newsow, isId - czy zwracac tez id; from - od ktorej danej zwracac, to - ile notek
+        //odczytanie newsow, isId - czy zwracac tez id; from - od ktorej danej zwracac, to - ile notek, idlink - id liknku, z ktorego zwracac artykuly
+        public function ReadArticles($proporties, $from, $howMany, $idLink = null)
         {
             $from = $this->ProtectInt($from);
             $howMany = $this->ProtectInt($howMany);
 
-            $query = "SELECT title, date, note, id_link";
+            $query = "SELECT title, date, note, id_link, id FROM news WHERE proporties='$proporties'";
+            
+            if ($idLink != null)
+                $query = $query." AND id_link='$idLink'";
 
-            if ($isId)
-                $query = $query.", id";
-
-            $query = $query." FROM news WHERE NOT proporties='1' ORDER BY date DESC LIMIT $from, $howMany"; //proporties=1 - kosz - wyswietlenie newsow nie znajdujacych sie w koszu
+            $query = $query."ORDER BY date DESC LIMIT $from, $howMany"; //proporties=1 - kosz - wyswietlenie newsow nie znajdujacych sie w koszu
 
             $reply = mysql_query($query);
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
@@ -95,8 +106,7 @@
                 $array[$i]['date'] = $line[1];
                 $array[$i]['note'] = $line[2];
                 $array[$i]['idLink'] = $line[3];
-                if ($isId)
-                    $array[$i]['id'] = $line[4];
+                $array[$i]['id'] = $line[4];
             }
 
             if (@$array == null)
@@ -104,33 +114,7 @@
             return $array;
         }
 
-        public function ReadNewsFromBin($isId, $from, $howMany) //odczytanie newsow, isId - czy zwracac tez id; from - od ktorej danej zwracac, to - ile notek
-        {
-            $from = $this->ProtectInt($from);
-            $howMany = $this->ProtectInt($howMany);
-
-            $query = "SELECT title, date, note";
-
-            if ($isId)
-                $query = $query.", id";
-
-            $query = $query." FROM news WHERE proporties='1' ORDER BY date DESC LIMIT $from, $howMany"; //proporties=1 - kosz - wyswietlenie newsow nie znajdujacych sie w koszu
-
-            $reply = mysql_query($query);
-            for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
-            {
-                $array[$i]['title'] = $line[0];
-                $array[$i]['date'] = $line[1];
-                $array[$i]['note'] = $line[2];
-                if ($isId)
-                    $array[$i]['id'] = $line[3];
-            }
-            if (@$array == null)
-                return null;
-            return $array;
-        }
-
-        public function ReadSelectedNews($id) //odczytanie pojednynczego newsa
+        public function ReadArticle($id) //odczytanie pojednynczego newsa
         {
             $id = $this->ProtectInt($id);
 
@@ -145,7 +129,7 @@
             return $array;
         }
 
-        public function EditNews($id, $title, $note) //zmiana konkretnego newsa
+        public function EditArticle($id, $title, $note) //zmiana konkretnego newsa
         {
             $id = $this->ProtectInt($id);
 
@@ -155,6 +139,36 @@
             $query = "UPDATE news SET title='$title', note='$note' WHERE id='$id'";
 
             return mysql_query($query);
+        }
+
+        public function UpdateArticleLink($visibleIn, $page, $proporties, &$isChanged) //przypisanie artukulu do konkretnego linku w menu, ischanged - czy jakis zostal zmieniony
+        {
+            $query = "SELECT id, id_link, note FROM news WHERE proporties='".$proporties."' ORDER BY date DESC LIMIT ".($page*20).", 20"; //musi zwracac note, inaczej zle zwraca idki, durny ten sql
+
+            $reply = mysql_query($query);
+            for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
+            {
+                $array[$i]['id'] = $line[0];
+                $array[$i]['idLink'] = $line[1];
+            }
+
+
+            foreach ($array as $n)
+            {
+                if ($n['idLink'] == null)
+                    $n['idLink'] = 0;
+
+                if (@$visibleIn[$n['id']] != $n['idLink']) //zmiana tylko zmienionych linkow
+                {
+                    $query = "UPDATE news SET id_link='".@$visibleIn[$n['id']]."' WHERE id='".$n['id']."'";
+                    if (!mysql_query($query))
+                        return false;
+                    else
+                        $isChanged = true;
+                }
+            }
+
+            return true;
         }
 
         //funkcja zabezpiecza id i tworzy z tablicy id odpowiednie zapytanie (potrzebne przy usuwaniu newsow)
@@ -174,32 +188,42 @@
             return $idiesString;
         }
 
-        public function RemoveNews($id) //usuwanie newsa/newsow jesli przekazujemy tablice
+        public function RemoveArticle($id) //usuwanie newsa/newsow jesli przekazujemy tablice
         {
             $query = "DELETE FROM news WHERE ".$this->doIdQuery($id);
             return mysql_query($query);
         }
 
-        public function RemoveNewsToBin($id) //usuwanie newsa/newsow jesli przekazujemy tablice
+        //przeniesienie do kosza
+        public function ArticlesToBin($id) 
         {
             $query = "UPDATE news SET proporties='1' WHERE ".$this->doIdQuery($id);
             return mysql_query($query);
         }
 
-        public function RecoverNewsFromBin($id) //usuwanie newsa/newsow jesli przekazujemy tablice
+        //przeniesienie spowrotem do artykulow
+        public function BinToArticles($id) //usuwanie newsa/newsow jesli przekazujemy tablice
         {
             $query = "UPDATE news SET proporties='0' WHERE ".$this->doIdQuery($id);
             return mysql_query($query);
         }
 
-        public function ReadLinks($id = null)
+        public function ReadLinks($whichOne = null) //whichOne  - id lub nazwa konkretnego linku
         {
             $query = "SELECT id, link FROM links";
 
-            if ($id != null)
+            if ($whichOne != null)
             {
-                $this->ProtectInt($id);
-                $query = $query." WHERE id='$id'";
+                if (is_int($whichOne))
+                {
+                    $this->ProtectInt($whichOne);
+                    $query = $query." WHERE id='$whichOne'";
+                }
+                else if (is_string($whichOne))
+                {
+                    $this->ProtectString($whichOne);
+                    $query = $query." WHERE link='$whichOne'";
+                }
             }
 
             $reply = mysql_query($query);
@@ -229,6 +253,12 @@
             $id = $this->ProtectInt($id);
             $query = "UPDATE links SET link='$link' WHERE id='$id'";
 
+            return mysql_query($query);
+        }
+
+        public function RemoveLink($id) //usuwanie newsa/newsow jesli przekazujemy tablice
+        {
+            $query = "DELETE FROM links WHERE ".$this->doIdQuery($id);
             return mysql_query($query);
         }
 

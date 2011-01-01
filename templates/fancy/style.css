@@ -124,15 +124,15 @@ ul#menu li:hover ul
 	border-right: 1px solid #999;
 }
 
-#news .pages
-{
-	text-align: center;
-}
-
-#news .item
+#news .item, #news #paging
 {
 	width: 97%;
 	margin: 0px 0px 0px 15px;
+}
+
+#news #paging
+{
+	text-align: center;
 }
 
 #news .item h3 

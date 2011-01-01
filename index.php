@@ -16,7 +16,11 @@
 	
 	if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] == false)
     {
-		$mainContent = $mainContent."<a href=\"#\" onclick=\"Login('login');\">Zaloguj</a>";
+		$data = array("title"=>"Użytkownik", "content"=>"<a href=\"#\" onclick=\"Login('login');\">Zaloguj</a>
+		fdfdfdfdslfhdsklfhksdhfksdhfkjhdskjfhksdjhfjksdhfjksdhkjfhdskjfhkjsdhfjksdhfjksdhfjkds34h
+		");
+
+		$sidebarContent = $sidebarContent."".$template->Render("sidebar_item", $data);
     }
     else
     {

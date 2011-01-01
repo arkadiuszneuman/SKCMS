@@ -69,7 +69,7 @@
 
                 $count = $sql->NumberOfArticles(Sql::NOTHING, $link['id']);
                 if ($count > $howMany) //wyswietlenie pagingu tylko w przypadku wiekszej ilosci newsow niz strona
-                    $newsBlock = $newsBlock."".showPaging($page, $howMany, $count);
+                    $newsBlock = $newsBlock."".$template->Render("news_paging", showPaging($page, $howMany, $count));
             }
             else
                 echo "Brak arytkułów w podanym linku";

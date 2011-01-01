@@ -210,3 +210,10 @@ tr#upper
     padding: 10px;
     color: #006600;
 }
+
+#hello
+{
+    width: 100%;
+    padding: 20px 0px 10px 0px;
+    text-align: center;
+}

@@ -63,7 +63,7 @@
 
     include('sql.php');
 	echo $template->RenderHeader("Kermitek");
-	if (!isset($_SESSION['zalogowany']) || $_SESSION['zalogowany'] == false)
+	if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] == false)
     {
         ?>
 <!--        <a href="./user.php?task=login">Panel administracyjny</a>-->
@@ -75,11 +75,9 @@
         ?>
 <!--        <a href="./user.php?task=login">Panel administracyjny</a>-->
 	<?php
-		$data = array("title"=>"Użytkownik", "content"=>"<a href=\"./panel/panel.php\">Panel administracyjny</a> &nbsp; &nbsp;
+		$data = array("title"=>"Użytkownik", "content"=>"<a href=\"./panel/\">Panel administracyjny</a> &nbsp; &nbsp;
         <a href=\"#\" onclick=\"Login('logoff')\">Wyloguj</a>");
 		$sidebarContent = $sidebarContent."".$template->Render("sidebar_item", $data);
-        //echo '<a href="./panel/panel.php">Panel administracyjny</a> &nbsp; &nbsp;';
-        //echo '<a href="./user.php?task=logoff">Wyloguj</a>';
     }
     
     //okienko z logowaniem

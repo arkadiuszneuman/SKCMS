@@ -25,10 +25,11 @@
 
             $sql = new Sql();
 
-            if ($sql->CheckAdmin($login, md5($pass))) //sprawdzenie loginu i przeniesienie do panelu w razie powodzenia
+            if ($privileges = $sql->CheckUser($login, md5($pass))) //sprawdzenie loginu i przeniesienie do panelu w razie powodzenia
             {
                 echo "Zalogowano";
-                $_SESSION['zalogowany'] = true;
+                $_SESSION['loggedIn'] = $privileges;
+                $_SESSION['name'] = $login;
                 
                 //echo '<script type="text/javascript">RefreshSite();</script>';
             }
@@ -41,9 +42,10 @@
             break;
 
         case "logoff":
-            if (isset($_SESSION['zalogowany']) && $_SESSION['zalogowany'] == true)
+            if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true)
             {
-                $_SESSION['zalogowany'] = false;
+                $_SESSION['loggedIn'] = false;
+                $_SESSION['name'] = "";
                 echo "Wylogowano";
                 //echo <br>Za 3 sekundy zostaniesz przeniesiony do poprzedniej lokalizacji...";
             }
@@ -60,7 +62,6 @@
             $form->AddItem(new CTextBox("Nazwa użytkownika: ", "login"));
             $form->AddItem(new CPassword("Hasło: ", "pass", "pass1"));
             $form->AddItem(new CPassword("Powtórz hasło: ", "pass", "pass2"));
-            $form->AddItem(new CTextBox("Nazwa wyświetlana: ", "name"));
             $form->AddItem(new CTextBox("Adres e-mail: ", "mail"));
             $form->AddItem(new CButton("Wyślij", "send", null, "Login('register'); return false;"));
             $form->Draw();
@@ -72,15 +73,15 @@
 
             $login = $_GET['login'];
             $pass = $_GET['pass'];
-            $name = $_GET['name'];
             $mail = $_GET['mail'];
 
             $sql = new Sql();
 
-            if ($sql->AddAdmin($login, md5($pass), $name, $mail)) //rejestracja i przeniesienie do panelu
+            if ($sql->AddUser($login, md5($pass), $mail)) //rejestracja i przeniesienie do panelu
             {
                 ?>Dodano admina<?php
-                $_SESSION['zalogowany'] = true;
+                $_SESSION['loggedIn'] = Privileges::USER;
+                $_SESSION['name'] = $login;
             }
 
             break;

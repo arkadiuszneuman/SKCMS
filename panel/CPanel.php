@@ -1,6 +1,6 @@
 <?php
-include('../sql.php');
-include("..\CForm.php");
+include_once('../sql.php');
+include("../CForm.php");
 
 class CPanel
 {
@@ -42,11 +42,12 @@ class CPanel
         ?>
             <div id="menu">
                 <div id="links">
-                    <a href="./panel.php?task=addNote" class="button">Dodaj notkę</a>
-                    <a href="./panel.php?task=editArticles&page=0" class="button">Artykuły</a>
-                    <a href="./panel.php?task=bin" class="button">Kosz</a>
-                    <a href="./panel.php?task=editLinks" class="button">Menu</a>
-                    <a href="./panel.php?task=preferences" class="button">Ustawienia</a>
+                    <div id="hello">Witaj <?php echo $_SESSION['name'] ?></div>
+                    <a href="./?task=addNote" class="button">Dodaj notkę</a>
+                    <a href="./?task=editArticles&page=0" class="button">Artykuły</a>
+                    <a href="./?task=bin" class="button">Kosz</a>
+                    <a href="./?task=editLinks" class="button">Menu</a>
+                    <a href="./?task=preferences" class="button">Ustawienia</a>
                 </div>
                 <div id="shadowRight"></div>
             </div>
@@ -78,7 +79,7 @@ class CPanel
     private function DrawTextAreas($action, $title = null, $article = null)
     {
         
-        $form = new CForm(CForm::POST, "panel.php?task=$action");
+        $form = new CForm(CForm::POST, "?task=$action");
         $text = new CTextBox("Tytuł: ", "title");
         $text->SetValue($title);
         $text->SetAddionalAttribs('size="65"');
@@ -88,7 +89,6 @@ class CPanel
         $text->SetAddionalAttribs('rows="20" cols="100"');
         $form->AddItem($text);
         $form->AddItem(new CButton("Wyślij", "submit"));
-
         $form->Draw();
 
         ?>
@@ -123,8 +123,8 @@ class CPanel
 
         if ($page > 0) //wyswietlenie poprzednia strona
         {
-            ?><a href="./panel.php?task=<?php echo $task ?>&page=0">Pierwsza</a>   <?php
-            ?><a href="./panel.php?task=<?php echo $task ?>&page=<?php echo ($page-1) ?>">Poprzednia strona</a>   <?php
+            ?><a href="./?task=<?php echo $task ?>&page=0">Pierwsza</a>   <?php
+            ?><a href="./?task=<?php echo $task ?>&page=<?php echo ($page-1) ?>">Poprzednia strona</a>   <?php
         }
         else
         {
@@ -138,7 +138,7 @@ class CPanel
             {
                 if ($i != $page + 1) //link nie moze byc aktualna strona
                 {
-                    ?><a href="./panel.php?task=<?php echo $task ?>&page=<?php echo ($i-1) ?>"><?php echo $i ?></a>   <?php
+                    ?><a href="./?task=<?php echo $task ?>&page=<?php echo ($i-1) ?>"><?php echo $i ?></a>   <?php
                 }
                 else
                 {
@@ -149,14 +149,14 @@ class CPanel
 
         if (($page+1)*$howMany < $count) //wyswietlenie nastepna strona i ostatnia strona
         {
-            ?><a href="./panel.php?task=<?php echo $task ?>&page=<?php echo ($page+1) ?>">Następna strona</a>   <?php
+            ?><a href="./?task=<?php echo $task ?>&page=<?php echo ($page+1) ?>">Następna strona</a>   <?php
             if ($count%$howMany != 0) //jesli ilosc newsow przez ilosc newsow na strone jest nierowna
             {
-                ?><a href="./panel.php?task=<?php echo $task ?>&page=<?php echo ((int)($count/$howMany)) ?>">Ostatnia</a>   <?php
+                ?><a href="./?task=<?php echo $task ?>&page=<?php echo ((int)($count/$howMany)) ?>">Ostatnia</a>   <?php
             }
             else
             {
-                ?><a href="./panel.php?task=<?php echo $link ?>&page=<?php echo (($count/$howMany) - 1) ?>">Ostatnia</a>   <?php
+                ?><a href="./?task=<?php echo $link ?>&page=<?php echo (($count/$howMany) - 1) ?>">Ostatnia</a>   <?php
             }
         }
         else
@@ -180,7 +180,7 @@ class CPanel
         if ($task == CPanel::EDIT)
         {
             ?>
-                <form name="binFrm" method="POST" action="./panel.php?task=editArticles&page=<?php echo $page ?>">
+                <form name="binFrm" method="POST" action="./?task=editArticles&page=<?php echo $page ?>">
                 <div id="options">
                     Zaznaczone: <br /><?php
                     $item = new CButton("Zapisz zmiany", "moveToBin");
@@ -193,7 +193,7 @@ class CPanel
         else if ($task == CPanel::BIN)
         {
             ?>
-                <form name="binFrm" method="POST" action="./panel.php?task=bin&page=<?php echo $page ?>">
+                <form name="binFrm" method="POST" action="./?task=bin&page=<?php echo $page ?>">
                 <div id="options">
                     Zaznaczone: <br />
                     <?php
@@ -210,7 +210,7 @@ class CPanel
         else if ($task == CPanel::LINKS)
         {
             ?>
-                <form name="binFrm" method="POST" action="./panel.php?task=editLinks&page=<?php echo $page ?>">
+                <form name="binFrm" method="POST" action="./?task=editLinks&page=<?php echo $page ?>">
                 <div id="options">
                     Zaznaczone: <br />
                      <?php
@@ -271,11 +271,11 @@ class CPanel
                 <?php
                 if ($task == CPanel::EDIT || $task == CPanel::BIN)
                 {
-                    ?><a href="./panel.php?task=editArticles&id=<?php echo $n['id'] ?>" title="Kliknij, aby edytować"><?php echo $n['title'] ?></a><?php
+                    ?><a href="./?task=editArticles&id=<?php echo $n['id'] ?>" title="Kliknij, aby edytować"><?php echo $n['title'] ?></a><?php
                 }
                 else if ($task == CPanel::LINKS)
                 {
-                    ?><a href="./panel.php?task=editLinks&id=<?php echo $n['id'] ?>" title="Kliknij, aby edytować"><?php echo $n['link'] ?></a><?php
+                    ?><a href="./?task=editLinks&id=<?php echo $n['id'] ?>" title="Kliknij, aby edytować"><?php echo $n['link'] ?></a><?php
                 }
             ?>
             </td>
@@ -540,21 +540,21 @@ class CPanel
         }
 
         $this->DrawInfo();
-        
-        ?>
-        <form method="POST" action="panel.php?task=editLinks<?php ($id != 0) ? print("&id=$id") : print("") ?>">
-            <b>Dodaj nowy link:</b> <input type="text" size="65" name="link"
-            <?php
-                if ($id != 0)
-                {
-                    $link = $this->sql->ReadLinks((int)$id);
-                    ?> value="<?php echo $link[0]['link'] ?>"<?php
-                }
-            ?>
-            /><br />
-            <input type="submit" value="<?php ($id != 0) ? print("Edytuj") : print("Wyślij"); ?>" name="<?php ($id != 0) ? print("editlink") : print("newlink"); ?>" />
-        </form>
-        <?php
+
+        $przenies = "?task=editLinks";
+        if ($id != 0)
+            $przenies = $przenies."&id=$id";
+        $form = new CForm(CForm::POST, $przenies);
+        $text = new CTextBox("Dodaj nowy link: ", "link");
+        if ($id != 0)
+        {
+            $link = $this->sql->ReadLinks((int)$id);
+            $text->SetValue($link[0]['link']);
+        }
+        $text->SetAddionalAttribs('size="65"');
+        $form->AddItem($text);
+        $form->AddItem(new CButton((($id != 0) ? "Edytuj" : "Wyślij"), (($id != 0) ? "editlink" : "newlink")));
+        $form->Draw();
 
         $links = $this->sql->ReadLinks();
         $this->DrawTable($links, CPanel::LINKS);
@@ -562,7 +562,15 @@ class CPanel
 
     public function Preferences()
     {
-        
+        $form = new CForm(CForm::POST, "?task=preferences");
+        $select = new CComboBox("Tutaj: ", "combo1");
+        $select->AddItem("jeden");
+        $select->AddItem("dwa");
+        $select->AddItem("trzy");
+        $form->AddItem($select);
+
+        $form->AddItem(new CButton("Zapisz zmiany"), "save");
+        $form->Draw();
     }
 }
 

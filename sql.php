@@ -1,6 +1,12 @@
 <?php
     include('database.php');
 
+    class Privileges
+    {
+        const USER = 1;
+        const ADMIN = 2;
+    }
+
     class Sql
     {
         private $sql_conn = null;
@@ -63,12 +69,12 @@
             mysql_select_db($database);
         }
         
-        public function AddArticle($title, $note) //dodanie newsa
+        public function AddArticle($title, $note) //dodanie articles
         {
             $title = $this->ProtectString($title);
             $note = $this->ProtectString($note);
 
-            $query = "INSERT INTO `news` (`id`, `title`, `date`, `note`) VALUES
+            $query = "INSERT INTO articles (`id`, `title`, `date`, `note`) VALUES
             (NULL, '".trim($title)."', ' ".date("Y-m-d H:i:s")."', '".trim($note)."');";
 
             return mysql_query($query);
@@ -76,7 +82,7 @@
 
         public function NumberOfArticles($proporties, $idLink = null) //proporties - czy w koszu czy nie
         {
-            $query = "SELECT COUNT(*) as howmany FROM news WHERE proporties='$proporties'";
+            $query = "SELECT COUNT(*) as howmany FROM articles WHERE proporties='$proporties'";
 
             if ($idLink != null)
                 $query = $query." AND id_link='$idLink'";
@@ -86,18 +92,18 @@
             return $row["howmany"];
         }
 
-        //odczytanie newsow, isId - czy zwracac tez id; from - od ktorej danej zwracac, to - ile notek, idlink - id liknku, z ktorego zwracac artykuly
+        //odczytanie articles, isId - czy zwracac tez id; from - od ktorej danej zwracac, to - ile notek, idlink - id liknku, z ktorego zwracac artykuly
         public function ReadArticles($proporties, $from, $howMany, $idLink = null)
         {
             $from = $this->ProtectInt($from);
             $howMany = $this->ProtectInt($howMany);
 
-            $query = "SELECT title, date, note, id_link, id FROM news WHERE proporties='$proporties'";
+            $query = "SELECT title, date, note, id_link, id FROM articles WHERE proporties='$proporties'";
             
             if ($idLink != null)
                 $query = $query." AND id_link='$idLink'";
 
-            $query = $query."ORDER BY date DESC LIMIT $from, $howMany"; //proporties=1 - kosz - wyswietlenie newsow nie znajdujacych sie w koszu
+            $query = $query."ORDER BY date DESC LIMIT $from, $howMany"; //proporties=1 - kosz - wyswietlenie articles nie znajdujacych sie w koszu
 
             $reply = mysql_query($query);
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
@@ -114,11 +120,11 @@
             return $array;
         }
 
-        public function ReadArticle($id) //odczytanie pojednynczego newsa
+        public function ReadArticle($id) //odczytanie pojednynczego articles
         {
             $id = $this->ProtectInt($id);
 
-            $query = "SELECT title, note FROM news WHERE id='$id'";
+            $query = "SELECT title, note FROM articles WHERE id='$id'";
 
             $reply = mysql_query($query);
             $line = mysql_fetch_row($reply);
@@ -129,21 +135,21 @@
             return $array;
         }
 
-        public function EditArticle($id, $title, $note) //zmiana konkretnego newsa
+        public function EditArticle($id, $title, $note) //zmiana konkretnego articles
         {
             $id = $this->ProtectInt($id);
 
             $title = $this->ProtectString($title);
             $note = $this->ProtectString($note);
 
-            $query = "UPDATE news SET title='$title', note='$note' WHERE id='$id'";
+            $query = "UPDATE articles SET title='$title', note='$note' WHERE id='$id'";
 
             return mysql_query($query);
         }
 
         public function UpdateArticleLink($visibleIn, $page, $proporties, &$isChanged) //przypisanie artukulu do konkretnego linku w menu, ischanged - czy jakis zostal zmieniony
         {
-            $query = "SELECT id, id_link, note FROM news WHERE proporties='".$proporties."' ORDER BY date DESC LIMIT ".($page*20).", 20"; //musi zwracac note, inaczej zle zwraca idki, durny ten sql
+            $query = "SELECT id, id_link, note FROM articles WHERE proporties='".$proporties."' ORDER BY date DESC LIMIT ".($page*20).", 20"; //musi zwracac note, inaczej zle zwraca idki, durny ten sql
 
             $reply = mysql_query($query);
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
@@ -160,7 +166,7 @@
 
                 if (@$visibleIn[$n['id']] != $n['idLink']) //zmiana tylko zmienionych linkow
                 {
-                    $query = "UPDATE news SET id_link='".@$visibleIn[$n['id']]."' WHERE id='".$n['id']."'";
+                    $query = "UPDATE articles SET id_link='".@$visibleIn[$n['id']]."' WHERE id='".$n['id']."'";
                     if (!mysql_query($query))
                         return false;
                     else
@@ -171,7 +177,7 @@
             return true;
         }
 
-        //funkcja zabezpiecza id i tworzy z tablicy id odpowiednie zapytanie (potrzebne przy usuwaniu newsow)
+        //funkcja zabezpiecza id i tworzy z tablicy id odpowiednie zapytanie (potrzebne przy usuwaniu articles)
         private function doIdQuery($id)
         {
             $id = $this->ProtectInt($id);
@@ -188,23 +194,23 @@
             return $idiesString;
         }
 
-        public function RemoveArticle($id) //usuwanie newsa/newsow jesli przekazujemy tablice
+        public function RemoveArticle($id) //usuwanie articles/article jesli przekazujemy tablice
         {
-            $query = "DELETE FROM news WHERE ".$this->doIdQuery($id);
+            $query = "DELETE FROM articles WHERE ".$this->doIdQuery($id);
             return mysql_query($query);
         }
 
         //przeniesienie do kosza
         public function ArticlesToBin($id) 
         {
-            $query = "UPDATE news SET proporties='1' WHERE ".$this->doIdQuery($id);
+            $query = "UPDATE articles SET proporties='1' WHERE ".$this->doIdQuery($id);
             return mysql_query($query);
         }
 
         //przeniesienie spowrotem do artykulow
-        public function BinToArticles($id) //usuwanie newsa/newsow jesli przekazujemy tablice
+        public function BinToArticles($id) //usuwanie articles/article jesli przekazujemy tablice
         {
-            $query = "UPDATE news SET proporties='0' WHERE ".$this->doIdQuery($id);
+            $query = "UPDATE articles SET proporties='0' WHERE ".$this->doIdQuery($id);
             return mysql_query($query);
         }
 
@@ -238,7 +244,7 @@
             return $array;
         }
 
-        public function AddLink($link) //dodanie newsa
+        public function AddLink($link)
         {
             $link = $this->ProtectString($link);
 
@@ -247,7 +253,7 @@
             return mysql_query($query);
         }
 
-        public function EditLink($id, $link) //dodanie newsa
+        public function EditLink($id, $link)
         {
             $link = $this->ProtectString($link);
             $id = $this->ProtectInt($id);
@@ -256,36 +262,35 @@
             return mysql_query($query);
         }
 
-        public function RemoveLink($id) //usuwanie newsa/newsow jesli przekazujemy tablice
+        public function RemoveLink($id) 
         {
             $query = "DELETE FROM links WHERE ".$this->doIdQuery($id);
             return mysql_query($query);
         }
 
-        public function AddAdmin($login, $pass, $name, $mail) //dodawanie admina
+        public function AddUser($login, $pass, $mail) //dodawanie admina
         {
             $login = $this->ProtectString($login);
             $pass = $this->ProtectString($pass);
-            $name = $this->ProtectString($name);
             $mail = $this->ProtectString($mail);
 
-            $query = "INSERT INTO `admins` (`id`, `login`, `pass`, `name`, `mail`) VALUES
-            (NULL, '".trim($login)."', ' ".trim($pass)."', '".trim($name)."', '".trim($mail)."');";
+            $query = "INSERT INTO users (login, pass, mail, privileges) VALUES
+            ('".trim($login)."', '".trim($pass)."', '".trim($mail)."', '".Privileges::USER."');";
 
             return mysql_query($query);
         }
 
-        public function CheckAdmin($login, $pass) //sprawdzanie loginu i hasla
+        public function CheckUser($login, $pass) //sprawdzanie loginu i hasla
         {
             $login = $this->ProtectString($login);
 
-            $query = "SELECT login, pass FROM admins WHERE login='$login'";
+            $query = "SELECT login, pass, privileges FROM users WHERE login='$login'";
             $reply = mysql_query($query);
 
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
             {
                 if (trim($line[0]) === trim($login) && trim($line[1]) === trim($pass))
-                    return true;
+                    return $line[2];
             }
 
             return false;

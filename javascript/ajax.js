@@ -79,8 +79,6 @@ function Login(task)
         task += document.getElementsByName("name")[0].value;
         task += "&mail="
         task += document.getElementsByName("mail")[0].value;
-
-        alert(task);
     }
     r.open('GET', './user.php?task='+task, true);
 

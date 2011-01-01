@@ -1,7 +1,8 @@
 <?php
 session_start();
+include('../sql.php');
 
-if (isset($_SESSION['zalogowany']) && $_SESSION['zalogowany'] == true)
+if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] != Privileges::USER)
 {
     include('./CPanel.php');
     $panel = new CPanel();
@@ -36,9 +37,21 @@ if (isset($_SESSION['zalogowany']) && $_SESSION['zalogowany'] == true)
 }
 else
 {
-    include('../structure/up.html');
+    ?>
+        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+        <html>
+          <head>
+            <title>SKCMS - Panel Administracyjny</title>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+          </head>
+          <body>
+        <?php
     ?>Nie masz dostępu do tej strony<br /><br /><a href="../index.php">Powrót do strony głownej</a><?php
-    include('../structure/down.html');
+    ?>
+          </body>
+        </html>
+   <?php
+
 }
 
 ?>

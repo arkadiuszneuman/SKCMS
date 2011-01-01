@@ -2,11 +2,11 @@
 
 abstract class CItem
 {
-    protected $id, $value, $class, $onclick, $addional;
+    protected $id, $name,$value, $class, $onclick, $addional;
 
-    protected function SetNode($node, $value)
+    protected function SetNode($node, $val)
     {
-        echo $node.'="'.$value.'" ';
+        echo $node.'="'.$val.'" ';
     }
 
     public function SetAddionalAttribs($addional)
@@ -31,11 +31,17 @@ abstract class CItem
     {
         $this->onclick = $onclick;
     }
+
+    public function CItem($name = null, $id = null, $class = null)
+    {
+        $this->name = $name;
+        $this->id = $id;
+    }
 }
 
 abstract class CInput extends CItem
 {
-    private $type, $name, $text;
+    private $type, $text;
 
     const TEXT = 1;
     const PASSWORD = 2;
@@ -43,10 +49,10 @@ abstract class CInput extends CItem
 
     public function CInput($type, $text = null, $name = null, $id = null)
     {
-        $this->type = $type;
-        $this->name = $name;
+        $this->type = $type;       
         $this->text = $text;
-        $this->id = $id;
+
+        $this->CItem($name, $id);
     }
 
     //text bedzie wyswietlany obok inputu
@@ -162,6 +168,56 @@ class CTextArea extends CInput
         $this->CInput(null, $text, $name, $id);
     }
 }
+
+class CComboBox extends CItem
+{
+    private $valItems, $valTxts, $sel = 0, $text;
+
+    public function CComboBox($text, $name = null, $id = null)
+    {
+        $this->text = $text;
+        $this->CItem($name, $id);
+    }
+
+    public function Draw()
+    {
+        ?><select <?php
+            if ($this->name != null)
+                $this->SetNode("name", $this->name);
+
+            if ($this->id != null)
+                $this->SetNode("id", $this->id);
+
+            ?>><?php
+
+            for ($i = 0; $i < count($this->valItems); ++$i)
+            {
+                ?><option <?php
+                        if ($this->valItems[$i] != null)
+                                $this->SetNode("value", $this->valItems[$i]);
+                        
+                        if ($this->sel == $i)
+                            echo "SELECTED";
+                        ?>><?php echo $this->valTxts[$i] ?></option><?php
+            }
+            ?></select><?php
+    }
+
+    public function AddItem($text, $value = null, $selected = false)
+    {
+        $this->valItems[] = $value;
+        $this->valTxts[] = $text;
+
+        if ($selected)
+            $this->sel = count($this->valItems) - 1;
+    }
+
+    public function GetText()
+    {
+        return $this->text;
+    }
+}
+
 
 class CForm
 {

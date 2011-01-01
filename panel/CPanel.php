@@ -54,6 +54,14 @@ class CPanel
         <?php
     }
 
+    //załadownie do zmiennych danych
+    private function LoadPreferences()
+    {
+        $pref = $this->sql->LoadPreferences();
+        if ($pref['howMany'] != 0)
+            $this->howMany = $pref['howMany'];
+    }
+
     //metody odpowiedzialne za ramkę zieloną z informacjami
     private function SendInfo($info)
     {
@@ -242,6 +250,7 @@ class CPanel
                             <td>Lp</td>
                             <td>Zazn.</td>
                             <td class="topic">Link</td>
+                            <td>Porządek <a href="#" id="saveOrder">zapisz</a></td>
                         </tr>
             <?php
         }
@@ -260,7 +269,7 @@ class CPanel
 
             ?>
             <td>
-                <?php echo $i ?>
+                <?php echo (($page) * $this->howMany + $i) ?>
             </td>
 
             <td>
@@ -283,28 +292,37 @@ class CPanel
 
             if ($task == CPanel::EDIT || $task == CPanel::BIN)
             {
-            ?>
-            <td>
-                <select name="visibleIn[<?php echo $n['id'] ?>]">
-                    <option value="0">Brak</option>
-                    <?php //wyswieltenie dropdownow, gdzie bedzie wyswietlany przy kazdym artykule
-                        foreach ($links as $link)
-                        {
-                            ?><option value=<?php echo $link['id']?>
-                                <?php
-                                    if (@$n['idLink'] == $link['id']) //ustawienie odpowiedniego linku, jesli artukul jest do niego przypisany
-                                    {
-                                            ?> SELECTED<?php
-                                    }
-                                    ?>><?php
-                                    echo $link['link'];
+                ?>
+                <td>
+                    <select name="visibleIn[<?php echo $n['id'] ?>]">
+                        <option value="0">Brak</option>
+                        <?php //wyswieltenie dropdownow, gdzie bedzie wyswietlany przy kazdym artykule
+                            foreach ($links as $link)
+                            {
+                                ?><option value=<?php echo $link['id']?>
+                                    <?php
+                                        if (@$n['idLink'] == $link['id']) //ustawienie odpowiedniego linku, jesli artukul jest do niego przypisany
+                                        {
+                                                ?> SELECTED<?php
+                                        }
+                                        ?>><?php
+                                        echo $link['link'];
 
-                                ?></option><?php
-                        }
-                    ?>
-                </select>
-            </td>
-            <?php
+                                    ?></option><?php
+                            }
+                        ?>
+                    </select>
+                </td>
+                <?php
+            }
+            else if ($task == CPanel::LINKS)
+            {
+                ?><td><?php
+                $txt = new CTextBox(null, $n['id']);
+                $txt->SetAddionalAttribs('size="1"');
+                $txt->SetValue($n['order']);
+                $txt->Draw();
+                ?></td><?php
             }
             ?></tr><?php
 
@@ -324,6 +342,7 @@ class CPanel
         $this->DrawUp(); //gorna belka
         $this->DrawLeft(); //lewa belka z menu
         $this->sql = new Sql();
+        $this->LoadPreferences();
         ?><div id="srodek"><?php
     }
     
@@ -538,6 +557,13 @@ class CPanel
 
             ?><br /><?php
         }
+        else if (isset($_GET['do']) && $_GET['do'] == "saveOrder")
+        {
+            if ($this->sql->SaveOrder())
+                $this->SendInfo("Kolejność linków została zmieniona");
+            else
+                $this->SendInfo("Kolejność linków nie została zmieniona (czy zostały wprowadzone jakiekolwiek zmiany?)");
+        }
 
         $this->DrawInfo();
 
@@ -562,15 +588,38 @@ class CPanel
 
     public function Preferences()
     {
+        if (isset($_POST['save']))
+        {
+            $this->howMany = $_POST['countTable'];
+            if ($this->sql->SavePreferences($this->howMany))
+                $this->SendInfo("Zapisano zmiany");
+            else
+                $this->SendInfo("Nie zapisano zmian");
+        }
+
+        $this->DrawInfo();
+
+        ?><h2>USTAWIENIA:</h2><div id="preferences"><?php
         $form = new CForm(CForm::POST, "?task=preferences");
-        $select = new CComboBox("Tutaj: ", "combo1");
-        $select->AddItem("jeden");
-        $select->AddItem("dwa");
-        $select->AddItem("trzy");
+        $select = new CComboBox("Ilość artykułów w tabeli: ", "countTable");
+        $select->AddItem("5");
+        $select->AddItem("10");
+        $select->AddItem("15");
+        $select->AddItem("20");
+        $select->AddItem("30");
+        $select->AddItem("50");
+        $select->Selected($this->howMany); //ustawienie wybranej opcji w combo
         $form->AddItem($select);
 
-        $form->AddItem(new CButton("Zapisz zmiany"), "save");
+        $form->AddItem("<br />");
+        $form->AddItem("<br />");
+        $form->AddItem("<br />");
+        $form->AddItem("<br />");
+        $form->AddItem("<br />");
+        $form->AddItem("<br />");
+        $form->AddItem(new CButton("Zapisz zmiany", "save"));
         $form->Draw();
+        ?></div><?php
     }
 }
 

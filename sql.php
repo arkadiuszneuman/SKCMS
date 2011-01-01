@@ -216,7 +216,7 @@
 
         public function ReadLinks($whichOne = null) //whichOne  - id lub nazwa konkretnego linku
         {
-            $query = "SELECT id, link FROM links";
+            $query = "SELECT * FROM links";
 
             if ($whichOne != null)
             {
@@ -231,12 +231,13 @@
                     $query = $query." WHERE link='$whichOne'";
                 }
             }
-
+            $query = $query." ORDER BY links.order";
             $reply = mysql_query($query);
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
             {
                 $array[$i]['id'] = $line[0];
                 $array[$i]['link'] = $line[1];
+                $array[$i]['order'] = $line[2];
             }
 
             if (@$array == null)
@@ -268,6 +269,27 @@
             return mysql_query($query);
         }
 
+        public function SaveOrder()
+        {
+            $query = "SELECT id, links.order FROM links";
+            $reply = mysql_query($query);
+            $isOnce = false; //czy przynajmniej jadna rzecz bedzie zmieniona
+            for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
+            {
+                $id = $line[0];
+                $order = $line[1];
+                if ($_POST[$id] != $order)
+                {
+                    $query = "UPDATE links SET links.order='$_POST[$id]' WHERE id='$id'";
+                    $isOnce = true;
+                    if (!mysql_query($query))
+                        $isOnce = false;
+                }
+            }
+
+            return $isOnce;
+        }
+
         public function AddUser($login, $pass, $mail) //dodawanie admina
         {
             $login = $this->ProtectString($login);
@@ -294,6 +316,41 @@
             }
 
             return false;
+        }
+
+        public function SavePreferences($howMany)
+        {
+            //$userID = $this->ProtectInt($userID);
+            $userName = $this->ProtectString($_SESSION['name']);
+            $howMany = $this->ProtectInt($howMany);
+
+            $query = "SELECT id FROM users WHERE login='$userName'"; //pobranie IDka usera
+            $reply = mysql_query($query);
+            $line = mysql_fetch_row($reply);
+
+            $query = "SELECT id_user FROM preferences WHERE id_user='$line[0]'";
+            $reply = mysql_query($query);
+            if (mysql_fetch_row($reply)) //sprawdzenie czy rekord istnieje
+                $query = "UPDATE preferences SET howMany='$howMany'";
+            else
+                $query = "INSERT INTO preferences (id_user, howMany) VALUES ('$line[0]', '$howMany')";
+
+            return mysql_query($query);
+        }
+
+        //zwrocenie ustawien
+        public function LoadPreferences()
+        {
+            $userName = $this->ProtectString($_SESSION['name']);
+            $query = "SELECT howMany FROM preferences WHERE id_user=(SELECT id FROM users WHERE login='$userName')";
+
+            $reply = mysql_query($query);
+            $line = mysql_fetch_row($reply);
+            $array['howMany'] = $line[0];
+
+            if (@$array == null)
+                return null;
+            return $array;
         }
 
         public function Close()

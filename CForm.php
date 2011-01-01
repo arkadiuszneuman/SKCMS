@@ -171,12 +171,18 @@ class CTextArea extends CInput
 
 class CComboBox extends CItem
 {
-    private $valItems, $valTxts, $sel = 0, $text;
+    private $valItems, $valTxts, $sel = 0, $text, $selText;
 
     public function CComboBox($text, $name = null, $id = null)
     {
         $this->text = $text;
         $this->CItem($name, $id);
+    }
+
+    //wybrana bedzie taka opcja, ktora ma to samo w tekscie co przekazany selText
+    public function Selected($selText)
+    {
+        $this->selText = $selText;
     }
 
     public function Draw()
@@ -195,8 +201,13 @@ class CComboBox extends CItem
                 ?><option <?php
                         if ($this->valItems[$i] != null)
                                 $this->SetNode("value", $this->valItems[$i]);
-                        
-                        if ($this->sel == $i)
+
+                        if ($this->selText != null) //jesli zostal wybrany jakis tekst jako selected to ma wybierac selected po tekscie
+                        {
+                            if ($this->selText == $this->valTxts[$i])
+                                    echo "SELECTED";
+                        }
+                        else if ($this->sel == $i) //a jesli nie to po wybranym w metodzie additem
                             echo "SELECTED";
                         ?>><?php echo $this->valTxts[$i] ?></option><?php
             }
@@ -243,16 +254,23 @@ class CForm
         $this->arrayObjects[] = $item;
     }
 
-    private function DrawItem($item)
+    //malowanie itemow, jesli ostatni element malujemy to nie robic brki
+    private function DrawItem($item, $br = true)
     {
         
         if ($item instanceof CItem)
         {
-            ?><b><?php
-            echo $item->GetText();
-            ?></b><?php
+            if (!($item instanceof CButton))
+            {
+                ?><b><?php
+                echo $item->GetText();
+                ?></b><?php
+            }
             $item->Draw();
-            ?><br /><?php
+            if ($br)
+            {
+                ?><br /><?php
+            }
         }
         else
             echo $item;
@@ -278,9 +296,12 @@ class CForm
                     $this->SetNode("id", $this->id);
 
             ?>><?php
-            foreach($this->arrayObjects as $o)
+            for ($i = 0; $i < count($this->arrayObjects); ++$i)
             {
-                $this->DrawItem($o);
+                if ($i == count($this->arrayObjects) - 1)
+                    $this->DrawItem($this->arrayObjects[$i], false);
+                else
+                    $this->DrawItem($this->arrayObjects[$i]);
             }
             ?></form><?php
     }

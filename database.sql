@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Czas wygenerowania: 30 Gru 2010, 12:03
+-- Czas wygenerowania: 01 Sty 2011, 18:06
 -- Wersja serwera: 5.1.49
 -- Wersja PHP: 5.3.3
 
@@ -18,78 +18,28 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 --
 -- Baza danych: `database`
 --
-CREATE DATABASE `database` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `database`;
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `admins`
+-- Struktura tabeli dla  `articles`
 --
 
-CREATE TABLE IF NOT EXISTS `admins` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `login` varchar(255) NOT NULL,
-  `pass` varchar(33) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `mail` varchar(255) NOT NULL,
-  `privileges` tinyint(3) unsigned NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
-
---
--- Zrzut danych tabeli `admins`
---
-
-INSERT INTO `admins` (`id`, `login`, `pass`, `name`, `mail`, `privileges`) VALUES
-(4, 'sowa', ' 098f6bcd4621d373cade4e832627b4f6', 'Arek', 'mrmoro@o2.pl', 0),
-(5, '', ' d41d8cd98f00b204e9800998ecf8427e', '', '', 0),
-(6, '', ' d41d8cd98f00b204e9800998ecf8427e', '', '', 0),
-(7, 'asasa', ' a0a8b86579870be2d143db825101ddd8', 'asas', 'asasa', 0),
-(8, '', ' d41d8cd98f00b204e9800998ecf8427e', '', '', 0);
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla  `links`
---
-
-CREATE TABLE IF NOT EXISTS `links` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `link` varchar(100) COLLATE utf8_polish_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=7 ;
-
---
--- Zrzut danych tabeli `links`
---
-
-INSERT INTO `links` (`id`, `link`) VALUES
-(1, 'link number one'),
-(2, 'dwojeczka'),
-(3, 'i trÃ³jeczka');
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla  `news`
---
-
-CREATE TABLE IF NOT EXISTS `news` (
+CREATE TABLE IF NOT EXISTS `articles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` char(100) NOT NULL,
+  `title` char(100) CHARACTER SET latin1 NOT NULL,
   `date` datetime NOT NULL,
-  `note` text NOT NULL,
+  `note` text CHARACTER SET latin1 NOT NULL,
   `proporties` int(11) NOT NULL,
   `id_link` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=133 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=133 ;
 
 --
--- Zrzut danych tabeli `news`
+-- Zrzut danych tabeli `articles`
 --
 
-INSERT INTO `news` (`id`, `title`, `date`, `note`, `proporties`, `id_link`) VALUES
+INSERT INTO `articles` (`id`, `title`, `date`, `note`, `proporties`, `id_link`) VALUES
 (2, 'hmm', '2010-10-27 21:10:20', 'testestestes', 0, 0),
 (3, 'Test', '2010-10-27 21:10:42', 'testestestes', 0, 0),
 (5, 'Test', '2010-10-27 15:17:29', 'testestestes', 0, 0),
@@ -174,8 +124,75 @@ INSERT INTO `news` (`id`, `title`, `date`, `note`, `proporties`, `id_link`) VALU
 (117, 'News nr 95', '2010-11-17 00:03:18', 'test95test95test95test95test95test95test95test95test95test95\ntest95test95test95test95test95test95test95test95test95test95\ntest95test95test95test95test95test95test95test95test95test95\ntest95test95test95test95test95test95test95test95test95test95\ntest95test95test95test95test95test95test95test95test95test95\ntest95test95test95test95test95test95test95test95test95test95\ntest95test95test95test95test95test95test95test95test95test95\ntest95test95test95test95test95test95test95test95test95test95\ntest95test95test95test95test95test95test95test95test95test95\ntest95test95test95test95test95test95test95test95test95', 1, 0),
 (118, 'News nr 96', '2010-11-17 00:03:18', 'test96test96test96test96test96test96test96test96test96test96\ntest96test96test96test96test96test96test96test96test96test96\ntest96test96test96test96test96test96test96test96test96test96\ntest96test96test96test96test96test96test96test96test96test96\ntest96test96test96test96test96test96test96test96test96test96\ntest96test96test96test96test96test96test96test96test96test96\ntest96test96test96test96test96test96test96test96test96test96\ntest96test96test96test96test96test96test96test96test96test96\ntest96test96test96test96test96test96test96test96test96test96\ntest96test96test96test96test96test96test96test96test96', 0, 0),
 (119, 'News nr 97', '2010-11-17 00:03:18', 'test97test97test97test97test97test97test97test97test97test97\ntest97test97test97test97test97test97test97test97test97test97\ntest97test97test97test97test97test97test97test97test97test97\ntest97test97test97test97test97test97test97test97test97test97\ntest97test97test97test97test97test97test97test97test97test97\ntest97test97test97test97test97test97test97test97test97test97\ntest97test97test97test97test97test97test97test97test97test97\ntest97test97test97test97test97test97test97test97test97test97\ntest97test97test97test97test97test97test97test97test97test97\ntest97test97test97test97test97test97test97test97test97', 0, 0);
-INSERT INTO `news` (`id`, `title`, `date`, `note`, `proporties`, `id_link`) VALUES
+INSERT INTO `articles` (`id`, `title`, `date`, `note`, `proporties`, `id_link`) VALUES
 (120, 'News nr 98', '2010-11-17 00:03:18', 'test98test98test98test98test98test98test98test98test98test98\ntest98test98test98test98test98test98test98test98test98test98\ntest98test98test98test98test98test98test98test98test98test98\ntest98test98test98test98test98test98test98test98test98test98\ntest98test98test98test98test98test98test98test98test98test98\ntest98test98test98test98test98test98test98test98test98test98\ntest98test98test98test98test98test98test98test98test98test98\ntest98test98test98test98test98test98test98test98test98test98\ntest98test98test98test98test98test98test98test98test98test98\ntest98test98test98test98test98test98test98test98test98', 0, 0),
 (121, 'News nr 99', '2010-11-17 00:03:18', 'test99test99test99test99test99test99test99test99test99test99\ntest99test99test99test99test99test99test99test99test99test99\ntest99test99test99test99test99test99test99test99test99test99\ntest99test99test99test99test99test99test99test99test99test99\ntest99test99test99test99test99test99test99test99test99test99\ntest99test99test99test99test99test99test99test99test99test99\ntest99test99test99test99test99test99test99test99test99test99\ntest99test99test99test99test99test99test99test99test99test99\ntest99test99test99test99test99test99test99test99test99test99\ntest99test99test99test99test99test99test99test99test99', 0, 0),
 (122, 'asda', '2010-11-28 23:50:25', 'asdas', 0, 1),
 (127, 'aseesfsef', '2010-11-29 00:20:46', 'eaefaegeaea', 0, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla  `links`
+--
+
+CREATE TABLE IF NOT EXISTS `links` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `link` varchar(100) COLLATE utf8_polish_ci NOT NULL,
+  `order` int(11) unsigned NOT NULL DEFAULT '1' COMMENT 'kolejność wyświetlania linków',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=4 ;
+
+--
+-- Zrzut danych tabeli `links`
+--
+
+INSERT INTO `links` (`id`, `link`, `order`) VALUES
+(1, 'link number one', 3),
+(2, 'dwojeczka', 1),
+(3, 'i trÃ³jeczkaa', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla  `preferences`
+--
+
+CREATE TABLE IF NOT EXISTS `preferences` (
+  `id_user` int(10) unsigned NOT NULL COMMENT 'pole id z tabeli users',
+  `howMany` tinyint(4) NOT NULL COMMENT 'ilosc artykulow w tabeli',
+  UNIQUE KEY `id_user` (`id_user`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+
+--
+-- Zrzut danych tabeli `preferences`
+--
+
+INSERT INTO `preferences` (`id_user`, `howMany`) VALUES
+(4, 15);
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla  `users`
+--
+
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `login` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `pass` varchar(33) CHARACTER SET latin1 NOT NULL,
+  `mail` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `privileges` tinyint(3) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=12 ;
+
+--
+-- Zrzut danych tabeli `users`
+--
+
+INSERT INTO `users` (`id`, `login`, `pass`, `mail`, `privileges`) VALUES
+(4, 'sowa', ' 098f6bcd4621d373cade4e832627b4f6', 'mrmoro@o2.pl', 2),
+(7, 'asasa', ' a0a8b86579870be2d143db825101ddd8', 'asasa', 0),
+(11, 'zwykly', '098f6bcd4621d373cade4e832627b4f6', 'asasd', 1),
+(9, 'sss', ' 9f6e6800cfae7749eb6c486619254b9c', 'sss', 0),
+(10, 'www', '4eae35f1b35977a00ebd8086c259d4c9', 'www', 1);

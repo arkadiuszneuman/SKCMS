@@ -31,20 +31,31 @@ function Event()
 
 function ButtonsEvents() //eventy (klikniecia) na przyciski do kosza, przywroc z kosza i usun permamentnie
 {
-    btn = document.getElementById("binToNews");
+    /*btn = document.getElementById("binToNews");
     if (btn != null)
         btn.onclick = function() { return Event("panel.php?task=binToNews"); }
     
     btn = document.getElementById("binRemove");
     if (btn != null)
-        btn.onclick = function() { return Event("panel.php?task=binRemove"); }
+        btn.onclick = function() { return Event("panel.php?task=binRemove"); }*/
+
+    btn = document.getElementById("saveOrder");
+    if (btn != null)
+    {
+        btn.onclick = function()
+        {
+            document.binFrm.action = "?task=editLinks&do=saveOrder";
+            document.binFrm.submit();
+
+            return false;
+        }
+    }
 }
 
 
 window.onload = function()
 {
-
-    //ButtonsEvents();
+    ButtonsEvents();
 
     
 

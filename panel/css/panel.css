@@ -217,3 +217,15 @@ tr#upper
     padding: 20px 0px 10px 0px;
     text-align: center;
 }
+
+#preferences
+{
+    background-color: #8ee0ff;
+    border-color: #3896ff;
+    border-style: solid;
+    border-width: 2px;
+    width: 50%;
+    padding: 15px 5px 0px 10px;
+    font-family: Verdana, Arial;
+    font-size: 12px;
+}

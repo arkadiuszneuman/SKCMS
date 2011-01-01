@@ -3,14 +3,15 @@
     {
 		$toReturn = "";
         $link = $_GET['link'];
+
         if ($page > 0) //wyswietlenie poprzednia strona
         {
-            $toReturn = $toReturn."<a href=\"./index.php?link=".$link."&page=0\">Pierwsza</a> 
-				<a href=\"./index.php?link=".$link."&page=".($page-1)."\">Poprzednia strona</a> ";
+            $toReturn = $toReturn."<a href=\"./index.php?link=".$link."&page=0\"><<</a> 
+				<a href=\"./index.php?link=".$link."&page=".($page-1)."\"><</a> ";
         }
         else
         {
-            $toReturn = $toReturn."Pierwsza  Poprzednia strona    ";
+            $toReturn = $toReturn."<< < ";
         }
 
         for ($i = $page-2; $i < $page+5; ++$i) //wyswietlenie numerow stron
@@ -30,21 +31,22 @@
 
         if (($page+1)*$howMany < $count) //wyswietlenie nastepna strona i ostatnia strona
         {
-            $toReturn = $toReturn."<a href=\"./index.php?link=".$link."&page=".($page+1)."\">Następna strona</a> ";
+            $toReturn = $toReturn."<a href=\"./index.php?link=".$link."&page=".($page+1)."\">></a> ";
+
             if ($count%$howMany != 0) //jesli ilosc newsow przez ilosc newsow na strone jest nierowna
             {
-                $toReturn = $toReturn."<a href=\"./index.php?link=".$link."&page=".((int)($count/$howMany))."\">Ostatnia</a>";
+                $toReturn = $toReturn."<a href=\"./index.php?link=".$link."&page=".((int)($count/$howMany))."\">>></a>";
             }
             else
             {
-                $toReturn = $toReturn."<a href=\"./index.php?link=".$link."&page=".(($count/$howMany) - 1)."\">Ostatnia</a>";
+                $toReturn = $toReturn."<a href=\"./index.php?link=".$link."&page=".(($count/$howMany) - 1)."\">>></a>";
             }
         }
         else
         {
-            $toReturn = $toReturn."Następna strona   Ostatnia";
+            $toReturn = $toReturn."> >>";
         }
 
-		return $toReturn;
+		return $data = array("content"=>$toReturn);
 	}
 ?>

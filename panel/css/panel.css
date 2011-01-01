@@ -198,6 +198,7 @@ tr#upper
     text-align: center;
     font-weight: bold;
     width: 10px;
+    height: 30px;
 }
 
 #info /*tekst z informacjami np o usunieciu, zaktualizowaniu newsa*/
@@ -228,4 +229,10 @@ tr#upper
     padding: 15px 5px 0px 10px;
     font-family: Verdana, Arial;
     font-size: 12px;
+}
+
+#saveOrder /*obrazek dyskietka do zapisu koleności*/
+{
+    cursor: pointer;
+    width: 20px;
 }

@@ -250,7 +250,7 @@ class CPanel
                             <td>Lp</td>
                             <td>Zazn.</td>
                             <td class="topic">Link</td>
-                            <td>Porządek <a href="#" id="saveOrder">zapisz</a></td>
+                            <td><img alt="Zapisz" title="Zapisz zmiany" id="saveOrder" src="./graphics/floppy_disk.png" /> Porządek</td>
                         </tr>
             <?php
         }

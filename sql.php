@@ -3,8 +3,22 @@
 
     class Privileges
     {
-        const USER = 1;
-        const ADMIN = 2;
+        const USER = 1; //czy uzytkownik istnieje (czy zbanowany)
+        const COMMENTS = 2; //dodawanie/edycja swoich komentarzy
+        const ARTICLES = 4; // dodawanie/edycja artykulow
+        const BIN = 8; //usuwanie artykulow z kosza
+        const MENU = 16; //dodawanie/edycja linkow w menu
+        const USERS = 32; //dodawanie/edycja/banowanie uzytkownikow
+        const USERCOMMENTS = 64; //dodawanie/edycja/dopuszczanie komentarzy uzytkownikow
+
+        //sprawdza czy w grupie uprawnien (privileges) istnieje uprawnienie (privilege)
+        static function CheckPrivilege($privilege, $privileges)
+        {
+            if ($privilege & $privileges)
+                return true;
+
+            return false;
+        }
     }
 
     class Sql
@@ -306,16 +320,28 @@
         {
             $login = $this->ProtectString($login);
 
-            $query = "SELECT login, pass, privileges FROM users WHERE login='$login'";
+            $query = "SELECT login, pass FROM users WHERE login='$login'";
             $reply = mysql_query($query);
 
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
             {
                 if (trim($line[0]) === trim($login) && trim($line[1]) === trim($pass))
-                    return $line[2];
+                    return true;
             }
 
             return false;
+        }
+
+        public function CheckPriliveges($login)
+        {
+            $login = $this->ProtectString($login);
+
+            $query = "SELECT privileges FROM users WHERE login='$login'";
+            $reply = mysql_query($query);
+
+            $line = mysql_fetch_row($reply);
+
+            return $line[0];
         }
 
         public function SavePreferences($howMany)

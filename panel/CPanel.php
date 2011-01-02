@@ -6,6 +6,7 @@ class CPanel
 {
     private $sql = null;
     private $howMany = 20; //ilosc artykulow w tabelce
+    private $privileges = 0; //aktualny poziom uprawnien, ladowany na bierzaco
 
     //uzywane do DrawTable
     const EDIT = 1;
@@ -43,11 +44,18 @@ class CPanel
             <div id="menu">
                 <div id="links">
                     <div id="hello">Witaj <?php echo $_SESSION['name'] ?></div>
-                    <a href="./?task=addNote" class="button">Dodaj notkę</a>
-                    <a href="./?task=editArticles&page=0" class="button">Artykuły</a>
-                    <a href="./?task=bin" class="button">Kosz</a>
-                    <a href="./?task=editLinks" class="button">Menu</a>
-                    <a href="./?task=preferences" class="button">Ustawienia</a>
+                    <?php
+                    if (Privileges::CheckPrivilege(Privileges::ARTICLES, $this->privileges))
+                    {
+                        ?><a href="./?task=addNote" class="button">Dodaj notkę</a>
+                        <a href="./?task=editArticles&page=0" class="button">Artykuły</a>
+                        <a href="./?task=bin" class="button">Kosz</a><?php
+                    }
+                    if (Privileges::CheckPrivilege(Privileges::MENU, $this->privileges))
+                    {
+                        ?><a href="./?task=editLinks" class="button">Menu</a><?php
+                    }
+                    ?><a href="./?task=preferences" class="button">Ustawienia</a>
                 </div>
                 <div id="shadowRight"></div>
             </div>
@@ -60,6 +68,8 @@ class CPanel
         $pref = $this->sql->LoadPreferences();
         if ($pref['howMany'] != 0)
             $this->howMany = $pref['howMany'];
+
+        $this->privileges = $this->sql->CheckPriliveges($_SESSION['name']);
     }
 
     //metody odpowiedzialne za ramkę zieloną z informacjami
@@ -339,10 +349,10 @@ class CPanel
     public function CPanel()
     {
         $this->Header(); //header pliku
-        $this->DrawUp(); //gorna belka
-        $this->DrawLeft(); //lewa belka z menu
         $this->sql = new Sql();
-        $this->LoadPreferences();
+        $this->LoadPreferences(); //ladowanie ustawien i uprawnien
+        $this->DrawUp(); //gorna belka
+        $this->DrawLeft(); //lewa belka z menu            
         ?><div id="srodek"><?php
     }
     
@@ -620,6 +630,13 @@ class CPanel
         $form->AddItem(new CButton("Zapisz zmiany", "save"));
         $form->Draw();
         ?></div><?php
+
+        $priv = Privileges::ARTICLES | Privileges::USER;
+        echo $priv;
+        if (Privileges::CheckPrivilege(Privileges::USER, $priv))
+            echo "jest";
+        else
+            echo "nima";
     }
 }
 

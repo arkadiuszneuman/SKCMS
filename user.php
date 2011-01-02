@@ -25,10 +25,10 @@
 
             $sql = new Sql();
 
-            if ($privileges = $sql->CheckUser($login, md5($pass))) //sprawdzenie loginu i przeniesienie do panelu w razie powodzenia
+            if ($sql->CheckUser($login, md5($pass))) //sprawdzenie loginu i przeniesienie do panelu w razie powodzenia
             {
                 echo "Zalogowano";
-                $_SESSION['loggedIn'] = $privileges;
+                $_SESSION['loggedIn'] = true;
                 $_SESSION['name'] = $login;
                 
                 //echo '<script type="text/javascript">RefreshSite();</script>';
@@ -80,7 +80,7 @@
             if ($sql->AddUser($login, md5($pass), $mail)) //rejestracja i przeniesienie do panelu
             {
                 ?>Dodano admina<?php
-                $_SESSION['loggedIn'] = Privileges::USER;
+                $_SESSION['loggedIn'] = true;
                 $_SESSION['name'] = $login;
             }
 

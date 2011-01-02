@@ -1,8 +1,14 @@
 <?php
 session_start();
 include('../sql.php');
+$sql = new Sql();
 
-if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] != Privileges::USER)
+if (isset($_SESSION['name']))
+    $priv = $sql->CheckPriliveges($_SESSION['name']);
+else
+    $priv = 0;
+
+if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] && $priv > 1) //wszystkie uprawnienia powyzej 1 maja dostep do panelu
 {
     include('./CPanel.php');
     $panel = new CPanel();

@@ -1,6 +1,3 @@
-<script type="text/javascript" src="./javascript/ajax.js"></script>
-<link rel="stylesheet" type="text/css" href="./css/windowLogin.css" />
-
 <?php
 	session_start();
 	include ('includes/layout.php');
@@ -11,8 +8,10 @@
 	$mainContent = "";
 	$sidebarContent = "";
 	$template = new Layout();
-	
-	echo $template->RenderHeader("Kermitek");
+
+	$headerData = array("title"=>"SKCMS - Zwierzęcy System Zarządzania Treścią", 
+	"includes"=>"<script type=\"text/javascript\" src=\"./javascript/ajax.js\"></script>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"./css/windowLogin.css\">");
+	echo $template->Render("header", $headerData);
 	
 	if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] == false)
     {

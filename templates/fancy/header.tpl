@@ -4,9 +4,9 @@
 <head>
 
 <title>{title}</title>
-<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 <link rel="stylesheet" href="templates/fancy/style.css" title="Style">
-
+{includes}
 </head>
 <body>
 

@@ -4,14 +4,6 @@ class Layout
 {
 	public $render;
 
-	public function RenderHeader($title)
-	{
-		$this->render = file_get_contents("templates/fancy/header.tpl"); // umożliwić zmianę templatki
-		$this->render = str_replace("{title}", $title, $this->render);
-		$this->render = preg_replace('({(.*?)})', "", $this->render);
-		return $this->render;
-	}
-
 	public function RenderFooter($content)
 	{
 		$this->render = file_get_contents("templates/fancy/footer.tpl");

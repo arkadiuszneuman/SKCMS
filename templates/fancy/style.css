@@ -116,8 +116,6 @@ ul#menu li:hover ul
 
 #news
 {
-	#margin: 5px 0px 5px 0px;
-	#padding: 0px 0px 0px 20px;
 	width: 75%;
 	float: left;
 	word-wrap: break-word;
@@ -162,8 +160,6 @@ ul#menu li:hover ul
 
 #sidebar
 {
-	#margin: 5px 0px 5px 0px;
-	#padding: 0px 10px 0px 12px;
 	width: 24%;
 	float: left;
 	word-wrap: break-word;

@@ -62,7 +62,7 @@
                 foreach($news as $n)
                 {
 					$data = array("title"=>$n['title'], "author"=>"Kermit", "date"=>$n['date'], "comments"=>"0",
-					"content"=>nl2br($n['note']));
+					"content"=>$n['note']);
 					$newsBlock = $newsBlock.$template->Render("news_item", $data);
                 }
 

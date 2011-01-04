@@ -4,6 +4,8 @@
 	include ('includes/init.php');
 	include ('sql.php');
 
+    ?><div id="all"><?php
+
 	$newsBlock = "";
 	$mainContent = "";
 	$sidebarContent = "";
@@ -11,8 +13,8 @@
 
 	$headerData = array("title"=>"SKCMS - Zwierzęcy System Zarządzania Treścią", 
 	"includes"=>"<script type=\"text/javascript\" src=\"./javascript/ajax.js\"></script>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"./css/windowLogin.css\">");
-	echo $template->Render("header", $headerData);
-	
+	echo $template->Render("header", $headerData);  
+
 	if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] == false)
     {
 		$data = array("title"=>"Użytkownik", "content"=>"<a href=\"#\" onclick=\"Login('login');\">Zaloguj</a>");
@@ -28,7 +30,7 @@
     
     //okienko z logowaniem
     ?>
- <div id="windowLogin"></div>
+        <div id="windowLogin"></div>
     <?php
 
     //wyswietlenie linkow
@@ -83,5 +85,8 @@
 	$data = array("cont"=>$mainContent);
 	echo $template->Render("content", $data);
 	echo $template->RenderFooter("Copyright SKCMS TEAM :D");
+
+    ?></div><?php
+
     $sql->Close();
 ?>

@@ -3,8 +3,8 @@
 
     class Privileges
     {
-        const USER = 1; //czy uzytkownik istnieje (czy zbanowany)
-        const COMMENTS = 2; //dodawanie/edycja swoich komentarzy
+        const USER = 1; //czy uzytkownik istnieje (jesli nie to zbanowany)
+        const COMMENTS = 2; //dodawanie/edycja swoich komentarzy (nie w panelu)
         const ARTICLES = 4; // dodawanie/edycja artykulow
         const BIN = 8; //usuwanie artykulow z kosza
         const MENU = 16; //dodawanie/edycja linkow w menu
@@ -330,6 +330,26 @@
             }
 
             return false;
+        }
+
+        public function ReadUsers($from, $howMany)
+        {
+            $from = $this->ProtectInt($from);
+            $howMany = $this->ProtectInt($howMany);
+
+            $query = "SELECT id, login, privileges FROM users ORDER BY login";
+
+            $reply = mysql_query($query);
+            for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
+            {
+                $array[$i]['id'] = $line[0];
+                $array[$i]['login'] = $line[1];
+                $array[$i]['privileges'] = $line[2];
+            }
+
+            if (@$array == null)
+                return null;
+            return $array;
         }
 
         public function CheckPriliveges($login)

@@ -8,7 +8,7 @@ if (isset($_SESSION['name']))
 else
     $priv = 0;
 
-if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] && $priv > 1) //wszystkie uprawnienia powyzej 1 maja dostep do panelu
+if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] && $priv >= Privileges::ARTICLES) //wszystkie uprawnienia od mozliwosci dodawania artykulow maja dostep do panelu
 {
     include('./CPanel.php');
     $panel = new CPanel();
@@ -34,6 +34,11 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] && $priv > 1) //wszyst
         case "editLinks":
             $panel->EditLinks();
             break;
+
+        case "editUsers":
+            $panel->EditUsers();
+            break;
+
         case "preferences":
             $panel->Preferences();
             break;

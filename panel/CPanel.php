@@ -12,6 +12,7 @@ class CPanel
     const EDIT = 1;
     const BIN = 2;
     const LINKS = 4;
+    const USERS = 8;
 
     private function Header()
     {
@@ -55,7 +56,12 @@ class CPanel
                     {
                         ?><a href="./?task=editLinks" class="button">Menu</a><?php
                     }
-                    ?><a href="./?task=preferences" class="button">Ustawienia</a>
+                    if (Privileges::CheckPrivilege(Privileges::USERS, $this->privileges))
+                    {
+                        ?><a href="./?task=editUsers" class="button">Użykownicy</a><?php
+                    }
+                    ?>
+                    <a href="./?task=preferences" class="button">Ustawienia</a>
                 </div>
                 <div id="shadowRight"></div>
             </div>
@@ -184,7 +190,7 @@ class CPanel
         }
     }
 
-    //malowanie tabeli z artykulami data - dane malowane w tabelce, task - malowanie tabelki kosza, edycji lub newsow, links - linki potrzebne w tabelce kosz i edycja
+    //malowanie tabeli z artykulami data - dane malowane w tabelce, task - jaki typ tabelki, edycji lub newsow, links - linki potrzebne w tabelce kosz i edycja
     private function DrawTable($data, $task, $links = null)
     {
         if ($data == null)
@@ -218,9 +224,12 @@ class CPanel
                     $item = new CButton("Przywróć", "restore");
                     $item->SetClass("buttonInput");
                     $item->Draw();
-                    $item = new CButton("Usuń", "remove");
-                    $item->SetClass("buttonInput");
-                    $item->Draw();
+                    if (Privileges::CheckPrivilege(Privileges::BIN, $this->privileges)) //usuwanie artykulow z kosza
+                    {
+                        $item = new CButton("Usuń", "remove");
+                        $item->SetClass("buttonInput");
+                        $item->Draw();
+                    }
                     ?>
                 </div>
             <?php
@@ -233,6 +242,20 @@ class CPanel
                     Zaznaczone: <br />
                      <?php
                     $item = new CButton("Usuń", "remove");
+                    $item->SetClass("buttonInput");
+                    $item->Draw();
+                    ?>
+                </div>
+            <?php
+        }
+        else if ($task == CPanel::USERS)
+        {
+            ?>
+                <form name="binFrm" method="POST" action="./?task=editUsers&page=<?php echo $page ?>">
+                <div id="options">
+                    Zaznaczone: <br />
+                     <?php
+                    $item = new CButton("Ustaw", "save");
                     $item->SetClass("buttonInput");
                     $item->Draw();
                     ?>
@@ -264,6 +287,17 @@ class CPanel
                         </tr>
             <?php
         }
+        else if ($task == CPanel::USERS)
+        {
+            ?>
+                    <table id="tabPanel">
+                        <tr id="upper">
+                            <td>Lp</td>
+                            <td class="topic">Użytkownik</td>
+                            <td>Uprawnienia</td>
+                        </tr>
+            <?php
+        }
         $even = true;
         $i = 1;
         foreach ($data as $n)
@@ -282,9 +316,16 @@ class CPanel
                 <?php echo (($page) * $this->howMany + $i) ?>
             </td>
 
-            <td>
-                <input type="checkbox" name="check[]" value="<?php echo $n['id'] ?>" />
-            </td>
+            <?php
+            if ($task == CPanel::EDIT || $task == CPanel::BIN || $task == CPanel::LINKS)
+            {
+                ?>
+                <td>
+                    <input type="checkbox" name="check[]" value="<?php echo $n['id'] ?>" />
+                </td>
+                <?php
+            }
+            ?>
 
             <td class="topic">
                 <?php
@@ -296,14 +337,19 @@ class CPanel
                 {
                     ?><a href="./?task=editLinks&id=<?php echo $n['id'] ?>" title="Kliknij, aby edytować"><?php echo $n['link'] ?></a><?php
                 }
+                else if ($task == CPanel::USERS)
+                {
+                    ?><a href="./?task=editUsers&id=<?php echo $n['id'] ?>" title="Kliknij, aby edytować"><?php echo $n['login'] ?></a><?php
+                }
             ?>
             </td>
-            <?php
+            <td>
 
+            <?php
             if ($task == CPanel::EDIT || $task == CPanel::BIN)
             {
                 ?>
-                <td>
+                
                     <select name="visibleIn[<?php echo $n['id'] ?>]">
                         <option value="0">Brak</option>
                         <?php //wyswieltenie dropdownow, gdzie bedzie wyswietlany przy kazdym artykule
@@ -322,19 +368,23 @@ class CPanel
                             }
                         ?>
                     </select>
-                </td>
                 <?php
             }
             else if ($task == CPanel::LINKS)
             {
-                ?><td><?php
                 $txt = new CTextBox(null, $n['id']);
                 $txt->SetAddionalAttribs('size="1"');
                 $txt->SetValue($n['order']);
                 $txt->Draw();
-                ?></td><?php
             }
-            ?></tr><?php
+            else if ($task == CPanel::USERS)
+            {
+                echo $n['privileges'];
+            }
+            ?>
+            </td>
+            </tr>
+            <?php
 
             ++$i;
             $even = !$even;
@@ -594,6 +644,39 @@ class CPanel
 
         $links = $this->sql->ReadLinks();
         $this->DrawTable($links, CPanel::LINKS);
+    }
+
+    public function EditUsers()
+    {
+        @$id = $_GET['id'];
+        if ($id == null)
+            $id = 0;
+
+        if(isset($_POST['user'])) //dodanie nowego linku
+        {
+            $link = $_POST['link'];
+            $link = trim($link);
+
+            if (empty($link))
+            {
+                $this->SendInfo("Nie dodano nowego linku z powodu braku nazwy linku");
+            }
+            else
+            {
+                if ($this->sql->AddLink($link))
+                    $this->SendInfo("Link został dodany");
+                else
+                    $this->SendInfo("Link nie został dodany");
+            }
+
+            ?><br /><?php
+        }
+
+
+        $this->DrawInfo();
+
+        $links = $this->sql->ReadUsers($page*$this->howMany, $this->howMany);
+        $this->DrawTable($links, CPanel::USERS);
     }
 
     public function Preferences()

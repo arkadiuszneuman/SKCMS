@@ -1,4 +1,6 @@
 <div id="content">
-{cont}
-<div class="clear"></div>
+	<div id="mainContent">
+{mainContent}
+	</div>
+{aside}
 </div>

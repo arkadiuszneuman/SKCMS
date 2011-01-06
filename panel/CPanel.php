@@ -58,7 +58,7 @@ class CPanel
                     }
                     if (Privileges::CheckPrivilege(Privileges::USERS, $this->privileges))
                     {
-                        ?><a href="./?task=editUsers" class="button">Użykownicy</a><?php
+                        ?><a href="./?task=editUsers" class="button">Użytkownicy</a><?php
                     }
                     ?>
                     <a href="./?task=preferences" class="button">Ustawienia</a>
@@ -75,7 +75,7 @@ class CPanel
         if ($pref['howMany'] != 0)
             $this->howMany = $pref['howMany'];
 
-        $this->privileges = $this->sql->CheckPriliveges($_SESSION['name']);
+        $this->privileges = $this->sql->CheckPrivileges($_SESSION['name']);
     }
 
     //metody odpowiedzialne za ramkę zieloną z informacjami
@@ -132,9 +132,9 @@ class CPanel
     }
 
     //rysowanie pagingu, howMany - ile artykulow na strone, count - ilosc artykulow, link - przekierowanie
-    private function DrawPaging($howMany, $count) 
+    private function DrawPaging($count) 
     {
-        if ($howMany >= $count) //jesli ilosc artykulow na stronie jest wieksza od ilosci ogolnej arykulow to nie maluj pagingu
+        if ($this->howMany >= $count) //jesli ilosc artykulow na stronie jest wieksza od ilosci ogolnej arykulow to nie maluj pagingu
             return;
 
         @$task = $_GET['task'];
@@ -158,7 +158,7 @@ class CPanel
 
         for ($i = $page-2; $i < $page+5; ++$i) //wyswietlenie numerow stron
         {
-            if ($i > 0 && ($i-1)*$howMany < $count) //numery stron tylko w zakresie min max
+            if ($i > 0 && ($i-1)*$this->howMany < $count) //numery stron tylko w zakresie min max
             {
                 if ($i != $page + 1) //link nie moze byc aktualna strona
                 {
@@ -171,16 +171,16 @@ class CPanel
             }
         }
 
-        if (($page+1)*$howMany < $count) //wyswietlenie nastepna strona i ostatnia strona
+        if (($page+1)*$this->howMany < $count) //wyswietlenie nastepna strona i ostatnia strona
         {
             ?><a href="./?task=<?php echo $task ?>&page=<?php echo ($page+1) ?>">Następna strona</a>   <?php
-            if ($count%$howMany != 0) //jesli ilosc newsow przez ilosc newsow na strone jest nierowna
+            if ($count%$this->howMany != 0) //jesli ilosc newsow przez ilosc newsow na strone jest nierowna
             {
-                ?><a href="./?task=<?php echo $task ?>&page=<?php echo ((int)($count/$howMany)) ?>">Ostatnia</a>   <?php
+                ?><a href="./?task=<?php echo $task ?>&page=<?php echo ((int)($count/$this->howMany)) ?>">Ostatnia</a>   <?php
             }
             else
             {
-                ?><a href="./?task=<?php echo $link ?>&page=<?php echo (($count/$howMany) - 1) ?>">Ostatnia</a>   <?php
+                ?><a href="./?task=<?php echo $link ?>&page=<?php echo (($count/$this->howMany) - 1) ?>">Ostatnia</a>   <?php
             }
         }
         else
@@ -248,20 +248,6 @@ class CPanel
                 </div>
             <?php
         }
-        else if ($task == CPanel::USERS)
-        {
-            ?>
-                <form name="binFrm" method="POST" action="./?task=editUsers&page=<?php echo $page ?>">
-                <div id="options">
-                    Zaznaczone: <br />
-                     <?php
-                    $item = new CButton("Ustaw", "save");
-                    $item->SetClass("buttonInput");
-                    $item->Draw();
-                    ?>
-                </div>
-            <?php
-        }
 
         if ($task == CPanel::EDIT || $task == CPanel::BIN)
         {
@@ -293,7 +279,7 @@ class CPanel
                     <table id="tabPanel">
                         <tr id="upper">
                             <td>Lp</td>
-                            <td class="topic">Użytkownik</td>
+                            <td>Użytkownik</td>
                             <td>Uprawnienia</td>
                         </tr>
             <?php
@@ -327,19 +313,30 @@ class CPanel
             }
             ?>
 
-            <td class="topic">
-                <?php
+            
+            <?php
                 if ($task == CPanel::EDIT || $task == CPanel::BIN)
                 {
-                    ?><a href="./?task=editArticles&id=<?php echo $n['id'] ?>" title="Kliknij, aby edytować"><?php echo $n['title'] ?></a><?php
+                    ?><td class="topic">
+                        <a href="./?task=editArticles&id=<?php echo $n['id'] ?>" title="Kliknij, aby edytować"><?php echo $n['title'] ?></a>
+                        <?php
                 }
                 else if ($task == CPanel::LINKS)
                 {
-                    ?><a href="./?task=editLinks&id=<?php echo $n['id'] ?>" title="Kliknij, aby edytować"><?php echo $n['link'] ?></a><?php
+                    ?><td class="topic">
+                        <a href="./?task=editLinks&id=<?php echo $n['id'] ?>" title="Kliknij, aby edytować"><?php echo $n['link'] ?></a>
+                        <?php
                 }
                 else if ($task == CPanel::USERS)
                 {
-                    ?><a href="./?task=editUsers&id=<?php echo $n['id'] ?>" title="Kliknij, aby edytować"><?php echo $n['login'] ?></a><?php
+                    if ($n['login'] !== $_SESSION['name'])
+                    {
+                        ?><td><a href="#" onclick="OpenWindow(<?php echo $n['id'] ?>, '<?php echo $n['login'] ?>', <?php echo $n['privileges'] ?>);" title="Kliknij, aby edytować"><?php echo $n['login'] ?></a><?php
+                    }
+                    else
+                    {
+                        ?><td><?php echo $_SESSION['name'];?></td><?php //uzytkownik nie ma mozliwości edytowania samego siebie
+                    }
                 }
             ?>
             </td>
@@ -379,7 +376,15 @@ class CPanel
             }
             else if ($task == CPanel::USERS)
             {
-                echo $n['privileges'];
+                $privileges = Privileges::WhatPrivileges($n['privileges']);
+                for ($x = 0; $x < count($privileges); ++$x)
+                {
+                    echo Privileges::PrivilegeToString($privileges[$x]);
+                    if ($x != count($privileges)-1)
+                    {
+                        ?>, <?php
+                    }
+                }
             }
             ?>
             </td>
@@ -520,7 +525,7 @@ class CPanel
             $news = $this->sql->ReadArticles(Sql::NOTHING, $page*$this->howMany, $this->howMany);
             $count = $this->sql->NumberOfArticles(Sql::NOTHING);
             $this->DrawTable($news, CPanel::EDIT, $this->sql->ReadLinks());
-            $this->DrawPaging($this->howMany, $count);
+            $this->DrawPaging($count);
         }
     }
 
@@ -557,7 +562,7 @@ class CPanel
         $news = $this->sql->ReadArticles(Sql::BIN, $page*$this->howMany, $this->howMany);
         $count = $this->sql->NumberOfArticles(Sql::BIN);
         $this->DrawTable($news, CPanel::BIN, $this->sql->ReadLinks());
-        $this->DrawPaging($this->howMany, $count);
+        $this->DrawPaging($count);
     }
 
     public function EditLinks()
@@ -648,39 +653,44 @@ class CPanel
 
     public function EditUsers()
     {
+        ?><script type="text/javascript" src="./javascript/checkboxesInPrivileges.js"></script><?php
         @$id = $_GET['id'];
         if ($id == null)
             $id = 0;
 
-        if(isset($_POST['user'])) //dodanie nowego linku
+        @$page = $_GET['page'];
+        if ($page == null)
+            $page = 0;
+
+        ?><div id="windowUser"></div><?php
+
+        if (isset($_POST['save']))
         {
-            $link = $_POST['link'];
-            $link = trim($link);
+            @$priv = $_POST['priv']; //zlapanie checkboksow z uprawnieniami
+            @$login = $_GET['login'];
+            if (!$priv)
+                $priv[] = 0;
 
-            if (empty($link))
-            {
-                $this->SendInfo("Nie dodano nowego linku z powodu braku nazwy linku");
-            }
+            $privileges = 0;
+            foreach($priv as $p)
+                $privileges |= $p;
+
+            if ($this->sql->SavePrivileges($id, $privileges))
+                $this->SendInfo("Uprawnienia użytkownika <b>$login</b> zostały zmienione");
             else
-            {
-                if ($this->sql->AddLink($link))
-                    $this->SendInfo("Link został dodany");
-                else
-                    $this->SendInfo("Link nie został dodany");
-            }
-
-            ?><br /><?php
+                $this->SendInfo("Nie można zmienić uprawnień użytkownika $login");
         }
-
 
         $this->DrawInfo();
 
         $links = $this->sql->ReadUsers($page*$this->howMany, $this->howMany);
         $this->DrawTable($links, CPanel::USERS);
+        $this->DrawPaging($this->sql->NumberOfUsers());
     }
 
     public function Preferences()
     {
+        //TODO SPRAWDZAC PRZY KAZDYM WEJSCIU UPRAWNIENIA
         if (isset($_POST['save']))
         {
             $this->howMany = $_POST['countTable'];
@@ -713,13 +723,6 @@ class CPanel
         $form->AddItem(new CButton("Zapisz zmiany", "save"));
         $form->Draw();
         ?></div><?php
-
-        $priv = Privileges::ARTICLES | Privileges::USER;
-        echo $priv;
-        if (Privileges::CheckPrivilege(Privileges::USER, $priv))
-            echo "jest";
-        else
-            echo "nima";
     }
 }
 

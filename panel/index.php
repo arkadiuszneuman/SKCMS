@@ -4,7 +4,7 @@ include('../sql.php');
 $sql = new Sql();
 
 if (isset($_SESSION['name']))
-    $priv = $sql->CheckPriliveges($_SESSION['name']);
+    $priv = $sql->CheckPrivileges($_SESSION['name']);
 else
     $priv = 0;
 

@@ -237,3 +237,16 @@ tr#upper
     cursor: pointer;
     width: 20px;
 }
+
+#windowUser /*okienko z wyborem opcji użytkownika*/
+{
+    background-color: #cbfbff;
+    position: absolute;
+    left: 100px;
+    top: 100px;
+    border-color: green;
+    border-width: 8px;
+    border-style: solid;
+    padding: 8px;
+    display: none;
+}

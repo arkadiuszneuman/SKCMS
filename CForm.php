@@ -46,13 +46,14 @@ abstract class CInput extends CItem
     const TEXT = 1;
     const PASSWORD = 2;
     const SUBMIT = 4;
+    const CHECKBOX = 8;
 
     public function CInput($type, $text = null, $name = null, $id = null)
     {
         $this->type = $type;       
         $this->text = $text;
 
-        $this->CItem($name, $id);
+        parent::CItem($name, $id);
     }
 
     //text bedzie wyswietlany obok inputu
@@ -88,6 +89,9 @@ abstract class CInput extends CItem
                             break;
                         case CInput::SUBMIT:
                             echo "submit";
+                            break;
+                        case CInput::CHECKBOX:
+                            echo "checkbox";
                             break;
                     }
                ?>" <?php
@@ -139,7 +143,7 @@ class CTextBox extends CInput
 {
     public function CTextBox($text = null, $name = null, $id = null)
     {
-        $this->CInput(CInput::TEXT, $text, $name, $id);
+        parent::CInput(CInput::TEXT, $text, $name, $id);
     }
 }
 
@@ -147,7 +151,7 @@ class CPassword extends CInput
 {
     public function CPassword($text = null, $name = null, $id = null)
     {
-        $this->CInput(CInput::PASSWORD, $text, $name, $id);
+        parent::CInput(CInput::PASSWORD, $text, $name, $id);
     }
 }
 
@@ -165,7 +169,7 @@ class CTextArea extends CInput
 {
     public function CTextArea($text = null, $name = null, $id = null)
     {
-        $this->CInput(null, $text, $name, $id);
+       parent::CInput(null, $text, $name, $id);
     }
 }
 
@@ -176,7 +180,7 @@ class CComboBox extends CItem
     public function CComboBox($text, $name = null, $id = null)
     {
         $this->text = $text;
-        $this->CItem($name, $id);
+        parent::CItem($name, $id);
     }
 
     //wybrana bedzie taka opcja, ktora ma to samo w tekscie co przekazany selText
@@ -229,6 +233,21 @@ class CComboBox extends CItem
     }
 }
 
+class CCheckBox extends CInput
+{
+    public function CCheckBox($text = null, $name = null, $selected = false, $disabled = false, $value = null, $id = null)
+    {
+        parent::CInput(CInput::CHECKBOX, $text, $name, $id);
+        if ($selected)
+            $this->SetAddionalAttribs("CHECKED");
+
+        if ($disabled)
+            $this->SetAddionalAttribs("DISABLED");
+
+        if ($value != null)
+            $this->SetValue ($value);
+    }
+}
 
 class CForm
 {
@@ -260,13 +279,22 @@ class CForm
         
         if ($item instanceof CItem)
         {
-            if (!($item instanceof CButton))
+            if (!($item instanceof CButton) && !($item instanceof CCheckBox))
             {
                 ?><b><?php
                 echo $item->GetText();
                 ?></b><?php
             }
+
             $item->Draw();
+            
+            if ($item instanceof CCheckBox)
+            {
+                ?><b><?php
+                echo $item->GetText();
+                ?></b><?php
+            }
+
             if ($br)
             {
                 ?><br /><?php
@@ -291,7 +319,8 @@ class CForm
             else if ($this->method == CForm::GET)
                 $this->SetNode("method", "GET");
 
-            $this->SetNode("action", $this->action);
+            if ($this->action)
+                $this->SetNode("action", $this->action);
             if ($this->id != null)
                     $this->SetNode("id", $this->id);
 

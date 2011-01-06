@@ -10,6 +10,7 @@
         const MENU = 16; //dodawanie/edycja linkow w menu
         const USERS = 32; //dodawanie/edycja/banowanie uzytkownikow
         const USERCOMMENTS = 64; //dodawanie/edycja/dopuszczanie komentarzy uzytkownikow
+        const ALL = 127;
 
         //sprawdza czy w grupie uprawnien (privileges) istnieje uprawnienie (privilege)
         static function CheckPrivilege($privilege, $privileges)
@@ -18,6 +19,61 @@
                 return true;
 
             return false;
+        }
+        
+        static function PrivilegeToString($privilege)
+        {
+            switch ($privilege)
+            {
+                case 0:
+                    $s = "Brak uprawnień";
+                    break;
+                case Privileges::USER:
+                    $s = "Użytkownik";
+                    break;
+                case Privileges::COMMENTS:
+                    $s = "Możliwość komentowania";
+                    break;
+                case Privileges::ARTICLES:
+                    $s = "Dodawanie/edycja/wyrzucanie do kosza artykułów";
+                    break;
+                case Privileges::BIN:
+                    $s = "Bezpowrotne usuwanie artykułów z kosza";
+                    break;
+                case Privileges::MENU:
+                    $s = "Dodawanie/edycja/usuwanie linków w menu";
+                    break;
+                case Privileges::USERS:
+                    $s = "Edycja użytkowników";
+                    break;
+                case Privileges::USERCOMMENTS:
+                    $s = "Usuwanie/edycja/dopuszczanie komentarzy użytkowników";
+                    break;
+            }
+
+            return $s;
+        }
+
+        static function WhatPrivileges($number)
+        {
+            if (Privileges::CheckPrivilege(Privileges::USER, $number))
+                $array[] = Privileges::USER;
+            if (Privileges::CheckPrivilege(Privileges::COMMENTS, $number))
+                $array[] = Privileges::COMMENTS;
+            if (Privileges::CheckPrivilege(Privileges::ARTICLES, $number))
+                $array[] = Privileges::ARTICLES;
+            if (Privileges::CheckPrivilege(Privileges::BIN, $number))
+                $array[] = Privileges::BIN;
+            if (Privileges::CheckPrivilege(Privileges::MENU, $number))
+                $array[] = Privileges::MENU;
+            if (Privileges::CheckPrivilege(Privileges::USERS, $number))
+                $array[] = Privileges::USERS;
+            if (Privileges::CheckPrivilege(Privileges::USERCOMMENTS, $number))
+                $array[] = Privileges::USERCOMMENTS;
+
+            if (@$array == null)
+                $array[] = 0;
+            return $array;
         }
     }
 
@@ -304,14 +360,14 @@
             return $isOnce;
         }
 
-        public function AddUser($login, $pass, $mail) //dodawanie admina
+        public function AddUser($login, $pass, $mail) //dodawanie uzytkownika
         {
             $login = $this->ProtectString($login);
             $pass = $this->ProtectString($pass);
             $mail = $this->ProtectString($mail);
 
             $query = "INSERT INTO users (login, pass, mail, privileges) VALUES
-            ('".trim($login)."', '".trim($pass)."', '".trim($mail)."', '".Privileges::USER."');";
+            ('".trim($login)."', '".trim($pass)."', '".trim($mail)."', '".Privileges::COMMENTS."');";
 
             return mysql_query($query);
         }
@@ -337,7 +393,7 @@
             $from = $this->ProtectInt($from);
             $howMany = $this->ProtectInt($howMany);
 
-            $query = "SELECT id, login, privileges FROM users ORDER BY login";
+            $query = "SELECT id, login, privileges FROM users ORDER BY login LIMIT $from, $howMany";
 
             $reply = mysql_query($query);
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
@@ -352,7 +408,17 @@
             return $array;
         }
 
-        public function CheckPriliveges($login)
+        //zwraca ilosc uzytkownikow
+        public function NumberOfUsers()
+        {
+            $query = "SELECT COUNT(*) as howmany FROM users";
+
+            $row = mysql_fetch_array(mysql_query($query));
+
+            return $row["howmany"];
+        }
+
+        public function CheckPrivileges($login)
         {
             $login = $this->ProtectString($login);
 
@@ -362,6 +428,15 @@
             $line = mysql_fetch_row($reply);
 
             return $line[0];
+        }
+
+        public function SavePrivileges($id, $privileges)
+        {
+            $id = $this->ProtectInt($id);
+
+            $query = "UPDATE users SET privileges='$privileges' WHERE id='$id'";
+            
+            return mysql_query($query);
         }
 
         public function SavePreferences($howMany)

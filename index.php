@@ -79,10 +79,10 @@
         }
     }
 	$data = array("content"=>$newsBlock);
-	$mainContent = $mainContent."".$template->Render("news", $data);
+	$mainContent = $template->Render("news", $data);
 	$data = array("content"=>$sidebarContent);
-	$mainContent = $mainContent."".$template->Render("sidebar", $data);
-	$data = array("cont"=>$mainContent);
+	$asideContent = $template->Render("sidebar", $data);
+	$data = array("mainContent"=>$mainContent, "aside"=>$asideContent);
 	echo $template->Render("content", $data);
 	echo $template->RenderFooter("Copyright SKCMS TEAM :D");
 

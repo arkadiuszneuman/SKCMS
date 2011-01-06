@@ -10,7 +10,6 @@
 </head>
 <body>
 
-<div id="main">
-	<div id="header">
-	  <a id="logo" href="#"></a>
-	</div>
+<div id="header">
+	<a id="logo" href="#"></a>
+</div>

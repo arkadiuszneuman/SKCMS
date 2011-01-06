@@ -1,6 +1,6 @@
 @import url("reset.css");
 
-html, body 
+html
 {
 	font-size: 10pt;
 	line-height: 1.5;
@@ -11,12 +11,7 @@ html, body
 	margin: 0;
 }
 
-.clear 
-{
-	clear: both;
-}
-
-#main 
+body
 {
 	background-color: rgb(143, 225, 242);
 	width: 1024px;
@@ -105,6 +100,7 @@ ul#menu li:hover ul
 	background-repeat: repeat-y;
 	width: 1024px;
 	margin: auto;	
+	display: table;
 }
 
 #content h3 
@@ -114,12 +110,16 @@ ul#menu li:hover ul
 	margin: 0;
 }
 
+#mainContent
+{
+	width: 80%;
+	border-right: 1px solid #999;
+	display: table-cell;
+}
+
 #news
 {
-	width: 75%;
-	float: left;
 	word-wrap: break-word;
-	border-right: 1px solid #999;
 }
 
 #news .item, #news #paging
@@ -160,9 +160,9 @@ ul#menu li:hover ul
 
 #sidebar
 {
-	width: 24%;
-	float: left;
+	width: 19%;
 	word-wrap: break-word;
+	display: table-cell;
 }
 
 #sidebar hr

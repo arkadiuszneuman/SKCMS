@@ -10,37 +10,42 @@ else
 
 if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] && $priv >= Privileges::ARTICLES) //wszystkie uprawnienia od mozliwosci dodawania artykulow maja dostep do panelu
 {
-    include('./CPanel.php');
-    $panel = new CPanel();
+    include('./Includes.php');
 
     @$task = $_GET['task'];
     if (empty($task)) //domyslnie ma byc edycja artykulow
-        $task = "editArticles";
+        $task = "articles";
 
     switch ($task)
     {
         case "addNote":
-            $panel->AddNote();
+            $c = new CAddNote();
+            $c->AddNote();
             break;
 
-        case "editArticles":
-            $panel->EditArticles();
+        case "articles":
+            $c = new CArticles();
+            $c->Articles();
             break;
 
         case "bin":
-            $panel->Bin();
+            $c = new CBin();
+            $c->Bin();
             break;
 
-        case "editLinks":
-            $panel->EditLinks();
+        case "links":
+            $c = new CLinks();
+            $c->Links();
             break;
 
-        case "editUsers":
-            $panel->EditUsers();
+        case "users":
+            $c = new CUsers();
+            $c->Users();
             break;
 
         case "preferences":
-            $panel->Preferences();
+            $c = new CPreferences();
+            $c->Preferences();
             break;
     }
 

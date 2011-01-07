@@ -4,9 +4,9 @@ include("../CForm.php");
 
 class CPanel
 {
-    private $sql = null;
-    private $howMany = 20; //ilosc artykulow w tabelce
-    private $privileges = 0; //aktualny poziom uprawnien, ladowany na bierzaco
+    protected $sql = null;
+    protected $howMany = 20; //ilosc artykulow w tabelce
+    protected $privileges = 0; //aktualny poziom uprawnien, ladowany na bierzaco
 
     //uzywane do DrawTable
     const EDIT = 1;
@@ -14,7 +14,7 @@ class CPanel
     const LINKS = 4;
     const USERS = 8;
 
-    private function Header()
+    protected function Header()
     {
         ?>
         <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -29,7 +29,7 @@ class CPanel
         <?php
     }
 
-    private function DrawUp()
+    protected function DrawUp()
     {
         ?>
             <div id="header">
@@ -39,7 +39,7 @@ class CPanel
         <?php
     }
 
-    private function DrawLeft()
+    protected function DrawLeft()
     {
         ?>
             <div id="menu">
@@ -49,16 +49,16 @@ class CPanel
                     if (Privileges::CheckPrivilege(Privileges::ARTICLES, $this->privileges))
                     {
                         ?><a href="./?task=addNote" class="button">Dodaj notkę</a>
-                        <a href="./?task=editArticles&page=0" class="button">Artykuły</a>
+                        <a href="./?task=articles&page=0" class="button">Artykuły</a>
                         <a href="./?task=bin" class="button">Kosz</a><?php
                     }
                     if (Privileges::CheckPrivilege(Privileges::MENU, $this->privileges))
                     {
-                        ?><a href="./?task=editLinks" class="button">Menu</a><?php
+                        ?><a href="./?task=links" class="button">Menu</a><?php
                     }
                     if (Privileges::CheckPrivilege(Privileges::USERS, $this->privileges))
                     {
-                        ?><a href="./?task=editUsers" class="button">Użytkownicy</a><?php
+                        ?><a href="./?task=users" class="button">Użytkownicy</a><?php
                     }
                     ?>
                     <a href="./?task=preferences" class="button">Ustawienia</a>
@@ -69,7 +69,7 @@ class CPanel
     }
 
     //załadownie do zmiennych danych
-    private function LoadPreferences()
+    protected function LoadPreferences()
     {
         $pref = $this->sql->LoadPreferences();
         if ($pref['howMany'] != 0)
@@ -79,7 +79,7 @@ class CPanel
     }
 
     //metody odpowiedzialne za ramkę zieloną z informacjami
-    private function SendInfo($info)
+    protected function SendInfo($info)
     {
         if (!isset($_SESSION['info']))
             $_SESSION['info'] = "";
@@ -89,7 +89,7 @@ class CPanel
         $_SESSION['info'] = $_SESSION['info'].$info;
     }
 
-    private function DrawInfo()
+    protected function DrawInfo()
     {
         //wlaczenie zielonej info u gory
         if (isset($_SESSION['info']) && !empty($_SESSION['info']))
@@ -100,7 +100,7 @@ class CPanel
     }
 
     //uzywane przy dodawaniu i edycji artykulu
-    private function DrawTextAreas($action, $title = null, $article = null)
+    protected function DrawTextAreas($action, $title = null, $article = null)
     {
         
         $form = new CForm(CForm::POST, "?task=$action");
@@ -132,7 +132,7 @@ class CPanel
     }
 
     //rysowanie pagingu, howMany - ile artykulow na strone, count - ilosc artykulow, link - przekierowanie
-    private function DrawPaging($count) 
+    protected function DrawPaging($count)
     {
         if ($this->howMany >= $count) //jesli ilosc artykulow na stronie jest wieksza od ilosci ogolnej arykulow to nie maluj pagingu
             return;
@@ -141,7 +141,7 @@ class CPanel
         @$page = $_GET['page'];
 
         if ($task == null)
-            $task = "editArticles";
+            $task = "articles";
         if ($page == null)
             $page = 0;
 
@@ -191,7 +191,7 @@ class CPanel
     }
 
     //malowanie tabeli z artykulami data - dane malowane w tabelce, task - jaki typ tabelki, edycji lub newsow, links - linki potrzebne w tabelce kosz i edycja
-    private function DrawTable($data, $task, $links = null)
+    protected function DrawTable($data, $task, $links = null)
     {
         if ($data == null)
             return;
@@ -204,7 +204,7 @@ class CPanel
         if ($task == CPanel::EDIT)
         {
             ?>
-                <form name="binFrm" method="POST" action="./?task=editArticles&page=<?php echo $page ?>">
+                <form name="binFrm" method="POST" action="./?task=articles&page=<?php echo $page ?>">
                 <div id="options">
                     Zaznaczone: <br /><?php
                     $item = new CButton("Zapisz zmiany", "moveToBin");
@@ -237,7 +237,7 @@ class CPanel
         else if ($task == CPanel::LINKS)
         {
             ?>
-                <form name="binFrm" method="POST" action="./?task=editLinks&page=<?php echo $page ?>">
+                <form name="binFrm" method="POST" action="./?task=links&page=<?php echo $page ?>">
                 <div id="options">
                     Zaznaczone: <br />
                      <?php
@@ -318,13 +318,13 @@ class CPanel
                 if ($task == CPanel::EDIT || $task == CPanel::BIN)
                 {
                     ?><td class="topic">
-                        <a href="./?task=editArticles&id=<?php echo $n['id'] ?>" title="Kliknij, aby edytować"><?php echo $n['title'] ?></a>
+                        <a href="./?task=articles&id=<?php echo $n['id'] ?>" title="Kliknij, aby edytować"><?php echo $n['title'] ?></a>
                         <?php
                 }
                 else if ($task == CPanel::LINKS)
                 {
                     ?><td class="topic">
-                        <a href="./?task=editLinks&id=<?php echo $n['id'] ?>" title="Kliknij, aby edytować"><?php echo $n['link'] ?></a>
+                        <a href="./?task=links&id=<?php echo $n['id'] ?>" title="Kliknij, aby edytować"><?php echo $n['link'] ?></a>
                         <?php
                 }
                 else if ($task == CPanel::USERS)
@@ -401,7 +401,7 @@ class CPanel
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public function CPanel()
+    public function __construct()
     {
         $this->Header(); //header pliku
         $this->sql = new Sql();
@@ -419,311 +419,7 @@ class CPanel
         </body>
       </html>
       <?php
-    }
-
-    public function AddNote()
-    {
-        if(isset($_POST['submit']))
-        {
-            $title = $_POST['title'];
-            $note = $_POST['note'];
-
-            $title = trim($title);
-            $note = trim($note);
-
-            if (empty($title) || empty($note))
-            {
-                $this->SendInfo("Notka nie dodana z powodu braku tytułu lub treści");
-            }
-            else
-            {
-                if ($this->sql->AddArticle($title, $note))
-                    $this->SendInfo("News został wysłany");
-                else
-                    $this->SendInfo("News nie został wysłany");
-            }
-
-            $this->DrawInfo();
-
-            ?><br /><?php
-        }
-
-        $this->DrawTextAreas("addNote");
-    }
-
-    public function EditArticles()
-    {
-        //przycisk, ktorym przenosi sie do kosza
-        if (isset($_POST['moveToBin']))
-        {
-            @$page = $_GET['page'];
-            if ($page == null)
-                $page = 0;
-
-            $isChanged = false; //czy jakis zostal zmodyfikowany
-            if ($this->sql->UpdateArticleLink($_POST['visibleIn'], $page, Sql::NOTHING, $isChanged))
-            {
-                if ($isChanged)
-                    $this->SendInfo("Link/Linki do newsów zostały zaktualizowane");
-            }
-            else
-                $this->SendInfo("Link/Linki do newsów nie zostały zaktualizowane");
-
-            @$checkboxes = $_POST['check']; //zlapanie z formularza checknietych checkboxow
-
-            if (count($checkboxes) > 0)
-            {
-                if ($this->sql->ArticlesToBin($checkboxes))
-                    $this->SendInfo("Artykuł/Artykuły zostały przeniesione do kosza");
-                else
-                    $this->SendInfo("Nie można przenieść artykułu/artykułów do kosza");
-            }
-
-            $id = 0; //zeby przeszedl do malowania tabelki
-        }
-        else if(isset($_POST['submit'])) //po kliknieciu wyslij przy edycji notki
-        {
-            $title = $_POST['title'];
-            $note = $_POST['note'];
-            @$id = $_GET['id'];
-
-            $title = trim($title);
-            $note = trim($note);
-
-            if (empty($title) || empty($note))
-                $this->SendInfo("News nie zaktualizowany z powodu braku tytułu lub treści");
-            else if ($id < 1)
-                $this->SendInfo("News nie zaktualizowany z powodu złego id");
-            else
-            {
-                if ($this->sql->EditArticle($id, $title, $note))
-                    $this->SendInfo("News został zaktualizowany");
-                else
-                    $this->SendInfo("News nie został zaktualizowany");
-
-                $id = 0; //zeby przeszedl do malowania tabelki
-            }
-
-            ?><br /><?php
-        }
-        else
-        {
-            @$id = $_GET['id'];
-        }
-
-        if ($id != 0) //jesli wybrana zostala jakas notka to dawaj formularz, a jesli nie...
-        {
-            $news = $this->sql->ReadArticle($id);
-            $this->DrawTextAreas("editArticles&id=$id", $news['title'], $news['note']);
-        }
-        else //... to wyswietli sie lista notek do wybrania
-        {
-            $this->DrawInfo();
-
-            @$page = $_GET['page'];
-
-            $news = $this->sql->ReadArticles(Sql::NOTHING, $page*$this->howMany, $this->howMany);
-            $count = $this->sql->NumberOfArticles(Sql::NOTHING);
-            $this->DrawTable($news, CPanel::EDIT, $this->sql->ReadLinks());
-            $this->DrawPaging($count);
-        }
-    }
-
-    public function Bin()
-    {
-        if (isset($_POST['restore']) || (isset($_POST['remove'])))
-        {
-            @$checkboxes = $_POST['check']; //zlapanie z formularza checknietych checkboxow
-            if (count($checkboxes) > 0)
-            {
-                if (isset($_POST['restore']))
-                {
-                    if ($this->sql->BinToArticles($checkboxes))
-                        $this->SendInfo("Artykuł/Artykuły zostały przywrócone");
-                    else
-                        $this->SendInfo("Nie można przywrócić artykułu/artykułów");
-                }
-                else if (isset($_POST['remove']))
-                {
-                    if ($this->sql->RemoveArticle($checkboxes))
-                        $this->SendInfo("Artykuł/Artykuły zostały usunięte");
-                    else
-                        $this->SendInfo("Nie można usunąć artykułu/artykułów");
-                }
-            }
-            else
-                 $this->SendInfo("Nie zaznaczono żadnego arykułu");
-        }
-
-        $this->DrawInfo();
-        @$page = $_GET['page'];
-        if ($page == null)
-            $page = 0;
-        $news = $this->sql->ReadArticles(Sql::BIN, $page*$this->howMany, $this->howMany);
-        $count = $this->sql->NumberOfArticles(Sql::BIN);
-        $this->DrawTable($news, CPanel::BIN, $this->sql->ReadLinks());
-        $this->DrawPaging($count);
-    }
-
-    public function EditLinks()
-    {
-        @$id = $_GET['id'];
-        if ($id == null)
-            $id = 0;
-
-        if (isset($_POST['remove']))
-        {
-            @$checkboxes = $_POST['check']; //zlapanie z formularza checknietych checkboxow
-            if (count($checkboxes) > 0)
-            {
-                if ($this->sql->RemoveLink($checkboxes))
-                    $this->SendInfo("Link/linki zostały usunięte");
-                else
-                    $this->SendInfo("Nie można usunąć linku/linków");
-            }
-            else
-                 $this->SendInfo("Nie zaznaczono żadnego linku");
-        }
-        else if(isset($_POST['newlink'])) //dodanie nowego linku
-        {
-            $link = $_POST['link'];
-            $link = trim($link);
-
-            if (empty($link))
-            {
-                $this->SendInfo("Nie dodano nowego linku z powodu braku nazwy linku");
-            }
-            else
-            {
-                if ($this->sql->AddLink($link))
-                    $this->SendInfo("Link został dodany");
-                else
-                    $this->SendInfo("Link nie został dodany");
-            }
-
-            ?><br /><?php
-        }
-        else if (isset($_POST['editlink'])) //lub edycja linku
-        {
-            $link = $_POST['link'];
-            $link = trim($link);
-
-            if (empty($link))
-            {
-                $this->SendInfo("Nie dodano nowego linku z powodu braku nazwy linku");
-            }
-            else
-            {
-                if ($this->sql->EditLink($id, $link))
-                    $this->SendInfo("Link został zmieniony");
-                else
-                    $this->SendInfo("Link nie został zmieniony");
-            }
-
-            ?><br /><?php
-        }
-        else if (isset($_GET['do']) && $_GET['do'] == "saveOrder")
-        {
-            if ($this->sql->SaveOrder())
-                $this->SendInfo("Kolejność linków została zmieniona");
-            else
-                $this->SendInfo("Kolejność linków nie została zmieniona (czy zostały wprowadzone jakiekolwiek zmiany?)");
-        }
-
-        $this->DrawInfo();
-
-        $przenies = "?task=editLinks";
-        if ($id != 0)
-            $przenies = $przenies."&id=$id";
-        $form = new CForm(CForm::POST, $przenies);
-        $text = new CTextBox("Dodaj nowy link: ", "link");
-        if ($id != 0)
-        {
-            $link = $this->sql->ReadLinks((int)$id);
-            $text->SetValue($link[0]['link']);
-        }
-        $text->SetAddionalAttribs('size="65"');
-        $form->AddItem($text);
-        $form->AddItem(new CButton((($id != 0) ? "Edytuj" : "Wyślij"), (($id != 0) ? "editlink" : "newlink")));
-        $form->Draw();
-
-        $links = $this->sql->ReadLinks();
-        $this->DrawTable($links, CPanel::LINKS);
-    }
-
-    public function EditUsers()
-    {
-        ?><script type="text/javascript" src="./javascript/checkboxesInPrivileges.js"></script><?php
-        @$id = $_GET['id'];
-        if ($id == null)
-            $id = 0;
-
-        @$page = $_GET['page'];
-        if ($page == null)
-            $page = 0;
-
-        ?><div id="windowUser"></div><?php
-
-        if (isset($_POST['save']))
-        {
-            @$priv = $_POST['priv']; //zlapanie checkboksow z uprawnieniami
-            @$login = $_GET['login'];
-            if (!$priv)
-                $priv[] = 0;
-
-            $privileges = 0;
-            foreach($priv as $p)
-                $privileges |= $p;
-
-            if ($this->sql->SavePrivileges($id, $privileges))
-                $this->SendInfo("Uprawnienia użytkownika <b>$login</b> zostały zmienione");
-            else
-                $this->SendInfo("Nie można zmienić uprawnień użytkownika $login");
-        }
-
-        $this->DrawInfo();
-
-        $links = $this->sql->ReadUsers($page*$this->howMany, $this->howMany);
-        $this->DrawTable($links, CPanel::USERS);
-        $this->DrawPaging($this->sql->NumberOfUsers());
-    }
-
-    public function Preferences()
-    {
-        //TODO SPRAWDZAC PRZY KAZDYM WEJSCIU UPRAWNIENIA
-        if (isset($_POST['save']))
-        {
-            $this->howMany = $_POST['countTable'];
-            if ($this->sql->SavePreferences($this->howMany))
-                $this->SendInfo("Zapisano zmiany");
-            else
-                $this->SendInfo("Nie zapisano zmian");
-        }
-
-        $this->DrawInfo();
-
-        ?><h2>USTAWIENIA:</h2><div id="preferences"><?php
-        $form = new CForm(CForm::POST, "?task=preferences");
-        $select = new CComboBox("Ilość artykułów w tabeli: ", "countTable");
-        $select->AddItem("5");
-        $select->AddItem("10");
-        $select->AddItem("15");
-        $select->AddItem("20");
-        $select->AddItem("30");
-        $select->AddItem("50");
-        $select->Selected($this->howMany); //ustawienie wybranej opcji w combo
-        $form->AddItem($select);
-
-        $form->AddItem("<br />");
-        $form->AddItem("<br />");
-        $form->AddItem("<br />");
-        $form->AddItem("<br />");
-        $form->AddItem("<br />");
-        $form->AddItem("<br />");
-        $form->AddItem(new CButton("Zapisz zmiany", "save"));
-        $form->Draw();
-        ?></div><?php
-    }
+    }  
 }
 
 ?>

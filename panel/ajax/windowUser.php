@@ -7,7 +7,7 @@ include_once("\..\..\sql.php");
 @$id = $_GET['id'];
 
 ?>Uprawnienia użytkownika <b><?php echo $login ?></b>:<br /><?php
-$form = new CForm(CForm::POST, "?task=editUsers&id=$id&login=$login");
+$form = new CForm(CForm::POST, "?task=users&id=$id&login=$login");
 $privileges = Privileges::WhatPrivileges($_GET['privileges']); //uprawnienia uzytkownika
 foreach (Privileges::WhatPrivileges(Privileges::ALL) as $p) //przelecenie przez wszystkie uprawnienia i zaznaczenie tylko tych, ktore posiada uzytkownik
 {

@@ -10,3 +10,8 @@
     padding: 8px;
     display: none;
 }
+
+#txtPass, #txtMail
+{
+    color: red;
+}

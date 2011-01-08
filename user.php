@@ -53,22 +53,31 @@
 
         case "registration":
         default: //domyslnie jest rejestracja
-            ?>
+            /*?>
             <script type="text/javascript" src="./javascript/registerfrm.js"></script>
-            <?php
+            <?php*/
 
-            $form = new CForm(CForm::POST, "panel.php");
+            $form = new CForm(CForm::POST);
             $form->SetId("regForm");
-            $form->AddItem(new CTextBox("Nazwa użytkownika: ", "login"));
-            $form->AddItem(new CPassword("Hasło: ", "pass", "pass1"));
-            $form->AddItem(new CPassword("Powtórz hasło: ", "pass", "pass2"));
-            $form->AddItem(new CTextBox("Adres e-mail: ", "mail"));
-            $form->AddItem(new CButton("Wyślij", "send", null, "Login('register'); return false;"));
+            $form->AddItem(new CTextBox("Nazwa użytkownika: ", "login", "login1", "CheckUser();"));
+            $form->AddItem("<span id=\"txtUser\"><img alt=\"x\" src=\"javascript\\x.png\"/></span>");
+            $form->AddItem("<br />");
+            $form->AddItem(new CPassword("Hasło: ", "pass", "pass1", "CheckPass();"));
+            $form->AddItem("<br />");
+            $form->AddItem(new CPassword("Powtórz hasło: ", "pass", "pass2", "CheckPass();"));
+            $form->AddItem("<span id=\"txtPass\">Hasła nie są takie same</span>");
+            $form->AddItem("<br />");
+            $form->AddItem(new CTextBox("Adres e-mail: ", "mail", "mail1", "EmailValidate()"));
+            $form->AddItem("<span id=\"txtMail\">Adres e-mail jest nieprawidłowy</span>");
+            $form->AddItem("<br />");
+            $form->AddItem(new CButton("Wyślij", "send", null, "if (CheckForm()) { Login('registation'); } return false;"));
+
+            $form->SetBrs(false);
             $form->Draw();
 
             break;
 
-        case "register":
+        case "registation":
             include('sql.php');
 
             $login = $_GET['login'];

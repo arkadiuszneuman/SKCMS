@@ -388,6 +388,22 @@
             return false;
         }
 
+        public function IsExistUser($login)
+        {
+            $login = $this->ProtectString($login);
+
+            $query = "SELECT login FROM users WHERE login='$login'";
+            $reply = mysql_query($query);
+
+            for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
+            {
+                if (trim($line[0]) === trim($login))
+                    return true;
+            }
+
+            return false;
+        }
+
         public function ReadUsers($from, $howMany)
         {
             $from = $this->ProtectInt($from);

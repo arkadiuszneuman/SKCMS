@@ -69,14 +69,12 @@ function Login(task)
         task += "&pass="
         task += document.getElementsByName("pass")[0].value;
     }
-    else if (task == "register") //rejestracja po wpisaniu danych
+    else if (task == "registation") //rejestracja po wpisaniu danych
     {
         task += "&login="
         task += document.getElementsByName("login")[0].value;
         task += "&pass="
         task += document.getElementsByName("pass")[0].value;
-        task += "&name="
-        task += document.getElementsByName("name")[0].value;
         task += "&mail="
         task += document.getElementsByName("mail")[0].value;
     }
@@ -102,6 +100,7 @@ function Login(task)
 
     r.send(null);
 }
+
 
 function sendGet(what, page) //site - gdzie przekierowac, what - funkcja, ktora wywola ajax po podaniu danych
 {

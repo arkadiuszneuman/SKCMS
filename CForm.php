@@ -2,7 +2,7 @@
 
 abstract class CItem
 {
-    protected $id, $name,$value, $class, $onclick, $addional;
+    protected $id, $name,$value, $class, $onclick, $onkeyup, $addional;
 
     protected function SetNode($node, $val)
     {
@@ -30,6 +30,11 @@ abstract class CItem
     public function SetOnclick($onclick)
     {
         $this->onclick = $onclick;
+    }
+
+    public function SetOnKeyUp($onkeyup)
+    {
+        $this->onkeyup = $onkeyup;
     }
 
     public function CItem($name = null, $id = null, $class = null)
@@ -112,6 +117,10 @@ abstract class CInput extends CItem
                {
                    $this->SetNode("onclick", $this->onclick);
                }
+               if ($this->onkeyup != null)
+               {
+                   $this->SetNode("onkeyup", $this->onkeyup);
+               }
                if ($this->class != null)
                {
                    $this->SetNode("class", $this->class);
@@ -141,17 +150,19 @@ abstract class CInput extends CItem
 
 class CTextBox extends CInput
 {
-    public function CTextBox($text = null, $name = null, $id = null)
+    public function CTextBox($text = null, $name = null, $id = null, $onkeyup = null)
     {
         parent::CInput(CInput::TEXT, $text, $name, $id);
+        $this->SetOnKeyUp($onkeyup);
     }
 }
 
 class CPassword extends CInput
 {
-    public function CPassword($text = null, $name = null, $id = null)
+    public function CPassword($text = null, $name = null, $id = null, $onkeyup = null)
     {
         parent::CInput(CInput::PASSWORD, $text, $name, $id);
+        $this->SetOnKeyUp($onkeyup);
     }
 }
 
@@ -251,7 +262,7 @@ class CCheckBox extends CInput
 
 class CForm
 {
-    private $method, $arrayObjects, $action, $id;
+    private $method, $arrayObjects, $action, $id, $brs = true;
     const POST = 1;
     const GET = 2;
 
@@ -271,6 +282,12 @@ class CForm
     public function AddItem($item)
     {
         $this->arrayObjects[] = $item;
+    }
+
+    //czy tworzyc Bry po kazdym elemencie
+    public function SetBrs($br)
+    {
+        $this->brs = $br;
     }
 
     //malowanie itemow, jesli ostatni element malujemy to nie robic brki
@@ -297,7 +314,10 @@ class CForm
 
             if ($br)
             {
-                ?><br /><?php
+                if ($this->brs)
+                {
+                    ?><br /><?php
+                }
             }
         }
         else

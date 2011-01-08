@@ -12,7 +12,9 @@
 	$template = new Layout();
 
 	$headerData = array("title"=>"SKCMS - Zwierzęcy System Zarządzania Treścią", 
-	"includes"=>"<script type=\"text/javascript\" src=\"./javascript/ajax.js\"></script>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"./css/windowLogin.css\">");
+	"includes"=>"<script type=\"text/javascript\" src=\"./javascript/ajax.js\"></script>\n
+        <script type=\"text/javascript\" src=\"./javascript/registerfrm.js\"></script>\n
+        <link rel=\"stylesheet\" type=\"text/css\" href=\"./css/windowLogin.css\">");
 	echo $template->Render("header", $headerData);  
 
 	if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] == false)

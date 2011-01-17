@@ -100,8 +100,10 @@ class CPanel
     }
 
     //uzywane przy dodawaniu i edycji artykulu
-    protected function DrawTextAreas($action, $title = null, $article = null)
+    protected function DrawTextAreas($action, $title = null, $article = null, $author = null)
     {
+		if ($author == null)
+			$author = $_SESSION['name'];
         
         $form = new CForm(CForm::POST, "?task=$action");
         $text = new CTextBox("Tytuł: ", "title");
@@ -112,6 +114,10 @@ class CPanel
         $text->SetValue($article);
         $text->SetAddionalAttribs('rows="20" cols="100"');
         $form->AddItem($text);
+		$text = new CTextBox("Autor: ", "author");
+		$text->SetValue($author);
+		$text->SetAddionalAttribs('size="65"');
+		$form->AddItem($text);
         $form->AddItem(new CButton("Wyślij", "submit"));
         $form->Draw();
 

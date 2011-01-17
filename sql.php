@@ -139,13 +139,14 @@
             mysql_select_db($database);
         }
         
-        public function AddArticle($title, $note) //dodanie articles
+        public function AddArticle($title, $note, $author) //dodanie articles
         {
             $title = $this->ProtectString($title);
             $note = $this->ProtectString($note);
+			$author = $this->ProtectString($author);
 
-            $query = "INSERT INTO articles (`id`, `title`, `date`, `note`) VALUES
-            (NULL, '".trim($title)."', ' ".date("Y-m-d H:i:s")."', '".trim($note)."');";
+            $query = "INSERT INTO articles (`id`, `title`, `date`, `note`, `author`) VALUES
+            (NULL, '".trim($title)."', ' ".date("Y-m-d H:i:s")."', '".trim($note)."', '".$author."');";
 
             return mysql_query($query);
         }
@@ -168,7 +169,7 @@
             $from = $this->ProtectInt($from);
             $howMany = $this->ProtectInt($howMany);
 
-            $query = "SELECT title, date, note, id_link, id FROM articles WHERE proporties='$proporties'";
+            $query = "SELECT title, date, note, id_link, id, author FROM articles WHERE proporties='$proporties'";
             
             if ($idLink != null)
                 $query = $query." AND id_link='$idLink'";
@@ -183,6 +184,7 @@
                 $array[$i]['note'] = $line[2];
                 $array[$i]['idLink'] = $line[3];
                 $array[$i]['id'] = $line[4];
+				$array[$i]['author'] = $line[5];
             }
 
             if (@$array == null)

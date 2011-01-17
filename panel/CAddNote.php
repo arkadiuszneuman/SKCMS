@@ -14,6 +14,7 @@ class CAddNote extends CPanel
             $title = $_POST['title'];
             $note = $_POST['note'];
 			$author = $_POST['author'];
+			$link = $_POST['link'];
 
             $title = trim($title);
             $note = trim($note);
@@ -24,7 +25,7 @@ class CAddNote extends CPanel
             }
             else
             {
-                if ($this->sql->AddArticle($title, $note, $author))
+                if ($this->sql->AddArticle($title, $note, $author, $link))
                     $this->SendInfo("News został wysłany");
                 else
                     $this->SendInfo("News nie został wysłany");

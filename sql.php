@@ -139,14 +139,15 @@
             mysql_select_db($database);
         }
         
-        public function AddArticle($title, $note, $author) //dodanie articles
+        public function AddArticle($title, $note, $author, $link) //dodanie articles
         {
             $title = $this->ProtectString($title);
             $note = $this->ProtectString($note);
 			$author = $this->ProtectString($author);
+			$link = $this->ProtectInt($link);
 
-            $query = "INSERT INTO articles (`id`, `title`, `date`, `note`, `author`) VALUES
-            (NULL, '".trim($title)."', ' ".date("Y-m-d H:i:s")."', '".trim($note)."', '".$author."');";
+            $query = "INSERT INTO articles (`id`, `title`, `date`, `note`, `author`, `id_link`) VALUES
+            (NULL, '".trim($title)."', ' ".date("Y-m-d H:i:s")."', '".trim($note)."', '".$author."', '".$link."');";
 
             return mysql_query($query);
         }
@@ -196,25 +197,29 @@
         {
             $id = $this->ProtectInt($id);
 
-            $query = "SELECT title, note FROM articles WHERE id='$id'";
+            $query = "SELECT title, note, author, id_link FROM articles WHERE id='$id'";
 
             $reply = mysql_query($query);
             $line = mysql_fetch_row($reply);
 
             $array['title'] = $line[0];
             $array['note'] = $line[1];
+			$array['author'] = $line[2];
+			$array['link'] = $line[3];
 
             return $array;
         }
 
-        public function EditArticle($id, $title, $note) //zmiana konkretnego articles
+        public function EditArticle($id, $title, $note, $author, $link) //zmiana konkretnego articles
         {
             $id = $this->ProtectInt($id);
 
             $title = $this->ProtectString($title);
             $note = $this->ProtectString($note);
+			$author = $this->ProtectString($author);
+			$link = $this->ProtectInt($link);
 
-            $query = "UPDATE articles SET title='$title', note='$note' WHERE id='$id'";
+            $query = "UPDATE articles SET title='$title', note='$note', author='$author', id_link='$link' WHERE id='$id'";
 
             return mysql_query($query);
         }

@@ -42,6 +42,8 @@ class CArticles extends CPanel
             $title = $_POST['title'];
             $note = $_POST['note'];
             @$id = $_GET['id'];
+			$author = $_POST['author'];
+			$link = $_POST['link'];
 
             $title = trim($title);
             $note = trim($note);
@@ -52,7 +54,7 @@ class CArticles extends CPanel
                 $this->SendInfo("News nie zaktualizowany z powodu złego id");
             else
             {
-                if ($this->sql->EditArticle($id, $title, $note))
+                if ($this->sql->EditArticle($id, $title, $note, $author, $link))
                     $this->SendInfo("News został zaktualizowany");
                 else
                     $this->SendInfo("News nie został zaktualizowany");
@@ -70,7 +72,7 @@ class CArticles extends CPanel
         if ($id != 0) //jesli wybrana zostala jakas notka to dawaj formularz, a jesli nie...
         {
             $news = $this->sql->ReadArticle($id);
-            $this->DrawTextAreas("articles&id=$id", $news['title'], $news['note']);
+            $this->DrawTextAreas("articles&id=$id", $news['title'], $news['note'], $news['author'], $news['link']);
         }
         else //... to wyswietli sie lista notek do wybrania
         {

@@ -100,7 +100,7 @@ class CPanel
     }
 
     //uzywane przy dodawaniu i edycji artykulu
-    protected function DrawTextAreas($action, $title = null, $article = null, $author = null)
+    protected function DrawTextAreas($action, $title = null, $article = null, $author = null, $linkID = null)
     {
 		if ($author == null)
 			$author = $_SESSION['name'];
@@ -110,6 +110,22 @@ class CPanel
         $text->SetValue($title);
         $text->SetAddionalAttribs('size="65"');
         $form->AddItem($text);
+		$text = new CComboBox("Kategoria: ", "link");
+		$links = $this->sql->ReadLinks();
+		$text->AddItem("Brak", "");
+		foreach ($links as $link)
+		{
+			if ($linkID == $link['id'])
+			{
+				$text->AddItem($link['link'], $link['id'], true);
+			}
+			else
+			{
+				$text->AddItem($link['link'], $link['id']);
+			}
+		}
+		$text->SetAddionalAttribs('size="65"');
+		$form->AddItem($text);
         $text = new CTextArea("Treść: ", "note");
         $text->SetValue($article);
         $text->SetAddionalAttribs('rows="20" cols="100"');

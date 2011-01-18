@@ -90,17 +90,34 @@
 			$commentsBlock = "Brak komentarzy";
 		}
 
+		$commentsNumber = "";
+		$count = $sql->NumberOfComments($id);
+		if ($count < 5)
+		{
+			if ($count == 0)
+				$commentsNumber = $commentsNumber.""."Nie ma komentarzy";
+			elseif ($count == 1)
+				$commentsNumber = $commentsNumber.""."Jeden komentarz";
+			else
+				$commentsNumber = $commentsNumber."".$count.""." komentarze";
+		}
+		else
+		{
+			$commentsNumber = $commentsNumber."".$count.""." komentarzy";
+		}
+
 		if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] == false)
 		{
 			$data = array("title"=>$news['title'], "author"=>$news['author'], "date"=>$news['date'], "comments"=>"0",
 				"content"=>$news['note'], "comments"=>$commentsBlock, "hash"=>GenerateHash(), 
-				"commentAuthor"=>"", "user_id"=>"0");
+				"commentAuthor"=>"", "user_id"=>"0", "commentsNumber"=>$commentsNumber);
 		}
 		else
 		{
 			$data = array("title"=>$news['title'], "author"=>$news['author'], "date"=>$news['date'], "comments"=>"0",
 				"content"=>$news['note'], "comments"=>$commentsBlock, "hash"=>GenerateHash(), 
-				"commentAuthor"=>$_SESSION['name'], "readonly"=>"readonly", "user_id"=>$sql->ReturnUserID($_SESSION['name']));
+				"commentAuthor"=>$_SESSION['name'], "readonly"=>"readonly", "user_id"=>$sql->ReturnUserID($_SESSION['name']),
+				"commentsNumber"=>$commentsNumber);
 		}
 		$newsBlock = $newsBlock.$template->Render("article_details", $data);
 	

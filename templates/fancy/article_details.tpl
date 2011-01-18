@@ -5,7 +5,7 @@
 	{content}
 	<hr>
 	<div id="comments">
-	<h3>{commentsNumber} komentarzy do "{title}"</h3>
+	<h3>{commentsNumber} do "{title}"</h3>
 	{comments}
 	</div>
 	<div id="commentForm">

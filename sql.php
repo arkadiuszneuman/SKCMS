@@ -564,6 +564,14 @@
             return mysql_query($query);
 		}
 
+		public function NumberOfComments($id)
+		{
+            $query = "SELECT COUNT(*) FROM comments WHERE article_id='$id'";
+			$result = mysql_query($query);
+
+			return mysql_result($result, 0);
+		}
+
         public function Close()
         {
             mysql_close($this->sql_conn);

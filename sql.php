@@ -524,6 +524,7 @@
 
 		public function ReadComments($id)
 		{
+			$array = null;
             $query = "SELECT user_id, name, note, date, id FROM comments WHERE article_id = '$id' ORDER BY date";
 			$reply = mysql_query($query);
 			

@@ -168,6 +168,11 @@ ul#menu li:hover ul
 	margin: 0;
 }
 
+#news .comment
+{
+	margin: 15px 0px 0px 20px;
+}
+
 #news #comments h3, #news #commentForm h3
 {
 	color: rgb(0, 0, 0);

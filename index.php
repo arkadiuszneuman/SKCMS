@@ -65,8 +65,8 @@
             {
                 foreach($news as $n)
                 {
-					$data = array("id"=>$n['id'], "title"=>$n['title'], "author"=>$n['author'], "date"=>$n['date'], "comments"=>"0",
-					"content"=>$n['note']);
+					$data = array("id"=>$n['id'], "title"=>$n['title'], "author"=>$n['author'], "date"=>$n['date'], 
+					"comments"=>$sql->NumberOfComments($n['id']), "content"=>$n['note']);
 					$newsBlock = $newsBlock.$template->Render("news_item", $data);
                 }
 

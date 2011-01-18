@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Czas wygenerowania: 17 Sty 2011, 17:41
+-- Czas wygenerowania: 18 Sty 2011, 22:59
 -- Wersja serwera: 5.1.54
 -- Wersja PHP: 5.3.5
 
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `articles` (
   `id_link` int(11) NOT NULL,
   `author` varchar(255) COLLATE utf8_polish_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=141 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=145 ;
 
 --
 -- Zrzut danych tabeli `articles`
@@ -137,7 +137,40 @@ INSERT INTO `articles` (`id`, `title`, `date`, `note`, `proporties`, `id_link`, 
 (137, 'sss', '2011-01-02 13:57:06', '<p>sss</p>\r\n<p>sss</p>\r\n<p>sss</p>\r\n<p>sss</p>\r\n<p>sssss</p>\r\n<p>ssss</p>', 0, 3, ''),
 (138, 'Kermit - TEST', '2011-01-17 17:36:26', '<p>TEST</p>', 0, 0, ''),
 (139, 'KERMIT TEST 2', '2011-01-17 17:39:06', '<p>Kermit www</p>', 0, 2, 'www'),
-(140, 'Test polskich znaków', '2011-01-17 17:40:33', '<p>@łę&para;ŧ&larr;&darr;&rarr;&oacute;&thorn;ąś&eth;đŋħjĸłżźć&ldquo;&rdquo;ń&micro;</p>', 0, 2, 'www');
+(140, 'Test polskich znaków', '2011-01-17 17:40:33', '<p>@łę&para;ŧ&larr;&darr;&rarr;&oacute;&thorn;ąś&eth;đŋħjĸłżźć&ldquo;&rdquo;ń&micro;</p>', 0, 2, 'www'),
+(141, 'Będzie jako dwójeczka?', '2011-01-17 19:09:24', '<p>PLIX</p>', 0, 0, 'www'),
+(142, 'A teraz będzie?', '2011-01-17 19:15:15', '<p>dw&oacute;jeczka</p>', 0, 0, 'wwwa'),
+(143, 'A teraz?:(', '2011-01-17 19:18:04', '<p>&nbsp;kupa!:D:D</p>', 0, 1, 'Kermitcc'),
+(144, 'sdsd', '2011-01-17 23:14:20', '<p>dsdsds</p>', 0, 0, 'www');
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla  `comments`
+--
+
+CREATE TABLE IF NOT EXISTS `comments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `article_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `note` text NOT NULL,
+  `date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=102 ;
+
+--
+-- Zrzut danych tabeli `comments`
+--
+
+INSERT INTO `comments` (`id`, `article_id`, `user_id`, `name`, `note`, `date`) VALUES
+(101, 139, 0, 'd', 'd', '2011-01-18 22:44:25'),
+(100, 139, 0, 'd', 'd', '2011-01-18 22:44:22'),
+(99, 139, 0, 'd', 'd', '2011-01-18 22:44:20'),
+(98, 139, 0, 'd', 'd', '2011-01-18 22:44:15'),
+(96, 140, 0, 'Wylogowany', 'MOTHERFUCKER', '2011-01-18 21:31:45'),
+(97, 139, 0, 'd', 'd', '2011-01-18 22:44:12'),
+(95, 140, 10, '', 'Zalogowany motherfucker', '2011-01-18 21:31:34');
 
 -- --------------------------------------------------------
 
@@ -159,7 +192,7 @@ CREATE TABLE IF NOT EXISTS `links` (
 INSERT INTO `links` (`id`, `link`, `order`) VALUES
 (1, 'link number one', 3),
 (2, 'dwojeczka', 1),
-(3, 'i trÃ³jeczkaa', 2),
+(3, 'i trójeczkaa', 2),
 (4, 'aa', 1);
 
 -- --------------------------------------------------------
@@ -170,7 +203,6 @@ INSERT INTO `links` (`id`, `link`, `order`) VALUES
 
 CREATE TABLE IF NOT EXISTS `preferences` (
   `id_user` int(10) unsigned NOT NULL COMMENT 'pole id z tabeli users',
-  `howMany` tinyint(4) NOT NULL COMMENT 'ilosc artykulow w tabeli',
   UNIQUE KEY `id_user` (`id_user`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
@@ -178,8 +210,6 @@ CREATE TABLE IF NOT EXISTS `preferences` (
 -- Zrzut danych tabeli `preferences`
 --
 
-INSERT INTO `preferences` (`id_user`, `howMany`) VALUES
-(4, 15);
 
 -- --------------------------------------------------------
 
@@ -205,4 +235,4 @@ INSERT INTO `users` (`id`, `login`, `pass`, `mail`, `privileges`) VALUES
 (7, 'asasa', ' a0a8b86579870be2d143db825101ddd8', 'asasa', 0),
 (11, 'zwykly', '098f6bcd4621d373cade4e832627b4f6', 'asasd', 1),
 (9, 'sss', ' 9f6e6800cfae7749eb6c486619254b9c', 'sss', 0),
-(10, 'www', '4eae35f1b35977a00ebd8086c259d4c9', 'www', 127);
+(10, 'wwwwassa', '4eae35f1b35977a00ebd8086c259d4c9', 'www', 127);

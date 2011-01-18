@@ -2,6 +2,7 @@
 	session_start();
 	include ('includes/layout.php');
 	include ('includes/init.php');
+	include ('includes/functions.php');
 	include ('sql.php');
 
     ?><div id="all"><?php
@@ -10,6 +11,7 @@
 	$mainContent = "";
 	$sidebarContent = "";
 	$template = new Layout();
+	$id = $_GET['id'];
 
 	$headerData = array("title"=>"SKCMS - Zwierzęcy System Zarządzania Treścią", 
 	"includes"=>"<script type=\"text/javascript\" src=\"./javascript/ajax.js\"></script>\n
@@ -48,40 +50,69 @@
     }
 	$data = array("menu"=>$menu);
 	echo $template->Render("menu", $data);
+	
+	if(isset($_POST['submit']) && ($_POST['hash'] != $_SESSION['hash']))
+	{
+		$name = $_POST['author'];
+		$note = $_POST['note'];
+		$user_id = $_POST['user_id'];
 
-    @$page = $_GET['page'];
-    $howMany = 3;
-   
-    foreach ($links as $link)
-    {
-        if (@$_GET['link'] == null)
-            $_GET['link'] = str_replace(' ','_',$link['link']);
+		echo $user_id;
 
-        if (str_replace(' ','_',$link['link']) == $_GET['link'])
-        {
-            $news = $sql->ReadArticles(Sql::NOTHING, $page*$howMany, $howMany, $link['id']);
+		if ($user_id == 0)		
+		{
+			$sql->AddComment($id, $name, null, $note);
+		}
+		else
+		{
+			$sql->AddComment($id, null, $user_id, $note);
+		}
+		
+		$_SESSION['hash'] = $_POST['hash'];
+	}
 
-            if ($news != null)
-            {
-                foreach($news as $n)
-                {
-					$data = array("id"=>$n['id'], "title"=>$n['title'], "author"=>$n['author'], "date"=>$n['date'], "comments"=>"0",
-					"content"=>$n['note']);
-					$newsBlock = $newsBlock.$template->Render("news_item", $data);
-                }
+	$news = $sql->ReadArticle($id);
+	if ($news != null)
+	{
+		$commentsBlock = "";
+		$comments =	$sql->ReadComments($id);
+		if ($comments != null)
+		{
+			foreach ($comments as $comment)
+			{	
+				$data = array("commentId"=>$comment['id'], "author"=>$comment['user'], "date"=>$comment['date'],
+					"note"=>$comment['note']);
+				$commentsBlock = $commentsBlock.$template->Render("comment_body", $data);
+			}
+		}
+		else
+		{
+			$commentsBlock = "Brak komentarzy";
+		}
 
-                $count = $sql->NumberOfArticles(Sql::NOTHING, $link['id']);
-                if ($count > $howMany) //wyswietlenie pagingu tylko w przypadku wiekszej ilosci newsow niz strona
-                    $newsBlock = $newsBlock."".$template->Render("news_paging", showPaging($page, $howMany, $count));
-            }
-            else
-                echo "Brak arytkułów w podanym linku";
+		if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] == false)
+		{
+			$data = array("title"=>$news['title'], "author"=>$news['author'], "date"=>$news['date'], "comments"=>"0",
+				"content"=>$news['note'], "comments"=>$commentsBlock, "hash"=>GenerateHash(), 
+				"commentAuthor"=>"", "user_id"=>"0");
+		}
+		else
+		{
+			$data = array("title"=>$news['title'], "author"=>$news['author'], "date"=>$news['date'], "comments"=>"0",
+				"content"=>$news['note'], "comments"=>$commentsBlock, "hash"=>GenerateHash(), 
+				"commentAuthor"=>$_SESSION['name'], "readonly"=>"readonly", "user_id"=>$sql->ReturnUserID($_SESSION['name']));
+		}
+		$newsBlock = $newsBlock.$template->Render("article_details", $data);
+	
+		$data = array("content"=>$newsBlock);
+		$mainContent = $template->Render("news", $data);
+	}
+	else
+	{
+		$data = array("content"=>"Brak arytkułów w podanym linku");
+		$mainContent = $template->Render("news", $data);
+	}
 
-            break;
-        }
-    }
-	$data = array("content"=>$newsBlock);
-	$mainContent = $template->Render("news", $data);
 	$data = array("content"=>$sidebarContent);
 	$asideContent = $template->Render("sidebar", $data);
 	$data = array("mainContent"=>$mainContent, "aside"=>$asideContent);

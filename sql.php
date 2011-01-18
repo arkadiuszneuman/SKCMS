@@ -164,7 +164,7 @@
             return $row["howmany"];
         }
 
-        //odczytanie articles, isId - czy zwracac tez id; from - od ktorej danej zwracac, to - ile notek, idlink - id liknku, z ktorego zwracac artykuly
+        //odczytanie articles, from - od ktorej danej zwracac, to - ile notek, idlink - id liknku, z ktorego zwracac artykuly
         public function ReadArticles($proporties, $from, $howMany, $idLink = null)
         {
             $from = $this->ProtectInt($from);
@@ -197,15 +197,17 @@
         {
             $id = $this->ProtectInt($id);
 
-            $query = "SELECT title, note, author, id_link FROM articles WHERE id='$id'";
+            $query = "SELECT title, note, author, id_link, date FROM articles WHERE id='$id'";
 
             $reply = mysql_query($query);
-            $line = mysql_fetch_row($reply);
+            if (($line = mysql_fetch_row($reply)) == 0)
+				return null;
 
             $array['title'] = $line[0];
             $array['note'] = $line[1];
 			$array['author'] = $line[2];
 			$array['link'] = $line[3];
+			$array['date'] = $line[4];
 
             return $array;
         }
@@ -441,6 +443,29 @@
             return $row["howmany"];
         }
 
+		public function ReturnUserName($id)
+		{
+			$query = "SELECT login FROM users WHERE id='$id'";
+			$result = mysql_query($query);
+
+			if(mysql_num_rows($result) == 0)
+				return null;
+			else
+				return mysql_result($result, 0);
+		}
+
+		public function ReturnUserID($login)
+		{
+			$login = $this->ProtectString($login);
+			$query = "SELECT id FROM users WHERE login='$login'";
+			$result = mysql_query($query);
+
+			if (mysql_num_rows($result) == 0)
+				return null;
+			else
+				return mysql_result($result, 0);
+		}
+
         public function CheckPrivileges($login)
         {
             $login = $this->ProtectString($login);
@@ -496,6 +521,47 @@
                 return null;
             return $array;
         }
+
+		public function ReadComments($id)
+		{
+            $query = "SELECT user_id, name, note, date, id FROM comments WHERE article_id = '$id' ORDER BY date";
+			$reply = mysql_query($query);
+			
+			for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
+			{
+				if ($line[0] != 0)
+				{
+					$array[$i]['user'] = $this->ReturnUserName($line[0]);
+				}
+				else
+				{
+					$array[$i]['user'] = $line[1];
+				}
+				$array[$i]['note'] = $line[2];
+				$array[$i]['date'] = $line[3];
+				$array[$i]['id'] = $line[4];
+			}
+
+			if ($array == null)
+				return null;
+
+			return $array;
+		}
+
+		public function AddComment($article_id, $author = null, $user_id = null,  $note)
+		{
+            $article_id = $this->ProtectInt($article_id);
+            $note = $this->ProtectString($note);
+			if ($author != null)
+				$author = $this->ProtectString($author);
+			if ($user_id != null)
+				$user_id = $this->ProtectInt($user_id);
+
+            $query = "INSERT INTO comments (`article_id`, `user_id`, `name`, `note`, `date`) VALUES
+            ('".$article_id."', '".$user_id."', '".trim($author)."', '".trim($note)."', '".date("Y-m-d H:i:s")."');";
+
+            return mysql_query($query);
+		}
 
         public function Close()
         {

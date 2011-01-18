@@ -18,6 +18,11 @@ body
 	margin: auto;
 }
 
+input
+{
+	display: block;
+}
+
 #logo 
 {
 	background-color: rgb(32, 74, 135);
@@ -120,12 +125,12 @@ ul#menu li:hover ul
 #news
 {
 	word-wrap: break-word;
+	padding: 0px 0px 0px 15px;
 }
 
 #news .item, #news #paging
 {
 	width: 97%;
-	margin: 0px 0px 0px 15px;
 }
 
 #news #paging
@@ -136,6 +141,11 @@ ul#menu li:hover ul
 #news .item h3 
 {
 	font-size: 19px;
+}
+
+#news .item a
+{
+	text-decoration: none;
 }
 
 #news .item p.newsInfo
@@ -156,6 +166,12 @@ ul#menu li:hover ul
 	float: left;
 	color: rgb(218, 215, 206);
 	margin: 0;
+}
+
+#news #comments h3, #news #commentForm h3
+{
+	color: rgb(0, 0, 0);
+	font-size: 17px;
 }
 
 #sidebar

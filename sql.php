@@ -608,6 +608,12 @@
             return mysql_query($query);
 		}
 
+		public function DeleteComment($id)
+		{
+			$query = "DELETE FROM comments WHERE id='$id'";
+			$reply = mysql_query($query);
+		}
+
 		public function NumberOfComments($id)
 		{
             $query = "SELECT COUNT(*) FROM comments WHERE article_id='$id'";

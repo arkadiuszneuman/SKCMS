@@ -5,9 +5,18 @@
 	include ('includes/functions.php');
 	include ('sql.php');
 
+    $sql = new Sql();
+	if (isset($_GET['delete']))
+	{
+		$sql->DeleteComment($_GET['delete']);
+		$id = $_GET['id'];
+		header("Location: article.php?id=$id");
+
+	}
+
     ?><div id="all"><?php
 
-    $sql = new Sql();
+	$privi = new Privileges();
 
 	$newsBlock = "";
 	$mainContent = "";
@@ -76,10 +85,22 @@
 		$comments =	$sql->ReadComments($id);
 		if ($comments != null)
 		{
+			$userPrivileges = $sql->CheckPrivileges($_SESSION['name']);
 			foreach ($comments as $comment)
 			{	
+				if ($userPrivileges > 64)
+				{
+					$addThings = "<a href=\"?id=".$id."&delete=".$comment['id']."\">Usuń komentarz</a>";
+				}
+				elseif (($privi->CheckPrivilege(2, $userPrivileges)) && ($comment['user'] == $_SESSION['name']))
+				{
+					$addThings = "<a href=\"?id=".$id."&delete=".$comment['id']."\">Usuń komentarz</a>";
+				}
+				else
+					$addThings = "";
+	
 				$data = array("commentId"=>$comment['id'], "author"=>$comment['user'], "date"=>$comment['date'],
-					"note"=>$comment['note']);
+					"note"=>$comment['note'], "addThings"=>$addThings);
 				$commentsBlock = $commentsBlock.$template->Render("comment_body", $data);
 			}
 		}

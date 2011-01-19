@@ -71,10 +71,6 @@ class CPanel
     //załadownie do zmiennych danych
     protected function LoadPreferences()
     {
-        $pref = $this->sql->LoadPreferences();
-        if ($pref['howMany'] != 0)
-            $this->howMany = $pref['howMany'];
-
         $this->privileges = $this->sql->CheckPrivileges($_SESSION['name']);
     }
 

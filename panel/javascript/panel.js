@@ -21,7 +21,7 @@ function ButtonsEvents() //eventy (klikniecia) na przyciski do kosza, przywroc z
     {
         btn.onclick = function()
         {
-            document.binFrm.action = "?task=editLinks&do=saveOrder";
+            document.binFrm.action = "?task=links&do=saveOrder";
             document.binFrm.submit();
 
             return false;

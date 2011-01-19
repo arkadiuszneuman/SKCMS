@@ -75,7 +75,9 @@
                     $newsBlock = $newsBlock."".$template->Render("news_paging", showPaging($page, $howMany, $count));
             }
             else
-                echo "Brak arytkułów w podanym linku";
+            {
+				$newsBlock = $newsBlock.""."Brak arytkułów w podanym linku";
+			}
 
             break;
         }

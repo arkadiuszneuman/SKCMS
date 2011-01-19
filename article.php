@@ -51,13 +51,11 @@
 	$data = array("menu"=>$menu);
 	echo $template->Render("menu", $data);
 	
-	if(isset($_POST['submit']) && ($_POST['hash'] != $_SESSION['hash']))
+	if(isset($_POST['submit']) && isset($_SESSION['hash']) && ($_POST['hash'] != $_SESSION['hash']))
 	{
 		$name = $_POST['author'];
 		$note = $_POST['note'];
 		$user_id = $_POST['user_id'];
-
-		echo $user_id;
 
 		if ($user_id == 0)		
 		{

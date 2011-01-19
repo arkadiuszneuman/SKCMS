@@ -7,28 +7,26 @@
 
     ?><div id="all"><?php
 
+    $sql = new Sql();
+
 	$newsBlock = "";
 	$mainContent = "";
 	$sidebarContent = "";
-	$template = new Layout();
+	$template = new Layout($sql->GetSetting("defaultstyle"));
 	$id = $_GET['id'];
 
-	$headerData = array("title"=>"SKCMS - Zwierzęcy System Zarządzania Treścią", 
-	"includes"=>"<script type=\"text/javascript\" src=\"./javascript/ajax.js\"></script>\n
-        <script type=\"text/javascript\" src=\"./javascript/registerfrm.js\"></script>\n
-        <link rel=\"stylesheet\" type=\"text/css\" href=\"./css/windowLogin.css\">");
-	echo $template->Render("header", $headerData);  
+	echo $template->RenderHeader();  
 
 	if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] == false)
     {
-		$data = array("title"=>"Użytkownik", "content"=>"<a href=\"#\" onclick=\"Login('login');\">Zaloguj</a>");
+		$data = array("title"=>"Użytkownik", "content"=>"<a href=\"#\" onclick=\"Login('login');\">Zaloguj</a>", "item_id"=>"login");
 
 		$sidebarContent = $sidebarContent."".$template->Render("sidebar_item", $data);
     }
     else
     {
 		$data = array("title"=>"Użytkownik", "content"=>"<a href=\"./panel/\">Panel administracyjny</a> &nbsp; &nbsp;
-        <a href=\"#\" onclick=\"Login('logoff')\">Wyloguj</a>");
+        <a href=\"#\" onclick=\"Login('logoff')\">Wyloguj</a>", "item_id"=>"login");
 		$sidebarContent = $sidebarContent."".$template->Render("sidebar_item", $data);
     }
     
@@ -38,7 +36,6 @@
     <?php
 
     //wyswietlenie linkow
-    $sql = new Sql();
     $links = $sql->ReadLinks();
 	$menu = "";
 
@@ -132,7 +129,7 @@
 	$asideContent = $template->Render("sidebar", $data);
 	$data = array("mainContent"=>$mainContent, "aside"=>$asideContent);
 	echo $template->Render("content", $data);
-	echo $template->RenderFooter("Copyright SKCMS TEAM :D");
+	echo $template->RenderFooter();
 
     ?></div><?php
 

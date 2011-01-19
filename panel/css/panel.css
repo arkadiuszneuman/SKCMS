@@ -226,10 +226,17 @@ tr#upper
     border-color: #3896ff;
     border-style: solid;
     border-width: 2px;
-    width: 50%;
+    width: 98%;
     padding: 15px 5px 0px 10px;
     font-family: Verdana, Arial;
     font-size: 12px;
+}
+
+#preferences input
+{
+	width: 30%;
+	height: 25px;
+	margin: 0px 0px 10px 20px;
 }
 
 #saveOrder /*obrazek dyskietka do zapisu koleności*/

@@ -5,8 +5,11 @@
 
 <title>{title}</title>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+<meta name="Author" content="{author}">
 <link rel="stylesheet" href="templates/fancy/style.css" title="Style">
-{includes}
+<script type="text/javascript" src="./javascript/ajax.js"></script>
+<script type="text/javascript" src="./javascript/registerfrm.js"></script>
+<link rel="stylesheet" type="text/css" href="./css/windowLogin.css">
 </head>
 <body>
 

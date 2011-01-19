@@ -522,6 +522,50 @@
             return $array;
         }
 
+		public function GetSetting($what)
+		{
+			$what = $this->ProtectString($what);
+
+			$query = "SELECT value FROM preferences WHERE name='$what'";
+			$result = mysql_query($query);
+
+			if (mysql_num_rows($result) == 0)
+				return null;
+			else
+				return mysql_result($result, 0);
+		}
+
+		public function GetSettings()
+		{
+			$query = "SELECT * FROM preferences";
+			$reply = mysql_query($query);
+
+			for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
+			{
+				$array[$i]['id'] = $line[0];
+				$array[$i]['name'] = $line[1];
+				$array[$i]['title'] = $line[2];
+				$array[$i]['description'] = $line[3];
+				$array[$i]['options'] = $line[4];
+				$array[$i]['value'] = $line[5];
+			}
+
+			if(@$array == null)
+				return null;
+
+			return $array;
+		}
+
+		public function SaveSettings($values)
+		{
+			foreach ($values as $key=>$value)
+			{
+				$query = "UPDATE preferences SET value='".$value."' WHERE name='".$key."'";
+				mysql_query($query);
+			}
+			return 1;
+		}
+
 		public function ReadComments($id)
 		{
 			$array = null;

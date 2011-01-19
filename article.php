@@ -11,19 +11,11 @@
 	if (isset($_GET['delete']))
 	{
 		$userPrivileges = $sql->CheckPrivileges($_SESSION['name']);
-		if ($userPrivileges >= 64)
+		if (($userPrivileges >= 64) || (($privi->CheckPrivilege(2, $userPrivileges)) && ($sql->GetCommentAuthor($_GET['delete']) == $_SESSION['name'])))
 		{
 			$sql->DeleteComment($_GET['delete']);
-			$id = $_GET['id'];
-			header("Location: article.php?id=$id");
 		}
-		elseif (($privi->CheckPrivilege(2, $userPrivileges)) && ($comment['user'] == $_SESSION['name']))
-		{
-			$sql->DeleteComment($_GET['delete']);
-			$id = $_GET['id'];
-			header("Location: article.php?id=$id");
-		}
-			
+		
 		$id = $_GET['id'];
 		header("Location: article.php?id=$id");
 	}

@@ -608,6 +608,26 @@
             return mysql_query($query);
 		}
 
+		public function GetCommentAuthor($id)
+		{
+            $query = "SELECT user_id, name FROM comments WHERE id = '$id'";
+			$reply = mysql_query($query);
+			
+			for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
+			{
+				if ($line[0] != 0)
+				{
+					$result = $this->ReturnUserName($line[0]);
+				}
+				else
+				{
+					$result = $line[1];
+				}
+			}
+
+			return $result;
+		}
+
 		public function DeleteComment($id)
 		{
 			$query = "DELETE FROM comments WHERE id='$id'";

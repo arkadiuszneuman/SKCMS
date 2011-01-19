@@ -6,16 +6,29 @@
 	include ('sql.php');
 
     $sql = new Sql();
+	$privi = new Privileges();
+
 	if (isset($_GET['delete']))
 	{
-		$sql->DeleteComment($_GET['delete']);
+		$userPrivileges = $sql->CheckPrivileges($_SESSION['name']);
+		if ($userPrivileges >= 64)
+		{
+			$sql->DeleteComment($_GET['delete']);
+			$id = $_GET['id'];
+			header("Location: article.php?id=$id");
+		}
+		elseif (($privi->CheckPrivilege(2, $userPrivileges)) && ($comment['user'] == $_SESSION['name']))
+		{
+			$sql->DeleteComment($_GET['delete']);
+			$id = $_GET['id'];
+			header("Location: article.php?id=$id");
+		}
+			
 		$id = $_GET['id'];
 		header("Location: article.php?id=$id");
 	}
 
     ?><div id="all"><?php
-
-	$privi = new Privileges();
 
 	$newsBlock = "";
 	$mainContent = "";

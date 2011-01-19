@@ -11,7 +11,6 @@
 		$sql->DeleteComment($_GET['delete']);
 		$id = $_GET['id'];
 		header("Location: article.php?id=$id");
-
 	}
 
     ?><div id="all"><?php
@@ -88,7 +87,7 @@
 			$userPrivileges = $sql->CheckPrivileges($_SESSION['name']);
 			foreach ($comments as $comment)
 			{	
-				if ($userPrivileges > 64)
+				if ($userPrivileges >= 64)
 				{
 					$addThings = "<a href=\"?id=".$id."&delete=".$comment['id']."\">Usuń komentarz</a>";
 				}

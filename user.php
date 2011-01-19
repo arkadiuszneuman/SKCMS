@@ -88,7 +88,7 @@
 
             if ($sql->AddUser($login, md5($pass), $mail)) //rejestracja i przeniesienie do panelu
             {
-                ?>Dodano admina<?php
+                ?>Zarejestrowano!<?php
                 $_SESSION['loggedIn'] = true;
                 $_SESSION['name'] = $login;
             }

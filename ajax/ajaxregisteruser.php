@@ -1,6 +1,6 @@
 <?php
 
-include_once('.\..\sql.php');
+include_once('../sql.php');
 
 $login = $_GET['login'];
 

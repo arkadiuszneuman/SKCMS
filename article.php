@@ -51,7 +51,7 @@
 	if(isset($_POST['submit']) && ($_POST['hash'] != $_SESSION['hash']))
 	{
 		$name = $_POST['author'];
-		$note = htmlspecialchars(nl2br($_POST['note'], true));
+		$note = nl2br(htmlspecialchars($_POST['note'], true));
 		$user_id = $_POST['user_id'];
 
 		if ($name != "")

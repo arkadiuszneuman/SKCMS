@@ -1,7 +1,7 @@
 <?php
 
-include_once("\..\..\CForm.php");
-include_once("\..\..\sql.php");
+include_once("../../CForm.php");
+include_once("../../sql.php");
 
 @$login = $_GET['login'];
 @$id = $_GET['id'];

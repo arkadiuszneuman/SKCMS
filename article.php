@@ -51,19 +51,22 @@
 	if(isset($_POST['submit']) && ($_POST['hash'] != $_SESSION['hash']))
 	{
 		$name = $_POST['author'];
-		$note = nl2br($_POST['note'], true);
+		$note = htmlspecialchars(nl2br($_POST['note'], true));
 		$user_id = $_POST['user_id'];
 
-		if ($user_id == 0)		
+		if ($name != "")
 		{
-			$sql->AddComment($id, $name, null, $note);
-		}
-		else
-		{
-			$sql->AddComment($id, null, $user_id, $note);
-		}
+			if ($user_id == 0)		
+			{
+				$sql->AddComment($id, $name, null, $note);
+			}
+			else
+			{
+				$sql->AddComment($id, null, $user_id, $note);
+			}
 		
-		$_SESSION['hash'] = $_POST['hash'];
+			$_SESSION['hash'] = $_POST['hash'];
+		}
 	}
 
 	$news = $sql->ReadArticle($id);

@@ -297,6 +297,26 @@
             return mysql_query($query);
         }
 
+        public function ReadCategories($whichOne = null) //whichOne  - id lub nazwa konkretnego linku
+        {
+            $query = "SELECT * FROM ".$this->prefix."links WHERE type='0' ORDER BY ".$this->prefix."links.order";
+			
+            $reply = mysql_query($query);
+			
+            for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
+            {
+                $array[$i]['id'] = $line[0];
+                $array[$i]['link'] = $line[1];
+                $array[$i]['order'] = $line[2];
+				$array[$i]['type'] = $line[3];
+				$array[$i]['value'] = $line[4];
+            }
+
+            if (@$array == null)
+                return null;
+            return $array;
+        }
+
         public function ReadLinks($whichOne = null) //whichOne  - id lub nazwa konkretnego linku
         {
             $query = "SELECT * FROM ".$this->prefix."links";
@@ -320,6 +340,8 @@
                 $array[$i]['id'] = $line[0];
                 $array[$i]['link'] = $line[1];
                 $array[$i]['order'] = $line[2];
+				$array[$i]['type'] = $line[3];
+				$array[$i]['value'] = $line[4];
             }
 
             if (@$array == null)
@@ -327,20 +349,35 @@
             return $array;
         }
 
-        public function AddLink($link)
+        public function AddLink($link, $type, $value)
         {
             $link = $this->ProtectString($link);
 
-            $query = "INSERT INTO ".$this->prefix."links (link) VALUES ('$link')";
+			if ($type == 0)
+			{
+            	$query = "INSERT INTO ".$this->prefix."links (link, type, value) VALUES ('$link', '$type', NULL)";
+			}
+			else
+			{
+            	$query = "INSERT INTO ".$this->prefix."links (link, type, value) VALUES ('$link', '$type', '$value')";
+			}
 
             return mysql_query($query);
         }
 
-        public function EditLink($id, $link)
+		public function EditLink($id, $link, $type, $value)
         {
             $link = $this->ProtectString($link);
             $id = $this->ProtectInt($id);
-            $query = "UPDATE ".$this->prefix."links SET link='$link' WHERE id='$id'";
+			
+			if ($type == 0)
+			{
+            	$query = "UPDATE ".$this->prefix."links SET link='$link', type='$type', value=NULL WHERE id='$id'";
+			}
+			else
+			{
+            	$query = "UPDATE ".$this->prefix."links SET link='$link', type='$type', value='$value' WHERE id='$id'";
+			}
 
             return mysql_query($query);
         }
@@ -353,7 +390,7 @@
 
         public function SaveOrder()
         {
-            $query = "SELECT id, links.order FROM ".$this->prefix."links";
+            $query = "SELECT id, ".$this->prefix."links.order FROM ".$this->prefix."links";
             $reply = mysql_query($query);
             $isOnce = false; //czy przynajmniej jadna rzecz bedzie zmieniona
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
@@ -362,7 +399,7 @@
                 $order = $line[1];
                 if ($_POST[$id] != $order)
                 {
-                    $query = "UPDATE ".$this->prefix."links SET links.order='$_POST[$id]' WHERE id='$id'";
+                    $query = "UPDATE ".$this->prefix."links SET ".$this->prefix."links.order='$_POST[$id]' WHERE id='$id'";
                     $isOnce = true;
                     if (!mysql_query($query))
                         $isOnce = false;

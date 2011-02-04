@@ -32,6 +32,8 @@ class CLinks extends CPanel
 			{
 				$link = $_POST['link'];
 				$link = trim($link);
+				$type = $_POST['type'];
+				$value = $_POST['value'];
 
 				if (empty($link))
 				{
@@ -39,7 +41,7 @@ class CLinks extends CPanel
 				}
 				else
 				{
-					if ($this->sql->AddLink($link))
+					if ($this->sql->AddLink($link, $type, $value))
 						$this->SendInfo("Link został dodany");
 					else
 						$this->SendInfo("Link nie został dodany");
@@ -51,6 +53,8 @@ class CLinks extends CPanel
 			{
 				$link = $_POST['link'];
 				$link = trim($link);
+				$type = $_POST['type'];
+				$value = $_POST['value'];
 
 				if (empty($link))
 				{
@@ -58,7 +62,7 @@ class CLinks extends CPanel
 				}
 				else
 				{
-					if ($this->sql->EditLink($id, $link))
+					if ($this->sql->EditLink($id, $link, $type, $value))
 						$this->SendInfo("Link został zmieniony");
 					else
 						$this->SendInfo("Link nie został zmieniony");
@@ -79,6 +83,7 @@ class CLinks extends CPanel
 			$przenies = "?task=links";
 			if ($id != 0)
 				$przenies = $przenies."&id=$id";
+				/*
 			$form = new CForm(CForm::POST, $przenies);
 			$text = new CTextBox("Dodaj nowy link: ", "link");
 			if ($id != 0)
@@ -88,9 +93,50 @@ class CLinks extends CPanel
 			}
 			$text->SetAddionalAttribs('size="65"');
 			$form->AddItem($text);
+			$text = new 
+			$form->AddItem($text);
 			$form->AddItem(new CButton((($id != 0) ? "Edytuj" : "Wyślij"), (($id != 0) ? "editlink" : "newlink")));
 			$form->Draw();
+*/
+			echo "<form method=\"POST\" action=".$przenies.">";
+			echo "<fieldset>";
+			echo "<label for=\"link\">Dodaj nowy link: </label><br />";
+			if ($id !=0)
+			{
+				$link = $this->sql->ReadLinks((int)$id);
+				echo "<input type=\"text\" name=\"link\" value=\"".$link[0]['link']."\" size=\"65\" /><br />";
 
+				if ($link[0]['type'] == 0)
+				{
+					echo "<input type=\"radio\" name=\"type\" id=\"cat\" value=\"0\" checked>";
+					echo "<label for=\"cat\">Kategoria</label>";
+					echo "<input type=\"radio\" name=\"type\" id=\"out\" value=\"1\">";
+					echo "<label for=\"out\">Link zewnętrzny</label><br />";
+				}
+				else
+				{
+					echo "<input type=\"radio\" name=\"type\" id=\"cat\" value=\"0\">";
+					echo "<label for=\"cat\">Kategoria</label>";
+					echo "<input type=\"radio\" name=\"type\" id=\"out\" value=\"1\" checked>";
+					echo "<label for=\"out\">Link zewnętrzny</label><br />";
+				}
+
+				echo "<label for=\"value\">Adres: </label><br />";
+				echo "<input type=\"text\" name=\"value\" value=\"".$link[0]['value']."\" size=\"100\"><br />";
+				echo "<input type=\"submit\" name=\"editlink\" value=\"Edytuj\" />";
+			}
+			else
+			{
+				echo "<input type=\"text\" name=\"link\" size=\"65\" /><br />";
+				echo "<input type=\"radio\" name=\"type\" id=\"cat\" value=\"0\" checked>";
+				echo "<label for=\"cat\">Kategoria</label>";
+				echo "<input type=\"radio\" name=\"type\" id=\"out\" value=\"1\">";
+				echo "<label for=\"out\">Link zewnętrzny</label><br />";
+				echo "<label for=\"value\">Adres: </label><br />";
+				echo "<input type=\"text\" name=\"value\" value=\"\" size=\"100\"><br />";
+				echo "<input type=\"submit\" name=\"newlink\" value=\"Wyślij\" />";
+			}
+			echo "</fieldset></form>";
 			$links = $this->sql->ReadLinks();
 			$this->DrawTable($links, CPanel::LINKS);
 		}

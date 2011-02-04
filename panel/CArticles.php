@@ -84,7 +84,7 @@ class CArticles extends CPanel
 
 				$news = $this->sql->ReadArticles(Sql::NOTHING, $page*$this->howMany, $this->howMany);
 				$count = $this->sql->NumberOfArticles(Sql::NOTHING);
-				$this->DrawTable($news, CPanel::EDIT, $this->sql->ReadLinks());
+				$this->DrawTable($news, CPanel::EDIT, $this->sql->ReadCategories());
 				$this->DrawPaging($count);
 			}
 		}

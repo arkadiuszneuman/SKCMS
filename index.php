@@ -39,7 +39,14 @@
     {
         $txt = $link['link'];
         $txt =  str_replace(' ','_',$txt);
-		$menu = $menu."<li><a href=\"./index.php?link=".$txt."\" class=\"link\">".$link['link']."</a></li>";
+		if ($link['type'] == 0)
+		{
+			$menu = $menu."<li><a href=\"./index.php?link=".$txt."\" class=\"link\">".$link['link']."</a></li>";
+		}
+		else
+		{
+			$menu = $menu."<li><a href=\"".$link['value']."\" class=\"link\">".$link['link']."</a></li>";
+		}
     }
 	$data = array("menu"=>$menu);
 	echo $template->Render("menu", $data);

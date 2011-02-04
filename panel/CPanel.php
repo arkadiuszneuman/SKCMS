@@ -107,7 +107,7 @@ class CPanel
         $text->SetAddionalAttribs('size="65"');
         $form->AddItem($text);
 		$text = new CComboBox("Kategoria: ", "link");
-		$links = $this->sql->ReadLinks();
+		$links = $this->sql->ReadCategories();
 		$text->AddItem("Brak", "");
 		foreach ($links as $link)
 		{

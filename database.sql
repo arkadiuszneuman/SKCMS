@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Czas wygenerowania: 04 Lut 2011, 10:08
+-- Czas wygenerowania: 04 Lut 2011, 15:47
 -- Wersja serwera: 5.1.54
 -- Wersja PHP: 5.3.5
 
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `skcms_articles` (
 --
 
 INSERT INTO `skcms_articles` (`id`, `title`, `date`, `note`, `proporties`, `id_link`, `author`) VALUES
-(144, 'Artykuł numer jeden.', '2011-01-17 23:14:20', '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris augue odio, feugiat quis dictum sit amet, sodales at justo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris augue est, ultrices id fringilla eget, rutrum nec elit. Phasellus eu tristique mauris. Donec condimentum laoreet blandit. Suspendisse bibendum fermentum malesuada. Nullam lacus urna, cursus quis dignissim quis, pretium eget risus. Suspendisse nec leo vitae tortor auctor condimentum at a risus. Aliquam eu urna nunc. Aliquam gravida porta nisi nec rhoncus. Vestibulum ut arcu ipsum, at venenatis sapien. Etiam non erat turpis, vel malesuada tortor. Sed lacus neque, hendrerit eu iaculis non, scelerisque nec nibh. Integer quis sapien ante. Morbi consequat, eros ut hendrerit luctus, odio risus malesuada odio, nec sodales orci diam interdum neque. Etiam libero lectus, rutrum vel vestibulum et, laoreet in felis.</p>', 0, 1, 'Admin');
+(144, 'Artykuł numer jeden.', '2011-01-17 23:14:20', '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris augue odio, feugiat quis dictum sit amet, sodales at justo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris augue est, ultrices id fringilla eget, rutrum nec elit. Phasellus eu tristique mauris. Donec condimentum laoreet blandit. Suspendisse bibendum fermentum malesuada. Nullam lacus urna, cursus quis dignissim quis, pretium eget risus. Suspendisse nec leo vitae tortor auctor condimentum at a risus. Aliquam eu urna nunc. Aliquam gravida porta nisi nec rhoncus. Vestibulum ut arcu ipsum, at venenatis sapien. Etiam non erat turpis, vel malesuada tortor. Sed lacus neque, hendrerit eu iaculis non, scelerisque nec nibh. Integer quis sapien ante. Morbi consequat, eros ut hendrerit luctus, odio risus malesuada odio, nec sodales orci diam interdum neque. Etiam libero lectus, rutrum vel vestibulum et, laoreet in felis.</p>', 0, 8, 'Admin');
 
 -- --------------------------------------------------------
 
@@ -76,15 +76,19 @@ CREATE TABLE IF NOT EXISTS `skcms_links` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `link` varchar(100) NOT NULL,
   `order` int(11) unsigned NOT NULL DEFAULT '1' COMMENT 'kolejność wyświetlania linków',
+  `type` tinyint(1) NOT NULL,
+  `value` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
 
 --
 -- Zrzut danych tabeli `skcms_links`
 --
 
-INSERT INTO `skcms_links` (`id`, `link`, `order`) VALUES
-(1, 'Aktualności', 3);
+INSERT INTO `skcms_links` (`id`, `link`, `order`, `type`, `value`) VALUES
+(9, 'sdsdsd', 4, 1, 'sdsdsdsd'),
+(5, 'ssw', 2, 1, 'http://wp.pl'),
+(8, 'Aktualności', 1, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -107,10 +111,10 @@ CREATE TABLE IF NOT EXISTS `skcms_preferences` (
 --
 
 INSERT INTO `skcms_preferences` (`id`, `name`, `title`, `descritpion`, `options`, `value`) VALUES
-(1, 'homename', 'Nazwa strony', 'Nazwa strony, która będzie pokazywana na belce przeglądarki.', 'text', 'SKCMS - Zwierzęcy System Zarządzania Treścią'),
+(1, 'homename', 'Nazwa strony', 'Nazwa strony, która będzie pokazywana na belce przeglądarki.', 'text', 'MIPS'),
 (2, 'homefooter', 'Stopka strony.', 'Treść stopki Twojej strony.', 'text', 'Copyright by SKCMS Team.'),
 (3, 'siteauthor', 'Autor.', 'Autor strony.', 'text', 'SKCMS Team'),
-(4, 'defaultstyle', 'Styl domyślny.', 'Domyślny styl Twojej strony.', 'text', 'mips');
+(4, 'defaultstyle', 'Styl domyślny.', 'Domyślny styl Twojej strony.', 'text', 'fancy');
 
 -- --------------------------------------------------------
 

@@ -80,6 +80,7 @@
     class Sql
     {
         private $sql_conn = null;
+		private $prefix = null;
 
         //zmienne okreslajace proporties w zapytaniach
         const NOTHING = 0;
@@ -89,6 +90,7 @@
         {
             global $SQLserver; //zlapanie zmiennych globalnych z pliku database.php
             global $SQLdatabase;
+			global $SQLdatabasePrefix;
             global $SQLlogin;
             global $SQLpass;
             
@@ -100,7 +102,9 @@
                 $database = $SQLdatabase;
             if ($pass == null)
                 $pass = $SQLpass;
-
+				
+			
+			$this->prefix = $SQLdatabasePrefix;
             $this->sql_conn = mysql_connect($server, $user, $pass);
             mysql_select_db($database);
         }
@@ -146,7 +150,7 @@
 			$author = $this->ProtectString($author);
 			$link = $this->ProtectInt($link);
 
-            $query = "INSERT INTO articles (`id`, `title`, `date`, `note`, `author`, `id_link`) VALUES
+            $query = "INSERT INTO ".$this->prefix."articles (`id`, `title`, `date`, `note`, `author`, `id_link`) VALUES
             (NULL, '".trim($title)."', ' ".date("Y-m-d H:i:s")."', '".trim($note)."', '".$author."', '".$link."');";
 
             return mysql_query($query);
@@ -154,7 +158,7 @@
 
         public function NumberOfArticles($proporties, $idLink = null) //proporties - czy w koszu czy nie
         {
-            $query = "SELECT COUNT(*) as howmany FROM articles WHERE proporties='$proporties'";
+            $query = "SELECT COUNT(*) as howmany FROM ".$this->prefix."articles WHERE proporties='$proporties'";
 
             if ($idLink != null)
                 $query = $query." AND id_link='$idLink'";
@@ -170,7 +174,7 @@
             $from = $this->ProtectInt($from);
             $howMany = $this->ProtectInt($howMany);
 
-            $query = "SELECT title, date, note, id_link, id, author FROM articles WHERE proporties='$proporties'";
+            $query = "SELECT title, date, note, id_link, id, author FROM ".$this->prefix."articles WHERE proporties='$proporties'";
             
             if ($idLink != null)
                 $query = $query." AND id_link='$idLink'";
@@ -197,7 +201,7 @@
         {
             $id = $this->ProtectInt($id);
 
-            $query = "SELECT title, note, author, id_link, date FROM articles WHERE id='$id'";
+            $query = "SELECT title, note, author, id_link, date FROM ".$this->prefix."articles WHERE id='$id'";
 
             $reply = mysql_query($query);
             if (($line = mysql_fetch_row($reply)) == 0)
@@ -221,14 +225,14 @@
 			$author = $this->ProtectString($author);
 			$link = $this->ProtectInt($link);
 
-            $query = "UPDATE articles SET title='$title', note='$note', author='$author', id_link='$link' WHERE id='$id'";
+            $query = "UPDATE ".$this->prefix."articles SET title='$title', note='$note', author='$author', id_link='$link' WHERE id='$id'";
 
             return mysql_query($query);
         }
 
         public function UpdateArticleLink($visibleIn, $page, $proporties, &$isChanged) //przypisanie artukulu do konkretnego linku w menu, ischanged - czy jakis zostal zmieniony
         {
-            $query = "SELECT id, id_link, note FROM articles WHERE proporties='".$proporties."' ORDER BY date DESC LIMIT ".($page*20).", 20"; //musi zwracac note, inaczej zle zwraca idki, durny ten sql
+            $query = "SELECT id, id_link, note FROM ".$this->prefix."articles WHERE proporties='".$proporties."' ORDER BY date DESC LIMIT ".($page*20).", 20"; //musi zwracac note, inaczej zle zwraca idki, durny ten sql
 
             $reply = mysql_query($query);
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
@@ -245,7 +249,7 @@
 
                 if (@$visibleIn[$n['id']] != $n['idLink']) //zmiana tylko zmienionych linkow
                 {
-                    $query = "UPDATE articles SET id_link='".@$visibleIn[$n['id']]."' WHERE id='".$n['id']."'";
+                    $query = "UPDATE ".$this->prefix."articles SET id_link='".@$visibleIn[$n['id']]."' WHERE id='".$n['id']."'";
                     if (!mysql_query($query))
                         return false;
                     else
@@ -275,28 +279,27 @@
 
         public function RemoveArticle($id) //usuwanie articles/article jesli przekazujemy tablice
         {
-            $query = "DELETE FROM articles WHERE ".$this->doIdQuery($id);
+            $query = "DELETE FROM ".$this->prefix."articles WHERE ".$this->doIdQuery($id);
             return mysql_query($query);
         }
 
         //przeniesienie do kosza
         public function ArticlesToBin($id) 
         {
-            $query = "UPDATE articles SET proporties='1' WHERE ".$this->doIdQuery($id);
+            $query = "UPDATE ".$this->prefix."articles SET proporties='1' WHERE ".$this->doIdQuery($id);
             return mysql_query($query);
         }
 
         //przeniesienie spowrotem do artykulow
         public function BinToArticles($id) //usuwanie articles/article jesli przekazujemy tablice
         {
-            $query = "UPDATE articles SET proporties='0' WHERE ".$this->doIdQuery($id);
+            $query = "UPDATE ".$this->prefix."articles SET proporties='0' WHERE ".$this->doIdQuery($id);
             return mysql_query($query);
         }
 
         public function ReadLinks($whichOne = null) //whichOne  - id lub nazwa konkretnego linku
         {
-            $query = "SELECT * FROM links";
-
+            $query = "SELECT * FROM ".$this->prefix."links";
             if ($whichOne != null)
             {
                 if (is_int($whichOne))
@@ -310,7 +313,7 @@
                     $query = $query." WHERE link='$whichOne'";
                 }
             }
-            $query = $query." ORDER BY links.order";
+            $query = $query." ORDER BY ".$this->prefix."links.order";
             $reply = mysql_query($query);
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
             {
@@ -328,7 +331,7 @@
         {
             $link = $this->ProtectString($link);
 
-            $query = "INSERT INTO links (link) VALUES ('$link')";
+            $query = "INSERT INTO ".$this->prefix."links (link) VALUES ('$link')";
 
             return mysql_query($query);
         }
@@ -337,20 +340,20 @@
         {
             $link = $this->ProtectString($link);
             $id = $this->ProtectInt($id);
-            $query = "UPDATE links SET link='$link' WHERE id='$id'";
+            $query = "UPDATE ".$this->prefix."links SET link='$link' WHERE id='$id'";
 
             return mysql_query($query);
         }
 
         public function RemoveLink($id) 
         {
-            $query = "DELETE FROM links WHERE ".$this->doIdQuery($id);
+            $query = "DELETE FROM ".$this->prefix."links WHERE ".$this->doIdQuery($id);
             return mysql_query($query);
         }
 
         public function SaveOrder()
         {
-            $query = "SELECT id, links.order FROM links";
+            $query = "SELECT id, links.order FROM ".$this->prefix."links";
             $reply = mysql_query($query);
             $isOnce = false; //czy przynajmniej jadna rzecz bedzie zmieniona
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
@@ -359,7 +362,7 @@
                 $order = $line[1];
                 if ($_POST[$id] != $order)
                 {
-                    $query = "UPDATE links SET links.order='$_POST[$id]' WHERE id='$id'";
+                    $query = "UPDATE ".$this->prefix."links SET links.order='$_POST[$id]' WHERE id='$id'";
                     $isOnce = true;
                     if (!mysql_query($query))
                         $isOnce = false;
@@ -375,7 +378,7 @@
             $pass = $this->ProtectString($pass);
             $mail = $this->ProtectString($mail);
 
-            $query = "INSERT INTO users (login, pass, mail, privileges) VALUES
+            $query = "INSERT INTO ".$this->prefix."users (login, pass, mail, privileges) VALUES
             ('".trim($login)."', '".trim($pass)."', '".trim($mail)."', '".Privileges::COMMENTS."');";
 
             return mysql_query($query);
@@ -385,7 +388,7 @@
         {
             $login = $this->ProtectString($login);
 
-            $query = "SELECT login, pass FROM users WHERE login='$login'";
+            $query = "SELECT login, pass FROM ".$this->prefix."users WHERE login='$login'";
             $reply = mysql_query($query);
 
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
@@ -401,7 +404,7 @@
         {
             $login = $this->ProtectString($login);
 
-            $query = "SELECT login FROM users WHERE login='$login'";
+            $query = "SELECT login FROM ".$this->prefix."users WHERE login='$login'";
             $reply = mysql_query($query);
 
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
@@ -418,7 +421,7 @@
             $from = $this->ProtectInt($from);
             $howMany = $this->ProtectInt($howMany);
 
-            $query = "SELECT id, login, privileges FROM users ORDER BY login LIMIT $from, $howMany";
+            $query = "SELECT id, login, privileges FROM ".$this->prefix."users ORDER BY login LIMIT $from, $howMany";
 
             $reply = mysql_query($query);
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
@@ -436,7 +439,7 @@
         //zwraca ilosc uzytkownikow
         public function NumberOfUsers()
         {
-            $query = "SELECT COUNT(*) as howmany FROM users";
+            $query = "SELECT COUNT(*) as howmany FROM ".$this->prefix."users";
 
             $row = mysql_fetch_array(mysql_query($query));
 
@@ -445,7 +448,7 @@
 
 		public function ReturnUserName($id)
 		{
-			$query = "SELECT login FROM users WHERE id='$id'";
+			$query = "SELECT login FROM ".$this->prefix."users WHERE id='$id'";
 			$result = mysql_query($query);
 
 			if(mysql_num_rows($result) == 0)
@@ -457,7 +460,7 @@
 		public function ReturnUserID($login)
 		{
 			$login = $this->ProtectString($login);
-			$query = "SELECT id FROM users WHERE login='$login'";
+			$query = "SELECT id FROM ".$this->prefix."users WHERE login='$login'";
 			$result = mysql_query($query);
 
 			if (mysql_num_rows($result) == 0)
@@ -470,7 +473,7 @@
         {
             $login = $this->ProtectString($login);
 
-            $query = "SELECT privileges FROM users WHERE login='$login'";
+            $query = "SELECT privileges FROM ".$this->prefix."users WHERE login='$login'";
             $reply = mysql_query($query);
 
             $line = mysql_fetch_row($reply);
@@ -482,7 +485,7 @@
         {
             $id = $this->ProtectInt($id);
 
-            $query = "UPDATE users SET privileges='$privileges' WHERE id='$id'";
+            $query = "UPDATE ".$this->prefix."users SET privileges='$privileges' WHERE id='$id'";
             
             return mysql_query($query);
         }
@@ -493,16 +496,16 @@
             $userName = $this->ProtectString($_SESSION['name']);
             $howMany = $this->ProtectInt($howMany);
 
-            $query = "SELECT id FROM users WHERE login='$userName'"; //pobranie IDka usera
+            $query = "SELECT id FROM ".$this->prefix."users WHERE login='$userName'"; //pobranie IDka usera
             $reply = mysql_query($query);
             $line = mysql_fetch_row($reply);
 
-            $query = "SELECT id_user FROM preferences WHERE id_user='$line[0]'";
+            $query = "SELECT id_user FROM ".$this->prefix."preferences WHERE id_user='$line[0]'";
             $reply = mysql_query($query);
             if (mysql_fetch_row($reply)) //sprawdzenie czy rekord istnieje
-                $query = "UPDATE preferences SET howMany='$howMany'";
+                $query = "UPDATE ".$this->prefix."preferences SET howMany='$howMany'";
             else
-                $query = "INSERT INTO preferences (id_user, howMany) VALUES ('$line[0]', '$howMany')";
+                $query = "INSERT INTO ".$this->prefix."preferences (id_user, howMany) VALUES ('$line[0]', '$howMany')";
 
             return mysql_query($query);
         }
@@ -511,7 +514,7 @@
         public function LoadPreferences()
         {
             $userName = $this->ProtectString($_SESSION['name']);
-            $query = "SELECT howMany FROM preferences WHERE id_user=(SELECT id FROM users WHERE login='$userName')";
+            $query = "SELECT howMany FROM ".$this->prefix."preferences WHERE id_user=(SELECT id FROM users WHERE login='$userName')";
 
             $reply = mysql_query($query);
             $line = mysql_fetch_row($reply);
@@ -526,7 +529,7 @@
 		{
 			$what = $this->ProtectString($what);
 
-			$query = "SELECT value FROM preferences WHERE name='$what'";
+			$query = "SELECT value FROM ".$this->prefix."preferences WHERE name='$what'";
 			$result = mysql_query($query);
 
 			if (mysql_num_rows($result) == 0)
@@ -537,7 +540,7 @@
 
 		public function GetSettings()
 		{
-			$query = "SELECT * FROM preferences";
+			$query = "SELECT * FROM ".$this->prefix."preferences";
 			$reply = mysql_query($query);
 
 			for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
@@ -560,7 +563,7 @@
 		{
 			foreach ($values as $key=>$value)
 			{
-				$query = "UPDATE preferences SET value='".$value."' WHERE name='".$key."'";
+				$query = "UPDATE ".$this->prefix."preferences SET value='".$value."' WHERE name='".$key."'";
 				mysql_query($query);
 			}
 			return 1;
@@ -569,7 +572,7 @@
 		public function ReadComments($id)
 		{
 			$array = null;
-            $query = "SELECT user_id, name, note, date, id FROM comments WHERE article_id = '$id' ORDER BY date";
+            $query = "SELECT user_id, name, note, date, id FROM ".$this->prefix."comments WHERE article_id = '$id' ORDER BY date";
 			$reply = mysql_query($query);
 			
 			for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
@@ -602,7 +605,7 @@
 			if ($user_id != null)
 				$user_id = $this->ProtectInt($user_id);
 
-            $query = "INSERT INTO comments (`article_id`, `user_id`, `name`, `note`, `date`) VALUES
+            $query = "INSERT INTO ".$this->prefix."comments (`article_id`, `user_id`, `name`, `note`, `date`) VALUES
             ('".$article_id."', '".$user_id."', '".trim($author)."', '".trim($note)."', '".date("Y-m-d H:i:s")."');";
 
             return mysql_query($query);
@@ -610,7 +613,7 @@
 
 		public function GetCommentAuthor($id)
 		{
-            $query = "SELECT user_id, name FROM comments WHERE id = '$id'";
+            $query = "SELECT user_id, name FROM ".$this->prefix."comments WHERE id = '$id'";
 			$reply = mysql_query($query);
 			
 			for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
@@ -630,13 +633,13 @@
 
 		public function DeleteComment($id)
 		{
-			$query = "DELETE FROM comments WHERE id='$id'";
+			$query = "DELETE FROM ".$this->prefix."comments WHERE id='$id'";
 			$reply = mysql_query($query);
 		}
 
 		public function NumberOfComments($id)
 		{
-            $query = "SELECT COUNT(*) FROM comments WHERE article_id='$id'";
+            $query = "SELECT COUNT(*) FROM ".$this->prefix."comments WHERE article_id='$id'";
 			$result = mysql_query($query);
 
 			return mysql_result($result, 0);

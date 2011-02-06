@@ -46,13 +46,13 @@ function Close()
 function RefreshSite()
 {
     var r = getXMLHttpRequest();
-    r.open('GET', './index.php', true);
+    r.open('GET', './blocks/login.php?from=outer', true);
 
     r.onreadystatechange = function()
     {
         if (r.readyState == 4)
         {
-            document.getElementById('all').innerHTML = r.responseText;
+            document.getElementById('loginBlock').innerHTML = r.responseText;
         }
     }
 
@@ -64,10 +64,13 @@ function Login(task)
     var r = getXMLHttpRequest();
     if (task == "check") //pobranie danych z formularza
     {
-        task += "&login="
-        task += document.getElementsByName("login")[0].value;
-        task += "&pass="
-        task += document.getElementsByName("pass")[0].value;
+        //task += "&login="
+        //task += document.getElementsByName("login")[0].value;
+        //task += "&pass="
+        //task += document.getElementsByName("pass")[0].value;
+		r.open('POST', './user.php?task=' + task);
+		r.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		r.send('&login=' + escape(document.getElementsByName('login')[0].value) + '&pass=' + escape(document.getElementsByName("pass")[0].value));
     }
     else if (task == "registation") //rejestracja po wpisaniu danych
     {
@@ -78,7 +81,8 @@ function Login(task)
         task += "&mail="
         task += document.getElementsByName("mail")[0].value;
     }
-    r.open('GET', './user.php?task='+task, true);
+	else
+		r.open('GET', './user.php?task='+task, true);
 
     r.onreadystatechange = function()
     {
@@ -89,8 +93,9 @@ function Login(task)
         }
         else if (r.readyState == 4)
         {
-            document.getElementById('windowLogin').innerHTML = r.responseText;
-            document.getElementById('windowLogin').style.display = 'block';
+           // document.getElementById('windowLogin').innerHTML = r.responseText;
+            //document.getElementById('windowLogin').style.display = 'block';
+			RefreshSite();
         }
         else
         {

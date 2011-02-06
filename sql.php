@@ -85,7 +85,15 @@
         //zmienne okreslajace proporties w zapytaniach
         const NOTHING = 0;
         const BIN = 1;
-
+		
+		/* 
+		Connect with database.
+			$server -> server URI. If NULL config file is used.
+			$user -> login to server. If NULL config file is used.
+			$pass -> password to server. If NULL config file is used.
+			$database -> name of database. If NULL config file is used.
+			return -> no return 
+		*/
         public function Sql($server = null, $user = null, $pass = null, $database = null) //polaczenie z wybraniem bazy
         {
             global $SQLserver; //zlapanie zmiennych globalnych z pliku database.php
@@ -297,6 +305,26 @@
             return mysql_query($query);
         }
 
+        public function ReadCategories($whichOne = null) //whichOne  - id lub nazwa konkretnego linku
+        {
+            $query = "SELECT * FROM ".$this->prefix."links WHERE type='0' ORDER BY ".$this->prefix."links.order";
+			
+            $reply = mysql_query($query);
+			
+            for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
+            {
+                $array[$i]['id'] = $line[0];
+                $array[$i]['link'] = $line[1];
+                $array[$i]['order'] = $line[2];
+				$array[$i]['type'] = $line[3];
+				$array[$i]['value'] = $line[4];
+            }
+
+            if (@$array == null)
+                return null;
+            return $array;
+        }
+
         public function ReadLinks($whichOne = null) //whichOne  - id lub nazwa konkretnego linku
         {
             $query = "SELECT * FROM ".$this->prefix."links";
@@ -320,6 +348,8 @@
                 $array[$i]['id'] = $line[0];
                 $array[$i]['link'] = $line[1];
                 $array[$i]['order'] = $line[2];
+				$array[$i]['type'] = $line[3];
+				$array[$i]['value'] = $line[4];
             }
 
             if (@$array == null)
@@ -327,20 +357,35 @@
             return $array;
         }
 
-        public function AddLink($link)
+        public function AddLink($link, $type, $value)
         {
             $link = $this->ProtectString($link);
 
-            $query = "INSERT INTO ".$this->prefix."links (link) VALUES ('$link')";
+			if ($type == 0)
+			{
+            	$query = "INSERT INTO ".$this->prefix."links (link, type, value) VALUES ('$link', '$type', NULL)";
+			}
+			else
+			{
+            	$query = "INSERT INTO ".$this->prefix."links (link, type, value) VALUES ('$link', '$type', '$value')";
+			}
 
             return mysql_query($query);
         }
 
-        public function EditLink($id, $link)
+		public function EditLink($id, $link, $type, $value)
         {
             $link = $this->ProtectString($link);
             $id = $this->ProtectInt($id);
-            $query = "UPDATE ".$this->prefix."links SET link='$link' WHERE id='$id'";
+			
+			if ($type == 0)
+			{
+            	$query = "UPDATE ".$this->prefix."links SET link='$link', type='$type', value=NULL WHERE id='$id'";
+			}
+			else
+			{
+            	$query = "UPDATE ".$this->prefix."links SET link='$link', type='$type', value='$value' WHERE id='$id'";
+			}
 
             return mysql_query($query);
         }
@@ -350,10 +395,17 @@
             $query = "DELETE FROM ".$this->prefix."links WHERE ".$this->doIdQuery($id);
             return mysql_query($query);
         }
+		
+		public function GetDefaultLink()
+		{
+			$query = 'SELECT id FROM '.$this->prefix.'links ORDER BY '.$this->prefix.'links.order ASC LIMIT 0, 1';
+			$reply = mysql_query($query);
 
+			return mysql_result($reply, 0);
+		}
         public function SaveOrder()
         {
-            $query = "SELECT id, links.order FROM ".$this->prefix."links";
+            $query = "SELECT id, ".$this->prefix."links.order FROM ".$this->prefix."links";
             $reply = mysql_query($query);
             $isOnce = false; //czy przynajmniej jadna rzecz bedzie zmieniona
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
@@ -362,7 +414,7 @@
                 $order = $line[1];
                 if ($_POST[$id] != $order)
                 {
-                    $query = "UPDATE ".$this->prefix."links SET links.order='$_POST[$id]' WHERE id='$id'";
+                    $query = "UPDATE ".$this->prefix."links SET ".$this->prefix."links.order='$_POST[$id]' WHERE id='$id'";
                     $isOnce = true;
                     if (!mysql_query($query))
                         $isOnce = false;
@@ -537,7 +589,7 @@
 			else
 				return mysql_result($result, 0);
 		}
-
+ 
 		public function GetSettings()
 		{
 			$query = "SELECT * FROM ".$this->prefix."preferences";
@@ -644,7 +696,7 @@
 
 			return mysql_result($result, 0);
 		}
-
+ 
         public function Close()
         {
             mysql_close($this->sql_conn);

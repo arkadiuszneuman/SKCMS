@@ -20,8 +20,8 @@
         case "check":
             include('sql.php');
 
-            $login = $_GET['login'];
-            $pass = $_GET['pass'];
+            $login = $_POST['login'];
+            $pass = $_POST['pass'];
 
             $sql = new Sql();
 

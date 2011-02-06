@@ -54,7 +54,8 @@ class CPanel
                     }
                     if (Privileges::CheckPrivilege(Privileges::MENU, $this->privileges))
                     {
-                        ?><a href="./?task=links" class="button">Menu</a><?php
+                        ?><a href="./?task=links" class="button">Menu</a>
+						<a href="./?task=blocks" class="button">Bloki</a><?php
                     }
                     if (Privileges::CheckPrivilege(Privileges::USERS, $this->privileges))
                     {
@@ -107,7 +108,7 @@ class CPanel
         $text->SetAddionalAttribs('size="65"');
         $form->AddItem($text);
 		$text = new CComboBox("Kategoria: ", "link");
-		$links = $this->sql->ReadLinks();
+		$links = $this->sql->ReadCategories();
 		$text->AddItem("Brak", "");
 		foreach ($links as $link)
 		{

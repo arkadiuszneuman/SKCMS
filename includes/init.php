@@ -1,4 +1,9 @@
 <?php
+	function GenerateHash()
+	{
+		return md5(time() * rand());
+	}
+
     function showPaging($page, $howMany, $count)
     {
 		$toReturn = "";

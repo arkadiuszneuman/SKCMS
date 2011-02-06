@@ -54,7 +54,8 @@ class CPanel
                     }
                     if (Privileges::CheckPrivilege(Privileges::MENU, $this->privileges))
                     {
-                        ?><a href="./?task=links" class="button">Menu</a><?php
+                        ?><a href="./?task=links" class="button">Menu</a>
+						<a href="./?task=blocks" class="button">Bloki</a><?php
                     }
                     if (Privileges::CheckPrivilege(Privileges::USERS, $this->privileges))
                     {

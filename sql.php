@@ -85,7 +85,15 @@
         //zmienne okreslajace proporties w zapytaniach
         const NOTHING = 0;
         const BIN = 1;
-
+		
+		/* 
+		Connect with database.
+			$server -> server URI. If NULL config file is used.
+			$user -> login to server. If NULL config file is used.
+			$pass -> password to server. If NULL config file is used.
+			$database -> name of database. If NULL config file is used.
+			return -> no return 
+		*/
         public function Sql($server = null, $user = null, $pass = null, $database = null) //polaczenie z wybraniem bazy
         {
             global $SQLserver; //zlapanie zmiennych globalnych z pliku database.php
@@ -387,7 +395,14 @@
             $query = "DELETE FROM ".$this->prefix."links WHERE ".$this->doIdQuery($id);
             return mysql_query($query);
         }
+		
+		public function GetDefaultLink()
+		{
+			$query = 'SELECT id FROM '.$this->prefix.'links ORDER BY '.$this->prefix.'links.order ASC LIMIT 0, 1';
+			$reply = mysql_query($query);
 
+			return mysql_result($reply, 0);
+		}
         public function SaveOrder()
         {
             $query = "SELECT id, ".$this->prefix."links.order FROM ".$this->prefix."links";
@@ -574,7 +589,7 @@
 			else
 				return mysql_result($result, 0);
 		}
-
+ 
 		public function GetSettings()
 		{
 			$query = "SELECT * FROM ".$this->prefix."preferences";
@@ -681,7 +696,7 @@
 
 			return mysql_result($result, 0);
 		}
-
+ 
         public function Close()
         {
             mysql_close($this->sql_conn);

@@ -107,8 +107,6 @@ function Login(task)
             document.getElementById('windowLogin').innerHTML = "Błąd";
         }
     }
-
-    return false;
 }
 
 

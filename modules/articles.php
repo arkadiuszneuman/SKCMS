@@ -1,5 +1,5 @@
 <?php
-	$howMany = 5;
+	$howMany = 2;
 	@$page = $_GET['page'];
 	
 	if (@$_GET['link'] == NULL)
@@ -22,7 +22,8 @@
 			$newsBlock = $newsBlock.$template->Render("news_item", $data);
 		}
 		
-		$count = $sql->NumberOfArticles(Sql::NOTHING, $link['id']);
+		$count = $sql->NumberOfArticles(Sql::NOTHING, $link);
+		echo $count;
 		if ($count > $howMany) //wyswietlenie pagingu tylko w przypadku wiekszej ilosci newsow niz strona
 		{
 			$newsBlock = $newsBlock."".$template->Render("news_paging", showPaging($page, $howMany, $count));

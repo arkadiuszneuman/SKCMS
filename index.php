@@ -13,10 +13,14 @@
 
 	echo $template->RenderHeader();
 
-  	$data['title'] = "Użytkownik2";
+  	$data['title'] = "Użytkownik";
 	$data['item_id'] = "loginBlock";
 	$data['content'] = 	include("blocks/login.php");
+	$sidebarContent = $sidebarContent."".$template->Render("sidebar_item", $data);
 
+  	$data['title'] = "Galeria";
+	$data['item_id'] = "galleryBlock";
+	$data['content'] = 	include("blocks/gallery.php");
 	$sidebarContent = $sidebarContent."".$template->Render("sidebar_item", $data);
     //okienko z logowaniem
 

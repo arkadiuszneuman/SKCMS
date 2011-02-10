@@ -25,12 +25,13 @@
 
             $sql = new Sql();
 
-            if ($sql->CheckUser($login, md5($pass))) //sprawdzenie loginu i przeniesienie do panelu w razie powodzenia
+            if ($sql->CheckUser($login, md5($pass))) //sprawdzenie loginu i przeniesienie nazot w razie powodzenia
             {
+                header('Location: ./'); //natychmiastowe przekierowanie
                 echo "Zalogowano";
+                echo "<br />Za 3 sekundy zostaniesz przeniesiony do strony głównej...";
                 $_SESSION['loggedIn'] = true;
                 $_SESSION['name'] = $login;
-                
                 //echo '<script type="text/javascript">RefreshSite();</script>';
             }
             else
@@ -44,10 +45,11 @@
         case "logoff":
             if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true)
             {
+                header('Location: ./'); //natychmiastowe przekierowanie
                 $_SESSION['loggedIn'] = false;
                 $_SESSION['name'] = "";
                 echo "Wylogowano";
-                //echo <br>Za 3 sekundy zostaniesz przeniesiony do poprzedniej lokalizacji...";
+                echo "<br />Za 3 sekundy zostaniesz przeniesiony do strony głównej...";
             }
             break;
 
@@ -98,6 +100,6 @@
 
     //zamkniecie okienka z logowaniem
     ?>
-    <br /><br /><a href="#" onclick="RefreshSite(); Close();">Zamknij</a>
+    <br /><br /><a href="./">Zamknij</a>
     <?php
 ?>

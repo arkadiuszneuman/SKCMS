@@ -86,7 +86,7 @@
         const NOTHING = 0;
         const BIN = 1;
 		
-		/* 
+		/*
 		Connect with database.
 			$server -> server URI. If NULL config file is used.
 			$user -> login to server. If NULL config file is used.

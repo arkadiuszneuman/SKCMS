@@ -41,13 +41,20 @@ class CPreferences extends CPanel
 		$form = new CForm(CForm::POST, "?task=preferences");
 		foreach ($this->settings as $setting)
 		{
-			if ($setting['options'] == "text")
+			$action = explode("\n", $setting['options']);
+			echo $action[0].' ';
+			switch($action[0])
 			{
-				$item = new CTextBox($setting['title']."<br />".$setting['description']."<br />",
-					$setting['name'], null);
-				$item->SetValue($setting['value']);
-				$form->AddItem($item);
+				case 'text':
+					$item = new CTextBox($setting['title']."<br />".$setting['description']."<br />",
+						$setting['name'], null);
+					$item->SetValue($setting['value']);
+					$form->AddItem($item);
+					break;
+				case 'yes/no':
+					break;
 			}
+
 		}
 		$form->AddItem(new CButton("Zapisz zmiany", "save"));
 		$form->Draw();

@@ -592,7 +592,7 @@
  
 		public function GetSettings()
 		{
-			$query = "SELECT * FROM ".$this->prefix."preferences";
+			$query = 'SELECT * FROM '.$this->prefix.'preferences ORDER BY id ASC';
 			$reply = mysql_query($query);
 
 			for ($i = 0; $line = mysql_fetch_row($reply); ++$i)

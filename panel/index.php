@@ -3,6 +3,15 @@ session_start();
 include('../sql.php');
 $sql = new Sql();
 
+if(@$_GET['action'] == 'admin')
+{
+	if($sql->CheckUser($_POST['login'], md5($_POST['pass'])) && ($sql->CheckPrivileges($_POST['login']) >= Privileges::ARTICLES))
+	{
+		$_SESSION['loggedIn'] = true;
+		$_SESSION['name'] = $_POST['login'];
+	}
+}
+
 if (isset($_SESSION['name']))
     $priv = $sql->CheckPrivileges($_SESSION['name']);
 else
@@ -51,6 +60,21 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] && $priv >= Privileges
 
     ?><br /><br /><a href="../index.php">Powrót do strony głownej</a><?php
 }
+else if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] && $priv <= Privileges::ARTICLES) //wszystkie uprawnienia od mozliwosci dodawania artykulow maja dostep do panelu
+{
+    ?>
+        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+        <html>
+          <head>
+            <title>SKCMS - Panel Administracyjny</title>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+          </head>
+          <body>
+		  	<p>Nie masz dostępu do tej strony. <a href="../index.php">Powrót do strony głównej</a></p>
+          </body>
+        </html>
+		<?php
+}
 else
 {
     ?>
@@ -61,9 +85,13 @@ else
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
           </head>
           <body>
-        <?php
-    ?>Nie masz dostępu do tej strony<br /><br /><a href="../index.php">Powrót do strony głownej</a><?php
-    ?>
+		 	<form method="POST" action="index.php?action=admin">
+			<label for="login">Login: </label>
+			<input type="text" name="login"><br />
+			<label for="pass">Hasło: </label>
+			<input type="password" name="pass"><br />
+			<input type="submit" name="log" value="Wyślij">
+			</form>
           </body>
         </html>
    <?php

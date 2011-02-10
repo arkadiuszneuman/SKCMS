@@ -54,7 +54,7 @@ class Layout
 
 	public function Render($file, $data)
 	{
-		if (($this->render=file_get_contents("templates/".$this->style."/".$file.".tpl")) == FALSE) // umożliwić zmianę templatki
+		if (($this->render=file_get_contents("templates/".$this->style."/".$file.".tpl")) == FALSE)
 		{
 			$this->render = "Błąd otwierania pliku z szablonem";
 			return $this->render;

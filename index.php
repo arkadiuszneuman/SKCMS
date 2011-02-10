@@ -18,7 +18,6 @@
 	$data['content'] = 	include("blocks/login.php");
 
 	$sidebarContent = $sidebarContent."".$template->Render("sidebar_item", $data);
-    //okienko z logowaniem
 
     //wyswietlenie linkow
     $links = $sql->ReadLinks();
@@ -30,7 +29,7 @@
         $txt =  str_replace(' ','_',$txt);
 		if ($link['type'] == 0)
 		{
-			$menu = $menu."<li><a href=\"./index.php?link=".$link['id']."\" class=\"link\">".$link['link']."</a></li>";
+			$menu = $menu."<li><a href=\"./?link=".$link['id']."\" class=\"link\">".$link['link']."</a></li>";
 		}
 		else
 		{

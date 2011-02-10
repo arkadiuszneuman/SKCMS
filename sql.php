@@ -165,11 +165,14 @@
         }
 
         public function NumberOfArticles($proporties, $idLink = null) //proporties - czy w koszu czy nie
-        {
+        {    
             $query = "SELECT COUNT(*) as howmany FROM ".$this->prefix."articles WHERE proporties='$proporties'";
 
             if ($idLink != null)
+            {
+                $this->ProtectInt($idLink);
                 $query = $query." AND id_link='$idLink'";
+            }
 
             $row = mysql_fetch_array(mysql_query($query));
 

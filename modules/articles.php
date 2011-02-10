@@ -22,7 +22,8 @@
 			$newsBlock = $newsBlock.$template->Render("news_item", $data);
 		}
 		
-		$count = $sql->NumberOfArticles(Sql::NOTHING, $link['id']);
+		$count = $sql->NumberOfArticles(Sql::NOTHING, $link);
+
 		if ($count > $howMany) //wyswietlenie pagingu tylko w przypadku wiekszej ilosci newsow niz strona
 		{
 			$newsBlock = $newsBlock."".$template->Render("news_paging", showPaging($page, $howMany, $count));
@@ -30,6 +31,6 @@
 	}
 	else
 	{   
-		$newsBlock = $newsBlock.""."Brak arytkułów w podanym linku";
+		$newsBlock = $newsBlock."Brak arytkułów w podanym linku";
 	}
 ?>

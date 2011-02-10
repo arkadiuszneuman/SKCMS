@@ -7,12 +7,17 @@
     function showPaging($page, $howMany, $count)
     {
 		$toReturn = "";
-        $link = $_GET['link'];
+        @$link = $_GET['link'];
 
         if ($page > 0) //wyswietlenie poprzednia strona
         {
-            $toReturn = $toReturn."<a href=\"./index.php?link=".$link."&page=0\"><<</a> 
-				<a href=\"./index.php?link=".$link."&page=".($page-1)."\"><</a> ";
+            if ($link != null)
+                $toReturn = $toReturn."<a href=\"./?link=".$link."&page=0\"><<</a>
+                    <a href=\"./index.php?link=".$link."&page=".($page-1)."\"><</a> ";
+            else
+                $toReturn = $toReturn."<a href=\"./?page=0\"><<</a>
+                    <a href=\"./?page=".($page-1)."\"><</a> ";
+
         }
         else
         {
@@ -25,7 +30,10 @@
             {
                 if ($i != $page + 1) //link nie moze byc aktualna strona
                 {
-                    $toReturn = $toReturn."<a href=\"./index.php?link=".$link."&page=".($i-1)."\">".$i."</a> ";
+                    if ($link != null)
+                        $toReturn = $toReturn."<a href=\"./?link=".$link."&page=".($i-1)."\">".$i."</a> ";
+                    else
+                        $toReturn = $toReturn."<a href=\"./?page=".($i-1)."\">".$i."</a> ";
                 }
                 else
                 {
@@ -36,15 +44,24 @@
 
         if (($page+1)*$howMany < $count) //wyswietlenie nastepna strona i ostatnia strona
         {
-            $toReturn = $toReturn."<a href=\"./index.php?link=".$link."&page=".($page+1)."\">></a> ";
+            if ($link != null)
+                $toReturn = $toReturn."<a href=\"./?link=".$link."&page=".($page+1)."\">></a> ";
+            else
+                $toReturn = $toReturn."<a href=\"./?page=".($page+1)."\">></a> ";
 
             if ($count%$howMany != 0) //jesli ilosc newsow przez ilosc newsow na strone jest nierowna
             {
-                $toReturn = $toReturn."<a href=\"./index.php?link=".$link."&page=".((int)($count/$howMany))."\">>></a>";
+                if ($link != null)
+                    $toReturn = $toReturn."<a href=\"./?link=".$link."&page=".((int)($count/$howMany))."\">>></a>";
+                else
+                    $toReturn = $toReturn."<a href=\"./?page=".((int)($count/$howMany))."\">>></a>";
             }
             else
             {
-                $toReturn = $toReturn."<a href=\"./index.php?link=".$link."&page=".(($count/$howMany) - 1)."\">>></a>";
+                if ($link != null)
+                    $toReturn = $toReturn."<a href=\"./?link=".$link."&page=".(($count/$howMany) - 1)."\">>></a>";
+                else
+                    $toReturn = $toReturn."<a href=\"./?page=".(($count/$howMany) - 1)."\">>></a>";
             }
         }
         else

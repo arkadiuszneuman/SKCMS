@@ -80,9 +80,14 @@ function Login(task)
         task += document.getElementsByName("pass")[0].value;
         task += "&mail="
         task += document.getElementsByName("mail")[0].value;
+
+        r.send(null);
     }
 	else
+    {
 		r.open('GET', './user.php?task='+task, true);
+        r.send(null);
+    }
 
     r.onreadystatechange = function()
     {
@@ -103,7 +108,7 @@ function Login(task)
         }
     }
 
-    r.send(null);
+    return false;
 }
 
 

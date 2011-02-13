@@ -1,8 +1,3 @@
-window.onload = function()
-{
-    
-}
-
 function getXMLHttpRequest() //przygotowanie ajaxa do roznych przegladarek
 {
   var request = false;

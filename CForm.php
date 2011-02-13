@@ -150,6 +150,13 @@ abstract class CInput extends CItem
 
 class CTextBox extends CInput
 {
+    /**
+     * Stworzenie textboksa (pole tekstowe do z możliwością wpisania tekstu)
+     * @param string $text Wyświetlany tekst (opcjonalnie)
+     * @param string $name Nazwa (name) (opcjonalnie)
+     * @param string $id ID (opcjonalnie)
+     * @param string $onkeyup Reakcja na zdarzenie onKeyUp (opcjonalnie)
+     */
     public function CTextBox($text = null, $name = null, $id = null, $onkeyup = null)
     {
         parent::CInput(CInput::TEXT, $text, $name, $id);
@@ -246,6 +253,16 @@ class CComboBox extends CItem
 
 class CCheckBox extends CInput
 {
+	/**
+	 * 
+	 * Stworzenie ComboBoxa (true-false)
+	 * @param string $text Tekst wyświetlany przy comboboksie (opcjonalnie)
+	 * @param string $name Nazwa comboboksa (może być wspólna dla wielu (wtedy z []) (opcjonalnie)
+	 * @param bool $selected Czy combo ma byc zaznaczone na poczatku (opcjonalnie)
+	 * @param bool $disabled Czy combo ma byc wyszarzone na poczatku (opcjonalnie)
+	 * @param string $value Nazwa comboboksa (w przypadku uzycia wielu tych samych nazw) (opcjonalnie)
+	 * @param string $id Id comboboksa (opcjonalnie)
+	 */
     public function CCheckBox($text = null, $name = null, $selected = false, $disabled = false, $value = null, $id = null)
     {
         parent::CInput(CInput::CHECKBOX, $text, $name, $id);

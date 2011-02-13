@@ -17,7 +17,10 @@ class CPreferences extends CPanel
         {
 			foreach ($this->settings as $setting)
 			{
-				$values[$setting['name']] = $_POST[$setting['name']];
+				if (isset($_POST[$setting['name']]))
+					$values[$setting['name']] = $_POST[$setting['name']];
+				else
+					$values[$setting['name']] = 0; //jesli wartosc nie istnieje to jest to checkbox i nie jest on zaznaczony
 			}
 
             if ($this->sql->SaveSettings($values))
@@ -47,14 +50,16 @@ class CPreferences extends CPanel
 			{
 				case 'text':
 					$item = new CTextBox($setting['title']."<br />".$setting['description']."<br />",
-						$setting['name'], null);
+						$setting['name']);
 					$item->SetValue($setting['value']);
-					$form->AddItem($item);
 					break;
-				case 'yes/no':
+				case 'check':
+					$form->AddItem("<b>".$setting['title']."<br />".$setting['description']."</b><br />");
+					$item = new CCheckBox(null, $setting['name'], $setting['value'], false, "1"); //tytul jest dodawany linijke wyzej
 					break;
 			}
-
+			
+			$form->AddItem($item);
 		}
 		$form->AddItem(new CButton("Zapisz zmiany", "save"));
 		$form->Draw();

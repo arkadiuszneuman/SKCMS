@@ -6,12 +6,12 @@
 	include ('sql.php');
 
     $sql = new Sql();
-	$privi = new Privileges();
+	//$privi = new Privileges();
 
 	if (isset($_GET['delete']))
 	{
 		$userPrivileges = $sql->CheckPrivileges($_SESSION['name']);
-		if (($userPrivileges >= 64) || (($privi->CheckPrivilege(2, $userPrivileges)) && ($sql->GetCommentAuthor($_GET['delete']) == $_SESSION['name'])))
+		if (($userPrivileges >= 64) || ((Privileges::CheckPrivilege(2, $userPrivileges)) && ($sql->GetCommentAuthor($_GET['delete']) == $_SESSION['name'])))
 		{
 			$sql->DeleteComment($_GET['delete']);
 		}
@@ -42,11 +42,6 @@
         <a href=\"#\" onclick=\"Login('logoff')\">Wyloguj</a>", "item_id"=>"login");
 		$sidebarContent = $sidebarContent."".$template->Render("sidebar_item", $data);
     }
-    
-    //okienko z logowaniem
-    ?>
-        <div id="windowLogin"></div>
-    <?php
 
     //wyswietlenie linkow
     $links = $sql->ReadLinks();
@@ -96,7 +91,7 @@
 				{
 					$addThings = "<a href=\"?id=".$id."&delete=".$comment['id']."\">Usuń komentarz</a>";
 				}
-				elseif (($privi->CheckPrivilege(2, $userPrivileges)) && ($comment['user'] == $_SESSION['name']))
+				elseif ((Privileges::CheckPrivilege(2, $userPrivileges)) && ($comment['user'] == $_SESSION['name']))
 				{
 					$addThings = "<a href=\"?id=".$id."&delete=".$comment['id']."\">Usuń komentarz</a>";
 				}

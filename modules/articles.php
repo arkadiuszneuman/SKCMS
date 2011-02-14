@@ -17,9 +17,18 @@
 	{   
 		foreach($news as $n)
 		{   
-			$data = array("id"=>$n['id'], "title"=>$n['title'], "author"=>$n['author'], "date"=>$n['date'], 
-				"comments"=>$sql->NumberOfComments($n['id']), "content"=>$n['note']);
-			$newsBlock = $newsBlock.$template->Render("news_item", $data);
+			if ($sql->GetSetting("comments") == 1)
+			{
+				$data = array("id"=>$n['id'], "title"=>$n['title'], "author"=>$n['author'], "date"=>$n['date'], 
+						"comments"=>$sql->NumberOfComments($n['id']), "content"=>$n['note']);
+				$newsBlock = $newsBlock.$template->Render("news_item", $data);
+			}
+			else
+			{
+				$data = array("id"=>$n['id'], "title"=>$n['title'], "author"=>$n['author'], "date"=>$n['date'], 
+						"content"=>$n['note']);
+				$newsBlock = $newsBlock.$template->Render("news_item_nc", $data);
+			}
 		}
 		
 		$count = $sql->NumberOfArticles(Sql::NOTHING, $link);

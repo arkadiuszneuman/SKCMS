@@ -39,65 +39,75 @@
 	$news = $sql->ReadArticle($id);
 	if ($news != null)
 	{
-		$commentsBlock = "";
-		$comments =	$sql->ReadComments($id);
-		if ($comments != null)
+		if ($sql->GetSetting("comments") == 1)
 		{
-			$userPrivileges = $sql->CheckPrivileges($_SESSION['name']);
-			foreach ($comments as $comment)
-			{	
-				if ($userPrivileges >= 64)
-				{
-					$addThings = "<a href=\"?action=article&id=".$id."&delete=".$comment['id']."\">Usuń komentarz</a>";
+			$commentsBlock = "";
+			$comments =	$sql->ReadComments($id);
+			if ($comments != null)
+			{
+				$userPrivileges = $sql->CheckPrivileges($_SESSION['name']);
+				foreach ($comments as $comment)
+				{	
+					if ($userPrivileges >= 64)
+					{
+						$addThings = "<a href=\"?action=article&id=".$id."&delete=".$comment['id']."\">Usuń komentarz</a>";
+					}
+					elseif (($privi->CheckPrivilege(2, $userPrivileges)) && ($comment['user'] == $_SESSION['name']))
+					{
+						$addThings = "<a href=\"?action=article&id=".$id."&delete=".$comment['id']."\">Usuń komentarz</a>";
+					}
+					else
+						$addThings = "";
+
+					$data = array("commentId"=>$comment['id'], "author"=>$comment['user'], "date"=>$comment['date'],
+							"note"=>$comment['note'], "addThings"=>$addThings);
+					$commentsBlock = $commentsBlock.$template->Render("comment_body", $data);
 				}
-				elseif (($privi->CheckPrivilege(2, $userPrivileges)) && ($comment['user'] == $_SESSION['name']))
-				{
-					$addThings = "<a href=\"?action=article&id=".$id."&delete=".$comment['id']."\">Usuń komentarz</a>";
-				}
-				else
-					$addThings = "";
-	
-				$data = array("commentId"=>$comment['id'], "author"=>$comment['user'], "date"=>$comment['date'],
-					"note"=>$comment['note'], "addThings"=>$addThings);
-				$commentsBlock = $commentsBlock.$template->Render("comment_body", $data);
 			}
-		}
-		else
-		{
-			$commentsBlock = "Brak komentarzy";
-		}
-
-		$commentsNumber = "";
-		$count = $sql->NumberOfComments($id);
-		if ($count < 5)
-		{
-			if ($count == 0)
-				$commentsNumber = $commentsNumber.""."Nie ma komentarzy";
-			elseif ($count == 1)
-				$commentsNumber = $commentsNumber.""."Jeden komentarz";
 			else
-				$commentsNumber = $commentsNumber."".$count.""." komentarze";
+			{
+				$commentsBlock = "Brak komentarzy";
+			}
+
+			$commentsNumber = "";
+			$count = $sql->NumberOfComments($id);
+			if ($count < 5)
+			{
+				if ($count == 0)
+					$commentsNumber = $commentsNumber.""."Nie ma komentarzy";
+				elseif ($count == 1)
+					$commentsNumber = $commentsNumber.""."Jeden komentarz";
+				else
+					$commentsNumber = $commentsNumber."".$count.""." komentarze";
+			}
+			else
+			{
+				$commentsNumber = $commentsNumber."".$count.""." komentarzy";
+			}
+
+			if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] == false)
+			{
+				$data = array("title"=>$news['title'], "author"=>$news['author'], "date"=>$news['date'], "comments"=>"0",
+						"content"=>$news['note'], "comments"=>$commentsBlock, "hash"=>GenerateHash(), 
+						"commentAuthor"=>"", "user_id"=>"0", "commentsNumber"=>$commentsNumber);
+			}
+			else
+			{
+				$data = array("title"=>$news['title'], "author"=>$news['author'], "date"=>$news['date'], "comments"=>"0",
+						"content"=>$news['note'], "comments"=>$commentsBlock, "hash"=>GenerateHash(), 
+						"commentAuthor"=>$_SESSION['name'], "readonly"=>"readonly", "user_id"=>$sql->ReturnUserID($_SESSION['name']),
+						"commentsNumber"=>$commentsNumber);
+			}
+			$newsBlock = $newsBlock.$template->Render("article_details", $data);
 		}
 		else
 		{
-			$commentsNumber = $commentsNumber."".$count.""." komentarzy";
+			$data = array("title"=>$news['title'], "author"=>$news['author'], "date"=>$news['date'],
+				"content"=>$news['note']);
+
+			$newsBlock = $newsBlock.$template->Render("article_details_nc", $data);
 		}
 
-		if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] == false)
-		{
-			$data = array("title"=>$news['title'], "author"=>$news['author'], "date"=>$news['date'], "comments"=>"0",
-				"content"=>$news['note'], "comments"=>$commentsBlock, "hash"=>GenerateHash(), 
-				"commentAuthor"=>"", "user_id"=>"0", "commentsNumber"=>$commentsNumber);
-		}
-		else
-		{
-			$data = array("title"=>$news['title'], "author"=>$news['author'], "date"=>$news['date'], "comments"=>"0",
-				"content"=>$news['note'], "comments"=>$commentsBlock, "hash"=>GenerateHash(), 
-				"commentAuthor"=>$_SESSION['name'], "readonly"=>"readonly", "user_id"=>$sql->ReturnUserID($_SESSION['name']),
-				"commentsNumber"=>$commentsNumber);
-		}
-		$newsBlock = $newsBlock.$template->Render("article_details", $data);
-	
 		$data = array("content"=>$newsBlock);
 		$mainContent = $template->Render("news", $data);
 	}

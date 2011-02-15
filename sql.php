@@ -186,8 +186,16 @@
 			$author = $this->ProtectString($author);
 			$link = $this->ProtectInt($link);
 
-            $query = "INSERT INTO ".$this->prefix."articles (`id`, `title`, `date`, `articleFirstPart`, `articleSecondPart`, `author`, `id_link`) VALUES
-            (NULL, '".$title."', ' ".date("Y-m-d H:i:s")."', '".$firstPart."', '".$secondPart."', '".$author."', '".$link."');";
+            $query = 'INSERT INTO '.$this->prefix.'articles 
+            	(id, title, date, articleFirstPart, articleSecondPart, author, id_link) VALUES
+            	(NULL, "'.$title.'", "'.date("Y-m-d H:i:s").'", "'.$firstPart.'", ';
+            
+            if ($secondPart == "")
+            	$query = $query."NULL";
+            else
+            	$query = $query.'"'.$secondPart.'"';
+            	
+            $query = $query.', "'.$author.'", "'.$link.'")';
 
             return mysql_query($query);
         }
@@ -276,7 +284,10 @@
             $query = 'UPDATE '.$this->prefix.'articles SET title="'.$title.'", articleFirstPart="'.$firstPart.'"';
             
             $secondPart = $this->ProtectString($secondPart);
-            $query = $query.', articleSecondPart="'.$secondPart.'"';
+            if ($secondPart == "")
+            	$query = $query.', articleSecondPart=NULL';
+           	else
+            	$query = $query.', articleSecondPart="'.$secondPart.'"';
             	
             $query = $query.', author="'.$author.'", id_link="'.$link.'" WHERE id="'.$id.'"';
 

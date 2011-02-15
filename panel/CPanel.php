@@ -48,7 +48,7 @@ class CPanel
                     <?php
                     if (Privileges::CheckPrivilege(Privileges::ARTICLES, $this->privileges))
                     {
-                        ?><a href="./?task=addNote" class="button">Dodaj notkę</a>
+                        ?><a href="./?task=addNote" class="button">Dodaj artykuł</a>
                         <a href="./?task=articles&page=0" class="button">Artykuły</a>
                         <a href="./?task=bin" class="button">Kosz</a><?php
                     }

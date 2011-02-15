@@ -101,11 +101,13 @@ class CPanel
      * uzywane przy dodawaniu i edycji artykulu
      * @param string $action Akcja wykonywana po kliknieciu przycisku Wyślij
      * @param string $title Tytuł wpisany w pole tekstowe (opcjonalnie)
-     * @param string $article Artykuł wpisany w pole tekstowe (opcjonalnie)
+     * @param string $firstPart Pierwsza czesc artykułu wpisana w pole tekstowe (opcjonalnie)
+     * @param string $secondPart Druga czesc artykułu wpisana pole tekstowe (opcjonalnie)
      * @param string $author Autor wpisany w pole tekstowe (opcjonalnie)
      * @param int $linkID Id linku, ktory ma byc wybrany w comboboksie (opcjonalnie)
      */
-    protected function DrawTextAreas($action, $title = null, $article = null, $author = null, $linkID = null)
+    protected function DrawTextAreas($action, $title = null, $firstPart = null, $secondPart = null,
+    	 $author = null, $linkID = null)
     {
 		if ($author == null)
 			$author = $_SESSION['name'];
@@ -136,12 +138,12 @@ class CPanel
 		$form->AddItem($text);
 		//tekstarea z poczatkiem artykulu
         $text = new CTextArea("Treść: ", "firstPart");
-        $text->SetValue($article);
+        $text->SetValue($firstPart);
         $text->SetAddionalAttribs('rows="20" cols="100"');
         $form->AddItem($text);
         //tekstarea z rozwinieciem artykulu
         $text = new CTextArea("Rozwinięcie (opcjonalnie): ", "secondPart");
-        $text->SetValue($article);
+        $text->SetValue($secondPart);
         $text->SetAddionalAttribs('rows="20" cols="100"');
         $form->AddItem($text);
         //textarea z autorem

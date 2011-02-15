@@ -249,23 +249,28 @@
             return $array;
         }
 
-        public function EditArticle($id, $title, $note, $author, $link) //zmiana konkretnego articles
+        public function EditArticle($id, $title, $firstPart, $author, $link, $secondPart = null) //zmiana konkretnego articles
         {
             $id = $this->ProtectInt($id);
 
             $title = $this->ProtectString($title);
-            $note = $this->ProtectString($note);
+            $firstPart = $this->ProtectString($firstPart);
 			$author = $this->ProtectString($author);
 			$link = $this->ProtectInt($link);
 
-            $query = "UPDATE ".$this->prefix."articles SET title='$title', note='$note', author='$author', id_link='$link' WHERE id='$id'";
+            $query = "UPDATE ".$this->prefix."articles SET title='$title', articleFirstPart='$firstPart'";
+            
+            $secondPart = $this->ProtectString($secondPart);
+            $query = $query.", articleSecondPart='$secondPart'";
+            	
+            $query = $query.", author='$author', id_link='$link' WHERE id='$id'";
 
             return mysql_query($query);
         }
 
         public function UpdateArticleLink($visibleIn, $page, $proporties, &$isChanged) //przypisanie artukulu do konkretnego linku w menu, ischanged - czy jakis zostal zmieniony
         {
-            $query = "SELECT id, id_link, note FROM ".$this->prefix."articles WHERE proporties='".$proporties."' ORDER BY date DESC LIMIT ".($page*20).", 20"; //musi zwracac note, inaczej zle zwraca idki, durny ten sql
+            $query = "SELECT id, id_link FROM ".$this->prefix."articles WHERE proporties='".$proporties."' ORDER BY date DESC LIMIT ".($page*20).", 20"; //musi zwracac note, inaczej zle zwraca idki, durny ten sql
 
             $reply = mysql_query($query);
             for ($i = 0; $line = mysql_fetch_row($reply); ++$i)
@@ -293,7 +298,11 @@
             return true;
         }
 
-        //funkcja zabezpiecza id i tworzy z tablicy id odpowiednie zapytanie (potrzebne przy usuwaniu articles)
+        /**
+         * 
+         * Zabezpiecza id i tworzy z tablicy id odpowiednie zapytanie (potrzebne przy usuwaniu articles)
+         * @param int $id Id do zabezpieczenia
+         */
         private function doIdQuery($id)
         {
             $id = $this->ProtectInt($id);

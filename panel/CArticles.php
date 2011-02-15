@@ -42,24 +42,26 @@ class CArticles extends CPanel
 			else if(isset($_POST['submit'])) //po kliknieciu wyslij przy edycji notki
 			{
 				$title = $_POST['title'];
-				$note = $_POST['note'];
+				$firstPart = $_POST['firstPart'];
+				$secondPart = $_POST['secondPart'];
 				@$id = $_GET['id'];
 				$author = $_POST['author'];
 				$link = $_POST['link'];
 
 				$title = trim($title);
-				$note = trim($note);
+				$firstPart = trim($firstPart);
+				$secondPart = trim($secondPart);
 
-				if (empty($title) || empty($note))
-					$this->SendInfo("News nie zaktualizowany z powodu braku tytułu lub treści");
+				if (empty($title) || empty($firstPart))
+					$this->SendInfo("Artykuł nie zaktualizowany z powodu braku tytułu lub treści");
 				else if ($id < 1)
-					$this->SendInfo("News nie zaktualizowany z powodu złego id");
+					$this->SendInfo("Artykuł nie zaktualizowany z powodu złego id");
 				else
 				{
-					if ($this->sql->EditArticle($id, $title, $note, $author, $link))
-						$this->SendInfo("News został zaktualizowany");
+					if ($this->sql->EditArticle($id, $title, $firstPart, $author, $link, $secondPart))
+						$this->SendInfo("Artykuł został zaktualizowany");
 					else
-						$this->SendInfo("News nie został zaktualizowany");
+						$this->SendInfo("Artykuł nie został zaktualizowany");
 
 					$id = 0; //zeby przeszedl do malowania tabelki
 				}
@@ -74,7 +76,7 @@ class CArticles extends CPanel
 			if ($id != 0) //jesli wybrana zostala jakas notka to dawaj formularz, a jesli nie...
 			{
 				$news = $this->sql->ReadArticle($id);
-				$this->DrawTextAreas("articles&id=$id", $news['title'], $news['note'], $news['author'], $news['link']);
+				$this->DrawTextAreas("articles&id=$id", $news['title'], $news['firstPart'], $news['secondPart'], $news['author'], $news['link']);
 			}
 			else //... to wyswietli sie lista notek do wybrania
 			{

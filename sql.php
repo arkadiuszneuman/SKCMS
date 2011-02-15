@@ -12,7 +12,12 @@
         const USERCOMMENTS = 64; //dodawanie/edycja/dopuszczanie komentarzy uzytkownikow
         const ALL = 127;
 
-        //sprawdza czy w grupie uprawnien (privileges) istnieje uprawnienie (privilege)
+        /**
+         * 
+         * sprawdza czy w grupie uprawnien (privileges) istnieje uprawnienie (privilege), zwraca boola
+         * @param const $privilege Uprawnienie, które będzie sprawdzane
+         * @param int $privileges Grupa uprawnień, w których będzie sprawdzane uprawenienie
+         */
         static function CheckPrivilege($privilege, $privileges)
         {
             if ($privilege & $privileges)
@@ -21,6 +26,11 @@
             return false;
         }
         
+        /**
+         * 
+         * Zwraca konkretne uprawnienie jako string
+         * @param int $privilege Uprawnienie do sprawdzenia
+         */
         static function PrivilegeToString($privilege)
         {
             switch ($privilege)
@@ -54,6 +64,11 @@
             return $s;
         }
 
+        /**
+         * 
+         * Zwraca w tablicy wszystkie uprawnienia znajdujące się w konkretnej liczbie
+         * @param int $number Liczba z uprawnieniami
+         */
         static function WhatPrivileges($number)
         {
             if (Privileges::CheckPrivilege(Privileges::USER, $number))
@@ -258,12 +273,12 @@
 			$author = $this->ProtectString($author);
 			$link = $this->ProtectInt($link);
 
-            $query = "UPDATE ".$this->prefix."articles SET title='$title', articleFirstPart='$firstPart'";
+            $query = 'UPDATE '.$this->prefix.'articles SET title="'.$title.'", articleFirstPart="'.$firstPart.'"';
             
             $secondPart = $this->ProtectString($secondPart);
-            $query = $query.", articleSecondPart='$secondPart'";
+            $query = $query.', articleSecondPart="'.$secondPart.'"';
             	
-            $query = $query.", author='$author', id_link='$link' WHERE id='$id'";
+            $query = $query.', author="'.$author.'", id_link="'.$link.'" WHERE id="'.$id.'"';
 
             return mysql_query($query);
         }

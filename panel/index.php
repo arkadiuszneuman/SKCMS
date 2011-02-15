@@ -28,8 +28,8 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] && $priv >= Privileges
     switch ($task)
     {
         case "addNote":
-            $c = new CAddNote();
-            $c->AddNote();
+            $c = new CAddArticle();
+            $c->AddArticle();
             break;
 
         case "articles":

@@ -1,7 +1,7 @@
 <?php
 
 include("./CPanel.php");
-include("./CAddNote.php");
+include("./CAddArticle.php");
 include("./CArticles.php");
 include("./CBin.php");
 include("./CUsers.php");

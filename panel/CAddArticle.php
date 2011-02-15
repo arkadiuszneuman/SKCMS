@@ -1,13 +1,13 @@
 <?php
 
-class CAddNote extends CPanel
+class CAddArticle extends CPanel
 {
     public function __construct()
     {
         parent::__construct();
     }
 
-    public function AddNote()
+    public function AddArticle()
     {
         if(isset($_POST['submit']))
         {

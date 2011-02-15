@@ -88,13 +88,13 @@
 			if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] == false)
 			{
 				$data = array("title"=>$news['title'], "author"=>$news['author'], "date"=>$news['date'], "comments"=>"0",
-						"content"=>$news['note'], "comments"=>$commentsBlock, "hash"=>GenerateHash(), 
+						"content"=>$news['firstPart']."<br />".$news['secondPart'], "comments"=>$commentsBlock, "hash"=>GenerateHash(), 
 						"commentAuthor"=>"", "user_id"=>"0", "commentsNumber"=>$commentsNumber);
 			}
 			else
 			{
 				$data = array("title"=>$news['title'], "author"=>$news['author'], "date"=>$news['date'], "comments"=>"0",
-						"content"=>$news['note'], "comments"=>$commentsBlock, "hash"=>GenerateHash(), 
+						"content"=>$news['firstPart']."<br />".$news['secondPart'], "comments"=>$commentsBlock, "hash"=>GenerateHash(), 
 						"commentAuthor"=>$_SESSION['name'], "readonly"=>"readonly", "user_id"=>$sql->ReturnUserID($_SESSION['name']),
 						"commentsNumber"=>$commentsNumber);
 			}
@@ -103,7 +103,7 @@
 		else
 		{
 			$data = array("title"=>$news['title'], "author"=>$news['author'], "date"=>$news['date'],
-				"content"=>$news['note']);
+				"content"=>$news['firstPart']."<br />".$news['secondPart']);
 
 			$newsBlock = $newsBlock.$template->Render("article_details_nc", $data);
 		}

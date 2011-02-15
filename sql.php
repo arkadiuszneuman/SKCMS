@@ -119,6 +119,8 @@
 
         private function ProtectString($string)
         {
+        	$string = trim($string);
+        	
             if (get_magic_quotes_gpc()) //usuniecie slashow jesli magic quotes wylaczone
                 $string = stripslashes($string);
 
@@ -151,15 +153,26 @@
             mysql_select_db($database);
         }
         
-        public function AddArticle($title, $note, $author, $link) //dodanie articles
+        /**
+         * 
+         * Dodawanie nowego artykułu
+         * @param string $title Tytuł artykułu
+         * @param string $firstPart Pierwsza część artykułu
+         * @param string $author Autor artykułu
+         * @param int $link Link, do którego należy artykuł
+         * @param string $secondPart Druga część artykułu (opcjonalnie)
+         */
+        public function AddArticle($title, $firstPart, $author, $link, $secondPart = null) //dodanie articles
         {
             $title = $this->ProtectString($title);
-            $note = $this->ProtectString($note);
+            $firstPart = $this->ProtectString($firstPart);
+            if ($secondPart != null)
+            	$secondPart = $this->ProtectString($secondPart);
 			$author = $this->ProtectString($author);
 			$link = $this->ProtectInt($link);
 
-            $query = "INSERT INTO ".$this->prefix."articles (`id`, `title`, `date`, `note`, `author`, `id_link`) VALUES
-            (NULL, '".trim($title)."', ' ".date("Y-m-d H:i:s")."', '".trim($note)."', '".$author."', '".$link."');";
+            $query = "INSERT INTO ".$this->prefix."articles (`id`, `title`, `date`, `articleFirstPart`, `articleSecondPart`, `author`, `id_link`) VALUES
+            (NULL, '".$title."', ' ".date("Y-m-d H:i:s")."', '".$firstPart."', '".$secondPart."', '".$author."', '".$link."');";
 
             return mysql_query($query);
         }
@@ -179,13 +192,20 @@
             return $row["howmany"];
         }
 
-        //odczytanie articles, from - od ktorej danej zwracac, to - ile notek, idlink - id liknku, z ktorego zwracac artykuly
+        /**
+         * 
+         * odczytanie articles, from - od ktorej danej zwracac, to - ile notek, idlink - id liknku, z ktorego zwracac artykuly
+         * @param const $proporties Właściwość wybranej notki (użyj statycznej zmiennej z klasy Sql)
+         * @param int $from Od którego artykułu zwracać
+         * @param int $howMany Ile artykułów zwracać
+         * @param int $idLink Z jakiego linku artykuły zwracać (opcjonalnie)
+         */
         public function ReadArticles($proporties, $from, $howMany, $idLink = null)
         {
             $from = $this->ProtectInt($from);
             $howMany = $this->ProtectInt($howMany);
 
-            $query = "SELECT title, date, note, id_link, id, author FROM ".$this->prefix."articles WHERE proporties='$proporties'";
+            $query = "SELECT title, date, articleFirstPart, articleSecondPart, id_link, id, author FROM ".$this->prefix."articles WHERE proporties='$proporties'";
             
             if ($idLink != null)
                 $query = $query." AND id_link='$idLink'";
@@ -197,10 +217,11 @@
             {
                 $array[$i]['title'] = $line[0];
                 $array[$i]['date'] = $line[1];
-                $array[$i]['note'] = $line[2];
-                $array[$i]['idLink'] = $line[3];
-                $array[$i]['id'] = $line[4];
-				$array[$i]['author'] = $line[5];
+                $array[$i]['firstPart'] = $line[2];
+                $array[$i]['secondPart'] = $line[3];
+                $array[$i]['idLink'] = $line[4];
+                $array[$i]['id'] = $line[5];
+				$array[$i]['author'] = $line[6];
             }
 
             if (@$array == null)
@@ -212,17 +233,18 @@
         {
             $id = $this->ProtectInt($id);
 
-            $query = "SELECT title, note, author, id_link, date FROM ".$this->prefix."articles WHERE id='$id'";
+            $query = "SELECT title, articleFirstPart, articleSecondPart, author, id_link, date FROM ".$this->prefix."articles WHERE id='$id'";
 
             $reply = mysql_query($query);
             if (($line = mysql_fetch_row($reply)) == 0)
 				return null;
 
             $array['title'] = $line[0];
-            $array['note'] = $line[1];
-			$array['author'] = $line[2];
-			$array['link'] = $line[3];
-			$array['date'] = $line[4];
+            $array['firstPart'] = $line[1];
+            $array['secondPart'] = $line[2];
+			$array['author'] = $line[3];
+			$array['link'] = $line[4];
+			$array['date'] = $line[5];
 
             return $array;
         }

@@ -11,24 +11,26 @@ class CAddArticle extends CPanel
     {
         if(isset($_POST['submit']))
         {
-            $title = $_POST['title'];
-            $note = $_POST['note'];
-			$author = $_POST['author'];
-			$link = $_POST['link'];
+            $title = $_POST['title']; //tytul
+            $firstPart = $_POST['firstPart']; //pierwsza czesc artykulu
+            $secondPart = $_POST['secondPart']; //druga czesc artykulu widoczna po rozwinieciu
+			$author = $_POST['author']; //autor
+			$link = $_POST['link']; //link do ktorego przynalezy artykul
 
             $title = trim($title);
-            $note = trim($note);
+            $firstPart = trim($firstPart);
+            $secondPart = trim($secondPart);
 
-            if (empty($title) || empty($note))
+            if (empty($title) || empty($firstPart))
             {
-                $this->SendInfo("Notka nie dodana z powodu braku tytułu lub treści");
+                $this->SendInfo("Artykuł nie dodany z powodu braku tytułu lub treści");
             }
             else
             {
-                if ($this->sql->AddArticle($title, $note, $author, $link))
-                    $this->SendInfo("News został wysłany");
+                if ($this->sql->AddArticle($title, $firstPart, $author, $link, $secondPart))
+                    $this->SendInfo("Artykuł został wysłany");
                 else
-                    $this->SendInfo("News nie został wysłany");
+                    $this->SendInfo("Artykuł nie został wysłany");
             }
 
             $this->DrawInfo();

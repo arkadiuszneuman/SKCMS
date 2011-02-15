@@ -96,17 +96,28 @@ class CPanel
         }
     }
 
-    //uzywane przy dodawaniu i edycji artykulu
+    /**
+     * 
+     * uzywane przy dodawaniu i edycji artykulu
+     * @param string $action Akcja wykonywana po kliknieciu przycisku Wyślij
+     * @param string $title Tytuł wpisany w pole tekstowe (opcjonalnie)
+     * @param string $article Artykuł wpisany w pole tekstowe (opcjonalnie)
+     * @param string $author Autor wpisany w pole tekstowe (opcjonalnie)
+     * @param int $linkID Id linku, ktory ma byc wybrany w comboboksie (opcjonalnie)
+     */
     protected function DrawTextAreas($action, $title = null, $article = null, $author = null, $linkID = null)
     {
 		if ($author == null)
 			$author = $_SESSION['name'];
         
+		//nowa forma
         $form = new CForm(CForm::POST, "?task=$action");
+        //textbox z tytulem w formie
         $text = new CTextBox("Tytuł: ", "title");
         $text->SetValue($title);
         $text->SetAddionalAttribs('size="65"');
         $form->AddItem($text);
+        //combobox z linkami w formie
 		$text = new CComboBox("Kategoria: ", "link");
 		$links = $this->sql->ReadCategories();
 		$text->AddItem("Brak", "");
@@ -123,14 +134,22 @@ class CPanel
 		}
 		$text->SetAddionalAttribs('size="65"');
 		$form->AddItem($text);
-        $text = new CTextArea("Treść: ", "note");
+		//tekstarea z poczatkiem artykulu
+        $text = new CTextArea("Treść: ", "firstPart");
         $text->SetValue($article);
         $text->SetAddionalAttribs('rows="20" cols="100"');
         $form->AddItem($text);
+        //tekstarea z rozwinieciem artykulu
+        $text = new CTextArea("Rozwinięcie (opcjonalnie): ", "secondPart");
+        $text->SetValue($article);
+        $text->SetAddionalAttribs('rows="20" cols="100"');
+        $form->AddItem($text);
+        //textarea z autorem
 		$text = new CTextBox("Autor: ", "author");
 		$text->SetValue($author);
 		$text->SetAddionalAttribs('size="65"');
 		$form->AddItem($text);
+		//przycisk
         $form->AddItem(new CButton("Wyślij", "submit"));
         $form->Draw();
 

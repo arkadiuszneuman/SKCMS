@@ -20,13 +20,17 @@
 			if ($sql->GetSetting("comments") == 1)
 			{
 				$data = array("id"=>$n['id'], "title"=>$n['title'], "author"=>$n['author'], "date"=>$n['date'], 
-						"comments"=>$sql->NumberOfComments($n['id']), "content"=>$n['note']);
+						"comments"=>$sql->NumberOfComments($n['id']), "content"=>$n['firstPart']);
 				$newsBlock = $newsBlock.$template->Render("news_item", $data);
 			}
 			else
 			{
-				$data = array("id"=>$n['id'], "title"=>$n['title'], "author"=>$n['author'], "date"=>$n['date'], 
-						"content"=>$n['note']);
+				if ($n['secondPart'] != null)
+					$data = array("id"=>$n['id'], "title"=>$n['title'], "author"=>$n['author'], "date"=>$n['date'], 
+							"content"=>$n['firstPart']."<br />"."więcej");
+				else
+					$data = array("id"=>$n['id'], "title"=>$n['title'], "author"=>$n['author'], "date"=>$n['date'], 
+							"content"=>$n['firstPart']);
 				$newsBlock = $newsBlock.$template->Render("news_item_nc", $data);
 			}
 		}

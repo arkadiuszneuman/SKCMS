@@ -2,7 +2,7 @@
 	session_start();
 	include ('includes/layout.php');
 	include ('includes/init.php');
-	include ('sql.php');
+	include ('includes/sql.php');
 
     $sql = new Sql();
 

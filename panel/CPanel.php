@@ -1,6 +1,6 @@
 <?php
-include_once('../sql.php');
-include("../CForm.php");
+include_once('../includes/sql.php');
+include("../includes/CForm.php");
 
 class CPanel
 {

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('../sql.php');
+include('../includes/sql.php');
 $sql = new Sql();
 
 if(@$_GET['action'] == 'admin')

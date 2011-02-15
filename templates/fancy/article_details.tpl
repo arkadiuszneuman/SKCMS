@@ -14,11 +14,12 @@
 		<fieldset>
 			<label for="author">Autor:</label>
 			<input type="text" name="author" value="{commentAuthor}" size="65" {readonly}/>
+			<br />
 			<label for="note">Treść:</label>
-			<textarea name="note" rows="20" cols="100"></textarea>
+			<textarea name="note" rows="20" cols="80"></textarea>
 			<input type="hidden" name="user_id" value="{user_id}" />
 			<input type="hidden" name="hash" value="{hash}" />
-			<input type="submit" name="submit" value="Wyślij"  />
+			<input type="submit" class="button" name="submit" value="Wyślij"  />
 		</fieldset>
 	</form>
 	</div>

@@ -18,11 +18,6 @@ body
 	margin: auto;
 }
 
-input
-{
-	display: block;
-}
-
 #logo 
 {
 	background-color: rgb(32, 74, 135);
@@ -225,4 +220,17 @@ ul#menu li:hover ul
 	margin: 0;
 	padding: 0;
 	font-size: 12px;
+}
+
+.button
+{
+	margin: 0 0 0 60px;
+}
+
+label
+{
+	display: block;
+	width: 60px;
+	vertical-align: top;
+	float: left;
 }

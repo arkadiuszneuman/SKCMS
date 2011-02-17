@@ -1,6 +1,6 @@
 <?php
     session_start();
-    include("CForm.php");
+    include("includes/CForm.php");
     @$task = $_GET['task'];
 
     switch($task)
@@ -18,7 +18,7 @@
             break;
 
         case "check":
-            include('sql.php');
+            include('includes/sql.php');
 
             $login = $_POST['login'];
             $pass = $_POST['pass'];
@@ -80,7 +80,7 @@
             break;
 
         case "registation":
-            include('sql.php');
+            include('includes/sql.php');
 
             $login = $_GET['login'];
             $pass = $_GET['pass'];

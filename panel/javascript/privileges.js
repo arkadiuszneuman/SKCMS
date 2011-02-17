@@ -49,7 +49,7 @@ function OpenWindow(id, login, privileges)
         {
             document.getElementById('windowUser').innerHTML = "Błąd";
         }
-    }
+    };
 
     r.send(null);
 }
@@ -66,7 +66,7 @@ function Checkboxes() //obsluga wylaczania i wlaczania checkboxow przy nacisniec
         }
 
         user.disabled = false;
-    }
+    };
 }
 
 function Close()

@@ -25,7 +25,7 @@ function ButtonsEvents() //eventy (klikniecia) na przyciski do kosza, przywroc z
             document.binFrm.submit();
 
             return false;
-        }
+        };
     }
 }
 
@@ -34,4 +34,4 @@ window.onload = function()
 {
     ButtonsEvents();
 
-}
+};

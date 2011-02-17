@@ -74,11 +74,11 @@ function Login(task)
     }
     else if (task == "registation") //rejestracja po wpisaniu danych
     {
-        task += "&login="
+        task += "&login=";
         task += document.getElementsByName("login")[0].value;
-        task += "&pass="
+        task += "&pass=";
         task += document.getElementsByName("pass")[0].value;
-        task += "&mail="
+        task += "&mail=";
         task += document.getElementsByName("mail")[0].value;
 
         r.send(null);

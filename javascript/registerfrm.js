@@ -57,7 +57,7 @@ function CheckAjaxUser()
         {
             document.getElementById('txtUser').innerHTML = "Błąd";
         }
-    }
+    };
 
     r.send(null);
 }

@@ -46,6 +46,11 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] && $priv >= Privileges
             $c = new CLinks();
             $c->Links();
             break;
+            
+        case "blocks":
+            $c = new CBlocks();
+            $c->Blocks();
+            break;
 
         case "users":
             $c = new CUsers();

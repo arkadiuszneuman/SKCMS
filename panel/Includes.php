@@ -7,5 +7,6 @@ include("./CBin.php");
 include("./CUsers.php");
 include("./CLinks.php");
 include("./CPreferences.php");
+include("./CBlocks.php");
 
 ?>

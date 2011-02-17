@@ -19,7 +19,11 @@
 		{   
 			if ($sql->GetSetting("comments") == 1)
 			{
-				$data = array("id"=>$n['id'], "title"=>$n['title'], "author"=>$n['author'], "date"=>$n['date'], 
+				if ($n['secondPart'] != null)
+					$data = array("id"=>$n['id'], "title"=>$n['title'], "author"=>$n['author'], "date"=>$n['date'], 
+						"comments"=>$sql->NumberOfComments($n['id']), "content"=>$n['firstPart']."<br />"."<a href=\"index.php?action=article&id=".$n['id']."\">więcej</a>");
+				else
+					$data = array("id"=>$n['id'], "title"=>$n['title'], "author"=>$n['author'], "date"=>$n['date'], 
 						"comments"=>$sql->NumberOfComments($n['id']), "content"=>$n['firstPart']);
 				$newsBlock = $newsBlock.$template->Render("news_item", $data);
 			}
@@ -27,7 +31,7 @@
 			{
 				if ($n['secondPart'] != null)
 					$data = array("id"=>$n['id'], "title"=>$n['title'], "author"=>$n['author'], "date"=>$n['date'], 
-							"content"=>$n['firstPart']."<br />"."więcej");
+							"content"=>$n['firstPart']."<br />"."<a href=\"index.php?action=article&id=".$n['id']."\">więcej</a>");
 				else
 					$data = array("id"=>$n['id'], "title"=>$n['title'], "author"=>$n['author'], "date"=>$n['date'], 
 							"content"=>$n['firstPart']);

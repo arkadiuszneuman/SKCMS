@@ -1,5 +1,7 @@
 <?php
 
+include_once("CPanel.php");
+
 class CPreferences extends CPanel
 {
 	private $settings;

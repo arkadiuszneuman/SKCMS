@@ -1,5 +1,7 @@
 <?php
 
+include_once("CPanel.php");
+
 class CAddArticle extends CPanel
 {
     public function __construct()

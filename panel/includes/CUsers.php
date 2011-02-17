@@ -1,5 +1,7 @@
 <?php
 
+include_once("CPanel.php");
+
 class CUsers extends CPanel
 {
     public function __construct()

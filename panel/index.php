@@ -18,8 +18,16 @@ else
     $priv = 0;
 
 if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] && $priv >= Privileges::ARTICLES) //wszystkie uprawnienia od mozliwosci dodawania artykulow maja dostep do panelu
-{
-    include('./Includes.php');
+{  
+	//dynamiczne dodanie wszystkich klas w znajdujacych sie w folderze includes
+	$dir = opendir('./includes/');
+	while(false !== ($file = readdir($dir)))
+	{
+	  	if($file != '.' && $file != '..')
+	  	{
+	  		include_once('./includes/'.$file);
+	  	}
+	}
 
     @$task = $_GET['task'];
     if (empty($task)) //domyslnie ma byc edycja artykulow

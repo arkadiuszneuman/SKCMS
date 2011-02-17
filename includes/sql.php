@@ -1,6 +1,6 @@
 <?php
-    include('../database.php');
-
+    include('database.php');
+    
     class Privileges
     {
         const USER = 1; //czy uzytkownik istnieje (jesli nie to zbanowany)
